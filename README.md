@@ -41,3 +41,12 @@ make uvicorn-down
 - 促销表
 - 优惠券表
 - 页面注册表
+
+## 当前已接入能力
+
+- GET /system/health
+- GET /backoffice/pages/health
+- GET /backoffice/pages/registry
+- GET /backoffice/pages/navigation
+
+/backoffice/pages/* 已迁入 d2c-backoffice-api，页面目录表归 d2c_backoffice_db。
