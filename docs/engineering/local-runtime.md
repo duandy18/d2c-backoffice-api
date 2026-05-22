@@ -41,3 +41,15 @@ make uvicorn-down
 - 促销表
 - 优惠券表
 - 页面注册表
+
+## 页面目录
+
+第二阶段起，商家中台页面目录接口由 d2c-backoffice-api 提供：
+
+- GET /backoffice/pages/health
+- GET /backoffice/pages/registry
+- GET /backoffice/pages/navigation
+
+调用方仍需传入：
+
+X-Backoffice-Client: d2c-backoffice
