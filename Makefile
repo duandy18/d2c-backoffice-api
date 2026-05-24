@@ -11,7 +11,7 @@ HEALTH_URL ?= http://127.0.0.1:$(PORT)/system/health
 DEV_DB_DSN ?= postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:5433/d2c_backoffice
 DEV_TEST_DB_DSN ?= postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:5433/d2c_backoffice_test
 
-PMS_API_BASE_URL ?= http://127.0.0.1:8002
+PMS_API_BASE_URL ?= http://127.0.0.1:8005
 PMS_SERVICE_CLIENT_CODE ?= d2c-backoffice-service
 PMS_PROJECTION_SYNC_PAGE_LIMIT ?= 500
 PMS_PROJECTION_SYNC_REQUESTED_BY ?= make
