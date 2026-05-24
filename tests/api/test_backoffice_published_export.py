@@ -16,6 +16,11 @@ from app.domains.listing.models.listing import (
 )
 from app.domains.pms_projection.models.pms_projection import (
     PmsBarcodeProjection,
+    PmsBrandProfileProjection,
+    PmsDisplayCategoryProjection,
+    PmsItemAssetProjection,
+    PmsItemContentProjection,
+    PmsItemDisplayCategoryBindingProjection,
     PmsProductProjection,
     PmsSkuCodeProjection,
     PmsUnitProjection,
@@ -50,6 +55,18 @@ def _seed_export_data() -> dict[str, str]:
     pms_item_uom_id = int(uuid4().int % 1_000_000_000)
     pms_sku_code_id = int(uuid4().int % 1_000_000_000)
     pms_barcode_id = int(uuid4().int % 1_000_000_000)
+
+    fallback_pms_item_id = int(uuid4().int % 1_000_000_000)
+    fallback_pms_content_id = int(uuid4().int % 1_000_000_000)
+    fallback_pms_asset_id = int(uuid4().int % 1_000_000_000)
+    fallback_pms_display_category_id = int(uuid4().int % 1_000_000_000)
+    fallback_pms_binding_id = int(uuid4().int % 1_000_000_000)
+    fallback_pms_brand_profile_id = int(uuid4().int % 1_000_000_000)
+    fallback_brand_id = int(uuid4().int % 1_000_000_000)
+    fallback_pms_sku = _unique("PMS-FB")
+    fallback_listing_code = _unique("LISTING-FB")
+    fallback_display_category_code = _unique("PMS-DISP-CAT")
+    fallback_brand_code = _unique("PMS-BRAND")
 
     with session_factory() as session:
         session.add(
@@ -87,6 +104,127 @@ def _seed_export_data() -> dict[str, str]:
             )
         )
         session.flush()
+
+        session.add(
+            PmsProductProjection(
+                pms_item_id=fallback_pms_item_id,
+                pms_sku=fallback_pms_sku,
+                item_name="PMS 原始商品名",
+                item_spec="500g",
+                enabled=True,
+                supplier_id=None,
+                brand_id=fallback_brand_id,
+                brand_code=fallback_brand_code,
+                brand_name="PMS 原始品牌名",
+                category_id=None,
+                category_code="pms_original_cat",
+                category_name="PMS 原始类目",
+                category_path_code=None,
+                category_level=None,
+                category_is_leaf=None,
+                pms_updated_at=now,
+                raw_payload={"source": "pytest-fallback"},
+            )
+        )
+        session.flush()
+
+        session.add(
+            PmsItemContentProjection(
+                pms_content_id=fallback_pms_content_id,
+                pms_item_id=fallback_pms_item_id,
+                base_title="PMS 标准商品标题",
+                base_description="PMS 标准商品说明",
+                short_description="PMS 标准短说明",
+                spec_params={"weight": "500g"},
+                material_text=None,
+                ingredients_text=None,
+                dimensions_text=None,
+                weight_text=None,
+                safety_instructions=None,
+                usage_instructions=None,
+                storage_instructions=None,
+                status="active",
+                pms_updated_at=now,
+                raw_payload={"source": "pytest-fallback"},
+            )
+        )
+        session.add(
+            PmsItemAssetProjection(
+                pms_asset_id=fallback_pms_asset_id,
+                pms_item_id=fallback_pms_item_id,
+                asset_type="image",
+                usage_type="main",
+                source_type="external",
+                object_key=None,
+                url="https://example.test/pms-main.png",
+                alt_text="PMS 标准主图",
+                sort_order=10,
+                is_primary=True,
+                status="active",
+                raw_meta={"source": "pytest"},
+                pms_updated_at=now,
+                raw_payload={"source": "pytest-fallback"},
+            )
+        )
+        session.add(
+            PmsDisplayCategoryProjection(
+                pms_display_category_id=fallback_pms_display_category_id,
+                parent_id=None,
+                level=1,
+                category_code=fallback_display_category_code,
+                category_name="PMS 标准展示类目",
+                display_name="PMS 展示类目名",
+                path_code=fallback_display_category_code,
+                description="PMS 展示类目说明",
+                image_url=None,
+                sort_order=10,
+                is_active=True,
+                is_leaf=True,
+                pms_updated_at=now,
+                raw_payload={"source": "pytest-fallback"},
+            )
+        )
+        session.add(
+            PmsItemDisplayCategoryBindingProjection(
+                pms_binding_id=fallback_pms_binding_id,
+                pms_item_id=fallback_pms_item_id,
+                pms_display_category_id=fallback_pms_display_category_id,
+                is_primary=True,
+                sort_order=10,
+                pms_updated_at=now,
+                raw_payload={"source": "pytest-fallback"},
+            )
+        )
+        session.add(
+            PmsBrandProfileProjection(
+                pms_profile_id=fallback_pms_brand_profile_id,
+                brand_id=fallback_brand_id,
+                display_name="PMS 品牌展示名",
+                official_name="PMS 品牌官方名",
+                brand_story="PMS 品牌故事",
+                country_or_region="CN",
+                website_url="https://example.test/brand",
+                seo_title="PMS 品牌 SEO",
+                seo_description="PMS 品牌 SEO 描述",
+                status="active",
+                pms_updated_at=now,
+                raw_payload={"source": "pytest-fallback"},
+            )
+        )
+
+        session.add(
+            ProductListingConfig(
+                pms_item_id=fallback_pms_item_id,
+                pms_sku=fallback_pms_sku,
+                listing_code=fallback_listing_code,
+                listing_status="published",
+                display_status="visible",
+                sell_status="sellable",
+                sort_order=20,
+                visible_from=None,
+                visible_until=None,
+            )
+        )
 
         session.add(
             PmsUnitProjection(
@@ -286,6 +424,9 @@ def _seed_export_data() -> dict[str, str]:
         "promotion_code": promotion_code,
         "coupon_code": coupon_code,
         "category_code": category_code,
+        "fallback_listing_code": fallback_listing_code,
+        "fallback_display_category_code": fallback_display_category_code,
+        "fallback_brand_code": fallback_brand_code,
     }
 
 
@@ -338,6 +479,21 @@ def test_published_catalog_export_matches_runtime_contract_shape() -> None:
     assert product["raw_payload"]["source_product_listing_config_id"] is not None
     assert product["raw_payload"]["source_product_listing_content_id"] is not None
     assert product["raw_payload"]["source_primary_media_id"] is not None
+
+    fallback_product = product_by_code[values["fallback_listing_code"]]
+    assert fallback_product["display_name"] == "PMS 标准商品标题"
+    assert fallback_product["description"] == "PMS 标准商品说明"
+    assert fallback_product["image_url"] == "https://example.test/pms-main.png"
+    assert fallback_product["category_code"] == values["fallback_display_category_code"]
+    assert fallback_product["category_name"] == "PMS 展示类目名"
+    assert fallback_product["brand_code"] == values["fallback_brand_code"]
+    assert fallback_product["brand_name"] == "PMS 品牌展示名"
+    assert fallback_product["raw_payload"]["source_product_listing_content_id"] is None
+    assert fallback_product["raw_payload"]["source_primary_media_id"] is None
+    assert fallback_product["raw_payload"]["pms_item_content_id"] is not None
+    assert fallback_product["raw_payload"]["pms_item_asset_id"] is not None
+    assert fallback_product["raw_payload"]["pms_display_category_id"] is not None
+    assert fallback_product["raw_payload"]["pms_brand_profile_id"] is not None
 
     sku_by_code = {sku["sku_code"]: sku for sku in payload["skus"]}
     sku = sku_by_code[values["sku_code"]]
