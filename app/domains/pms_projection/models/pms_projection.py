@@ -210,6 +210,249 @@ class PmsBarcodeProjection(Base):
     raw_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
 
 
+class PmsItemContentProjection(Base):
+    __tablename__ = "d2c_pms_item_content_projection"
+    __table_args__ = (
+        UniqueConstraint("pms_content_id", name="uq_d2c_pms_item_content_pid"),
+        UniqueConstraint("pms_item_id", name="uq_d2c_pms_item_content_item"),
+        Index("ix_d2c_pms_item_content_status", "status"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    pms_content_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    pms_item_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("d2c_pms_product_projection.pms_item_id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    base_title: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    base_description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    short_description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    spec_params: Mapped[dict[str, Any] | list[Any] | None] = mapped_column(JSON, nullable=True)
+    material_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ingredients_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    dimensions_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    weight_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    safety_instructions: Mapped[str | None] = mapped_column(Text, nullable=True)
+    usage_instructions: Mapped[str | None] = mapped_column(Text, nullable=True)
+    storage_instructions: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    pms_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    synced_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    raw_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+
+
+class PmsItemAssetProjection(Base):
+    __tablename__ = "d2c_pms_item_asset_projection"
+    __table_args__ = (
+        UniqueConstraint("pms_asset_id", name="uq_d2c_pms_item_asset_pid"),
+        CheckConstraint("sort_order >= 0", name="ck_d2c_pms_item_asset_sort"),
+        Index("ix_d2c_pms_item_asset_item_usage", "pms_item_id", "usage_type", "status"),
+        Index(
+            "uq_d2c_pms_item_asset_primary",
+            "pms_item_id",
+            "usage_type",
+            unique=True,
+            postgresql_where="is_primary = true AND status = 'active'",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    pms_asset_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    pms_item_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("d2c_pms_product_projection.pms_item_id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    asset_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    usage_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    source_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    object_key: Mapped[str | None] = mapped_column(Text, nullable=True)
+    url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    alt_text: Mapped[str | None] = mapped_column(String(240), nullable=True)
+    sort_order: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=100, server_default="100"
+    )
+    is_primary: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
+    )
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    raw_meta: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    pms_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    synced_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    raw_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+
+
+class PmsDisplayCategoryProjection(Base):
+    __tablename__ = "d2c_pms_display_category_projection"
+    __table_args__ = (
+        UniqueConstraint(
+            "pms_display_category_id",
+            name="uq_d2c_pms_disp_cat_pid",
+        ),
+        UniqueConstraint("path_code", name="uq_d2c_pms_disp_cat_path"),
+        CheckConstraint("level >= 1 AND level <= 3", name="ck_d2c_pms_disp_cat_level"),
+        CheckConstraint("sort_order >= 0", name="ck_d2c_pms_disp_cat_sort"),
+        Index("ix_d2c_pms_disp_cat_parent", "parent_id"),
+        Index("ix_d2c_pms_disp_cat_active_leaf", "is_active", "is_leaf"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    pms_display_category_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    parent_id: Mapped[int | None] = mapped_column(
+        BigInteger,
+        ForeignKey(
+            "d2c_pms_display_category_projection.pms_display_category_id", ondelete="SET NULL"
+        ),
+        nullable=True,
+    )
+    level: Mapped[int] = mapped_column(Integer, nullable=False)
+    category_code: Mapped[str] = mapped_column(String(64), nullable=False)
+    category_name: Mapped[str] = mapped_column(String(128), nullable=False)
+    display_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    path_code: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    image_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    sort_order: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=100, server_default="100"
+    )
+    is_active: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=True, server_default="true"
+    )
+    is_leaf: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
+    )
+    pms_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    synced_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    raw_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+
+
+class PmsItemDisplayCategoryBindingProjection(Base):
+    __tablename__ = "d2c_pms_item_display_category_binding_projection"
+    __table_args__ = (
+        UniqueConstraint(
+            "pms_binding_id",
+            name="uq_d2c_pms_item_disp_bind_pid",
+        ),
+        UniqueConstraint(
+            "pms_item_id",
+            "pms_display_category_id",
+            name="uq_d2c_pms_item_disp_bind_item_cat",
+        ),
+        CheckConstraint(
+            "sort_order >= 0",
+            name="ck_d2c_pms_item_disp_bind_sort",
+        ),
+        Index("ix_d2c_pms_item_disp_bind_item", "pms_item_id"),
+        Index(
+            "ix_d2c_pms_item_disp_bind_cat",
+            "pms_display_category_id",
+        ),
+        Index(
+            "uq_d2c_pms_item_disp_bind_primary",
+            "pms_item_id",
+            unique=True,
+            postgresql_where="is_primary = true",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    pms_binding_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    pms_item_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("d2c_pms_product_projection.pms_item_id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    pms_display_category_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey(
+            "d2c_pms_display_category_projection.pms_display_category_id", ondelete="CASCADE"
+        ),
+        nullable=False,
+    )
+    is_primary: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
+    )
+    sort_order: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=100, server_default="100"
+    )
+    pms_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    synced_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    raw_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+
+
+class PmsBrandProfileProjection(Base):
+    __tablename__ = "d2c_pms_brand_profile_projection"
+    __table_args__ = (
+        UniqueConstraint("pms_profile_id", name="uq_d2c_pms_brand_profile_pid"),
+        UniqueConstraint("brand_id", name="uq_d2c_pms_brand_profile_brand"),
+        Index("ix_d2c_pms_brand_profile_status", "status"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    pms_profile_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    brand_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    display_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    official_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    brand_story: Mapped[str | None] = mapped_column(Text, nullable=True)
+    country_or_region: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    website_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    seo_title: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    seo_description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    pms_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    synced_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    raw_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+
+
+class PmsBrandAssetProjection(Base):
+    __tablename__ = "d2c_pms_brand_asset_projection"
+    __table_args__ = (
+        UniqueConstraint("pms_asset_id", name="uq_d2c_pms_brand_asset_pid"),
+        CheckConstraint("sort_order >= 0", name="ck_d2c_pms_brand_asset_sort"),
+        Index("ix_d2c_pms_brand_asset_brand_usage", "brand_id", "usage_type", "status"),
+        Index(
+            "uq_d2c_pms_brand_asset_primary",
+            "brand_id",
+            "usage_type",
+            unique=True,
+            postgresql_where="is_primary = true AND status = 'active'",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    pms_asset_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    brand_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    asset_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    usage_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    object_key: Mapped[str | None] = mapped_column(Text, nullable=True)
+    url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    alt_text: Mapped[str | None] = mapped_column(String(240), nullable=True)
+    sort_order: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=100, server_default="100"
+    )
+    is_primary: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
+    )
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    raw_meta: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    pms_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    synced_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    raw_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+
+
 class PmsProjectionSyncRun(Base):
     __tablename__ = "d2c_pms_projection_sync_runs"
     __table_args__ = (

@@ -18,6 +18,14 @@ _SCOPE_ENDPOINTS: dict[PmsProjectionScope, str] = {
     "units": "/pms/read/v1/projection-feed/uoms",
     "sku_codes": "/pms/read/v1/projection-feed/sku-codes",
     "barcodes": "/pms/read/v1/projection-feed/barcodes",
+    "item_contents": "/pms/read/v1/projection-feed/item-contents",
+    "item_assets": "/pms/read/v1/projection-feed/item-assets",
+    "display_categories": "/pms/read/v1/projection-feed/display-categories",
+    "item_display_category_bindings": (
+        "/pms/read/v1/projection-feed/item-display-category-bindings"
+    ),
+    "brand_profiles": "/pms/read/v1/projection-feed/brand-profiles",
+    "brand_assets": "/pms/read/v1/projection-feed/brand-assets",
 }
 
 

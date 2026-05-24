@@ -17,6 +17,12 @@ def test_pms_projection_tables_exist() -> None:
         assert "d2c_pms_sku_code_projection" in table_names
         assert "d2c_pms_barcode_projection" in table_names
         assert "d2c_pms_projection_sync_runs" in table_names
+        assert "d2c_pms_brand_asset_projection" in table_names
+        assert "d2c_pms_brand_profile_projection" in table_names
+        assert "d2c_pms_item_display_category_binding_projection" in table_names
+        assert "d2c_pms_display_category_projection" in table_names
+        assert "d2c_pms_item_asset_projection" in table_names
+        assert "d2c_pms_item_content_projection" in table_names
     finally:
         engine.dispose()
 
@@ -131,5 +137,142 @@ def test_pms_projection_constraints_exist() -> None:
         assert "uq_d2c_pms_sku_code_projection_code" in sku_unique_names
         assert "uq_d2c_pms_barcode_projection_id" in barcode_unique_names
         assert "uq_d2c_pms_barcode_projection_barcode" in barcode_unique_names
+    finally:
+        engine.dispose()
+
+
+def test_pms_display_projection_core_columns_exist() -> None:
+    engine = create_db_engine(load_settings())
+    try:
+        inspector = inspect(engine)
+
+        item_content_columns = {
+            column["name"] for column in inspector.get_columns("d2c_pms_item_content_projection")
+        }
+        item_asset_columns = {
+            column["name"] for column in inspector.get_columns("d2c_pms_item_asset_projection")
+        }
+        display_category_columns = {
+            column["name"]
+            for column in inspector.get_columns("d2c_pms_display_category_projection")
+        }
+        binding_columns = {
+            column["name"]
+            for column in inspector.get_columns("d2c_pms_item_display_category_binding_projection")
+        }
+        brand_profile_columns = {
+            column["name"] for column in inspector.get_columns("d2c_pms_brand_profile_projection")
+        }
+        brand_asset_columns = {
+            column["name"] for column in inspector.get_columns("d2c_pms_brand_asset_projection")
+        }
+
+        assert {
+            "pms_content_id",
+            "pms_item_id",
+            "base_title",
+            "base_description",
+            "spec_params",
+            "status",
+            "raw_payload",
+        }.issubset(item_content_columns)
+
+        assert {
+            "pms_asset_id",
+            "pms_item_id",
+            "asset_type",
+            "usage_type",
+            "source_type",
+            "url",
+            "is_primary",
+            "status",
+            "raw_payload",
+        }.issubset(item_asset_columns)
+
+        assert {
+            "pms_display_category_id",
+            "parent_id",
+            "level",
+            "category_code",
+            "category_name",
+            "path_code",
+            "is_active",
+            "is_leaf",
+            "raw_payload",
+        }.issubset(display_category_columns)
+
+        assert {
+            "pms_binding_id",
+            "pms_item_id",
+            "pms_display_category_id",
+            "is_primary",
+            "sort_order",
+            "raw_payload",
+        }.issubset(binding_columns)
+
+        assert {
+            "pms_profile_id",
+            "brand_id",
+            "display_name",
+            "brand_story",
+            "seo_title",
+            "status",
+            "raw_payload",
+        }.issubset(brand_profile_columns)
+
+        assert {
+            "pms_asset_id",
+            "brand_id",
+            "asset_type",
+            "usage_type",
+            "url",
+            "is_primary",
+            "status",
+            "raw_payload",
+        }.issubset(brand_asset_columns)
+    finally:
+        engine.dispose()
+
+
+def test_pms_display_projection_constraints_exist() -> None:
+    engine = create_db_engine(load_settings())
+    try:
+        inspector = inspect(engine)
+
+        item_content_unique_names = {
+            constraint["name"]
+            for constraint in inspector.get_unique_constraints("d2c_pms_item_content_projection")
+        }
+        item_asset_unique_names = {
+            constraint["name"]
+            for constraint in inspector.get_unique_constraints("d2c_pms_item_asset_projection")
+        }
+        display_category_unique_names = {
+            constraint["name"]
+            for constraint in inspector.get_unique_constraints(
+                "d2c_pms_display_category_projection"
+            )
+        }
+        binding_unique_names = {
+            constraint["name"]
+            for constraint in inspector.get_unique_constraints(
+                "d2c_pms_item_display_category_binding_projection"
+            )
+        }
+        brand_profile_unique_names = {
+            constraint["name"]
+            for constraint in inspector.get_unique_constraints("d2c_pms_brand_profile_projection")
+        }
+        brand_asset_unique_names = {
+            constraint["name"]
+            for constraint in inspector.get_unique_constraints("d2c_pms_brand_asset_projection")
+        }
+
+        assert "uq_d2c_pms_item_content_pid" in item_content_unique_names
+        assert "uq_d2c_pms_item_asset_pid" in item_asset_unique_names
+        assert "uq_d2c_pms_disp_cat_pid" in display_category_unique_names
+        assert "uq_d2c_pms_item_disp_bind_pid" in binding_unique_names
+        assert "uq_d2c_pms_brand_profile_pid" in brand_profile_unique_names
+        assert "uq_d2c_pms_brand_asset_pid" in brand_asset_unique_names
     finally:
         engine.dispose()

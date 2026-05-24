@@ -12,20 +12,36 @@ from sqlalchemy.orm import Session
 
 from app.domains.pms_projection.models.pms_projection import (
     PmsBarcodeProjection,
+    PmsBrandAssetProjection,
+    PmsBrandProfileProjection,
+    PmsDisplayCategoryProjection,
+    PmsItemAssetProjection,
+    PmsItemContentProjection,
+    PmsItemDisplayCategoryBindingProjection,
     PmsProductProjection,
     PmsProjectionSyncRun,
     PmsSkuCodeProjection,
     PmsUnitProjection,
 )
 
-PMS_PROJECTION_SYNC_SCOPES = ("products", "units", "sku_codes", "barcodes")
+PMS_PROJECTION_SYNC_SCOPES = (
+    "products",
+    "units",
+    "sku_codes",
+    "barcodes",
+    "item_contents",
+    "item_assets",
+    "display_categories",
+    "item_display_category_bindings",
+    "brand_profiles",
+    "brand_assets",
+)
 
 
 class PmsProjectionFeedReader(Protocol):
     base_url: str
 
-    def fetch_all(self, scope: str) -> tuple[str, list[dict[str, Any]]]:
-        ...
+    def fetch_all(self, scope: str) -> tuple[str, list[dict[str, Any]]]: ...
 
 
 @dataclass(frozen=True)
@@ -177,6 +193,118 @@ def _barcode_values(session: Session, row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _item_content_values(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "pms_content_id": int(row["content_id"]),
+        "pms_item_id": int(row["item_id"]),
+        "base_title": row.get("base_title"),
+        "base_description": row.get("base_description"),
+        "short_description": row.get("short_description"),
+        "spec_params": row.get("spec_params"),
+        "material_text": row.get("material_text"),
+        "ingredients_text": row.get("ingredients_text"),
+        "dimensions_text": row.get("dimensions_text"),
+        "weight_text": row.get("weight_text"),
+        "safety_instructions": row.get("safety_instructions"),
+        "usage_instructions": row.get("usage_instructions"),
+        "storage_instructions": row.get("storage_instructions"),
+        "status": str(row["status"]),
+        "pms_updated_at": _parse_datetime(row.get("pms_updated_at")),
+        "synced_at": datetime.now(UTC),
+        "raw_payload": _raw_payload(row),
+    }
+
+
+def _item_asset_values(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "pms_asset_id": int(row["asset_id"]),
+        "pms_item_id": int(row["item_id"]),
+        "asset_type": str(row["asset_type"]),
+        "usage_type": str(row["usage_type"]),
+        "source_type": str(row["source_type"]),
+        "object_key": row.get("object_key"),
+        "url": row.get("url"),
+        "alt_text": row.get("alt_text"),
+        "sort_order": int(row["sort_order"]),
+        "is_primary": bool(row["is_primary"]),
+        "status": str(row["status"]),
+        "raw_meta": row.get("raw_meta"),
+        "pms_updated_at": _parse_datetime(row.get("pms_updated_at")),
+        "synced_at": datetime.now(UTC),
+        "raw_payload": _raw_payload(row),
+    }
+
+
+def _display_category_values(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "pms_display_category_id": int(row["display_category_id"]),
+        "parent_id": int(row["parent_id"]) if row.get("parent_id") is not None else None,
+        "level": int(row["level"]),
+        "category_code": str(row["category_code"]),
+        "category_name": str(row["category_name"]),
+        "display_name": row.get("display_name"),
+        "path_code": str(row["path_code"]),
+        "description": row.get("description"),
+        "image_url": row.get("image_url"),
+        "sort_order": int(row["sort_order"]),
+        "is_active": bool(row["is_active"]),
+        "is_leaf": bool(row["is_leaf"]),
+        "pms_updated_at": _parse_datetime(row.get("pms_updated_at")),
+        "synced_at": datetime.now(UTC),
+        "raw_payload": _raw_payload(row),
+    }
+
+
+def _item_display_category_binding_values(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "pms_binding_id": int(row["binding_id"]),
+        "pms_item_id": int(row["item_id"]),
+        "pms_display_category_id": int(row["display_category_id"]),
+        "is_primary": bool(row["is_primary"]),
+        "sort_order": int(row["sort_order"]),
+        "pms_updated_at": _parse_datetime(row.get("pms_updated_at")),
+        "synced_at": datetime.now(UTC),
+        "raw_payload": _raw_payload(row),
+    }
+
+
+def _brand_profile_values(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "pms_profile_id": int(row["profile_id"]),
+        "brand_id": int(row["brand_id"]),
+        "display_name": row.get("display_name"),
+        "official_name": row.get("official_name"),
+        "brand_story": row.get("brand_story"),
+        "country_or_region": row.get("country_or_region"),
+        "website_url": row.get("website_url"),
+        "seo_title": row.get("seo_title"),
+        "seo_description": row.get("seo_description"),
+        "status": str(row["status"]),
+        "pms_updated_at": _parse_datetime(row.get("pms_updated_at")),
+        "synced_at": datetime.now(UTC),
+        "raw_payload": _raw_payload(row),
+    }
+
+
+def _brand_asset_values(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "pms_asset_id": int(row["asset_id"]),
+        "brand_id": int(row["brand_id"]),
+        "asset_type": str(row["asset_type"]),
+        "usage_type": str(row["usage_type"]),
+        "object_key": row.get("object_key"),
+        "url": row.get("url"),
+        "alt_text": row.get("alt_text"),
+        "sort_order": int(row["sort_order"]),
+        "is_primary": bool(row["is_primary"]),
+        "status": str(row["status"]),
+        "raw_meta": row.get("raw_meta"),
+        "pms_updated_at": _parse_datetime(row.get("pms_updated_at")),
+        "synced_at": datetime.now(UTC),
+        "raw_payload": _raw_payload(row),
+    }
+
+
 class PmsProjectionSyncService:
     def __init__(
         self,
@@ -276,6 +404,18 @@ class PmsProjectionSyncService:
             return self._upsert_sku_codes(rows)
         if scope == "barcodes":
             return self._upsert_barcodes(rows)
+        if scope == "item_contents":
+            return self._upsert_item_contents(rows)
+        if scope == "item_assets":
+            return self._upsert_item_assets(rows)
+        if scope == "display_categories":
+            return self._upsert_display_categories(rows)
+        if scope == "item_display_category_bindings":
+            return self._upsert_item_display_category_bindings(rows)
+        if scope == "brand_profiles":
+            return self._upsert_brand_profiles(rows)
+        if scope == "brand_assets":
+            return self._upsert_brand_assets(rows)
 
         raise ValueError(f"unsupported PMS projection sync scope: {scope}")
 
@@ -386,6 +526,166 @@ class PmsProjectionSyncService:
         self.session.execute(
             statement.on_conflict_do_update(
                 index_elements=[PmsBarcodeProjection.pms_barcode_id],
+                set_=update_values,
+            )
+        )
+        return len(values)
+
+    def _upsert_item_contents(self, rows: list[dict[str, Any]]) -> int:
+        values = [_item_content_values(row) for row in rows]
+        statement = insert(PmsItemContentProjection).values(values)
+        excluded = statement.excluded
+        update_values = {
+            "pms_item_id": excluded.pms_item_id,
+            "base_title": excluded.base_title,
+            "base_description": excluded.base_description,
+            "short_description": excluded.short_description,
+            "spec_params": excluded.spec_params,
+            "material_text": excluded.material_text,
+            "ingredients_text": excluded.ingredients_text,
+            "dimensions_text": excluded.dimensions_text,
+            "weight_text": excluded.weight_text,
+            "safety_instructions": excluded.safety_instructions,
+            "usage_instructions": excluded.usage_instructions,
+            "storage_instructions": excluded.storage_instructions,
+            "status": excluded.status,
+            "pms_updated_at": excluded.pms_updated_at,
+            "synced_at": excluded.synced_at,
+            "raw_payload": excluded.raw_payload,
+        }
+        self.session.execute(
+            statement.on_conflict_do_update(
+                index_elements=[PmsItemContentProjection.pms_content_id],
+                set_=update_values,
+            )
+        )
+        return len(values)
+
+    def _upsert_item_assets(self, rows: list[dict[str, Any]]) -> int:
+        values = [_item_asset_values(row) for row in rows]
+        statement = insert(PmsItemAssetProjection).values(values)
+        excluded = statement.excluded
+        update_values = {
+            "pms_item_id": excluded.pms_item_id,
+            "asset_type": excluded.asset_type,
+            "usage_type": excluded.usage_type,
+            "source_type": excluded.source_type,
+            "object_key": excluded.object_key,
+            "url": excluded.url,
+            "alt_text": excluded.alt_text,
+            "sort_order": excluded.sort_order,
+            "is_primary": excluded.is_primary,
+            "status": excluded.status,
+            "raw_meta": excluded.raw_meta,
+            "pms_updated_at": excluded.pms_updated_at,
+            "synced_at": excluded.synced_at,
+            "raw_payload": excluded.raw_payload,
+        }
+        self.session.execute(
+            statement.on_conflict_do_update(
+                index_elements=[PmsItemAssetProjection.pms_asset_id],
+                set_=update_values,
+            )
+        )
+        return len(values)
+
+    def _upsert_display_categories(self, rows: list[dict[str, Any]]) -> int:
+        values = [_display_category_values(row) for row in rows]
+        statement = insert(PmsDisplayCategoryProjection).values(values)
+        excluded = statement.excluded
+        update_values = {
+            "parent_id": excluded.parent_id,
+            "level": excluded.level,
+            "category_code": excluded.category_code,
+            "category_name": excluded.category_name,
+            "display_name": excluded.display_name,
+            "path_code": excluded.path_code,
+            "description": excluded.description,
+            "image_url": excluded.image_url,
+            "sort_order": excluded.sort_order,
+            "is_active": excluded.is_active,
+            "is_leaf": excluded.is_leaf,
+            "pms_updated_at": excluded.pms_updated_at,
+            "synced_at": excluded.synced_at,
+            "raw_payload": excluded.raw_payload,
+        }
+        self.session.execute(
+            statement.on_conflict_do_update(
+                index_elements=[PmsDisplayCategoryProjection.pms_display_category_id],
+                set_=update_values,
+            )
+        )
+        return len(values)
+
+    def _upsert_item_display_category_bindings(self, rows: list[dict[str, Any]]) -> int:
+        values = [_item_display_category_binding_values(row) for row in rows]
+        statement = insert(PmsItemDisplayCategoryBindingProjection).values(values)
+        excluded = statement.excluded
+        update_values = {
+            "pms_item_id": excluded.pms_item_id,
+            "pms_display_category_id": excluded.pms_display_category_id,
+            "is_primary": excluded.is_primary,
+            "sort_order": excluded.sort_order,
+            "pms_updated_at": excluded.pms_updated_at,
+            "synced_at": excluded.synced_at,
+            "raw_payload": excluded.raw_payload,
+        }
+        self.session.execute(
+            statement.on_conflict_do_update(
+                index_elements=[PmsItemDisplayCategoryBindingProjection.pms_binding_id],
+                set_=update_values,
+            )
+        )
+        return len(values)
+
+    def _upsert_brand_profiles(self, rows: list[dict[str, Any]]) -> int:
+        values = [_brand_profile_values(row) for row in rows]
+        statement = insert(PmsBrandProfileProjection).values(values)
+        excluded = statement.excluded
+        update_values = {
+            "brand_id": excluded.brand_id,
+            "display_name": excluded.display_name,
+            "official_name": excluded.official_name,
+            "brand_story": excluded.brand_story,
+            "country_or_region": excluded.country_or_region,
+            "website_url": excluded.website_url,
+            "seo_title": excluded.seo_title,
+            "seo_description": excluded.seo_description,
+            "status": excluded.status,
+            "pms_updated_at": excluded.pms_updated_at,
+            "synced_at": excluded.synced_at,
+            "raw_payload": excluded.raw_payload,
+        }
+        self.session.execute(
+            statement.on_conflict_do_update(
+                index_elements=[PmsBrandProfileProjection.pms_profile_id],
+                set_=update_values,
+            )
+        )
+        return len(values)
+
+    def _upsert_brand_assets(self, rows: list[dict[str, Any]]) -> int:
+        values = [_brand_asset_values(row) for row in rows]
+        statement = insert(PmsBrandAssetProjection).values(values)
+        excluded = statement.excluded
+        update_values = {
+            "brand_id": excluded.brand_id,
+            "asset_type": excluded.asset_type,
+            "usage_type": excluded.usage_type,
+            "object_key": excluded.object_key,
+            "url": excluded.url,
+            "alt_text": excluded.alt_text,
+            "sort_order": excluded.sort_order,
+            "is_primary": excluded.is_primary,
+            "status": excluded.status,
+            "raw_meta": excluded.raw_meta,
+            "pms_updated_at": excluded.pms_updated_at,
+            "synced_at": excluded.synced_at,
+            "raw_payload": excluded.raw_payload,
+        }
+        self.session.execute(
+            statement.on_conflict_do_update(
+                index_elements=[PmsBrandAssetProjection.pms_asset_id],
                 set_=update_values,
             )
         )
