@@ -5,6 +5,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from app.domains.pms_projection.contracts.display_table import PmsProjectionDisplayTable
+
 
 class PmsItemDisplayCategoryBindingProjectionContract(BaseModel):
     id: int
@@ -23,7 +25,7 @@ class PmsItemDisplayCategoryBindingProjectionContract(BaseModel):
     raw_payload: dict[str, Any] | None
 
 
-class PmsItemDisplayCategoryBindingsProjectionResponse(BaseModel):
+class PmsItemDisplayCategoryBindingsProjectionResponse(PmsProjectionDisplayTable):
     count: int = Field(..., ge=0)
     item_display_category_bindings: list[PmsItemDisplayCategoryBindingProjectionContract]
 

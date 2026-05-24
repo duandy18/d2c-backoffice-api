@@ -8,6 +8,7 @@ from app.domains.pms_projection.contracts.brand_assets import (
 )
 from app.domains.pms_projection.models.brand_assets import PmsBrandAssetProjection
 from app.domains.pms_projection.repos.brand_assets import list_brand_asset_projections
+from app.domains.pms_projection.services.display_table import build_projection_display_table
 
 
 def _build_brand_asset(row: PmsBrandAssetProjection) -> PmsBrandAssetProjectionContract:
@@ -34,7 +35,11 @@ def _build_brand_asset(row: PmsBrandAssetProjection) -> PmsBrandAssetProjectionC
 
 def get_pms_brand_asset_projections(session: Session) -> PmsBrandAssetsProjectionResponse:
     rows = [_build_brand_asset(row) for row in list_brand_asset_projections(session)]
-    return PmsBrandAssetsProjectionResponse(count=len(rows), brand_assets=rows)
+    return PmsBrandAssetsProjectionResponse(
+        count=len(rows),
+        brand_assets=rows,
+        **build_projection_display_table("brand_assets", rows),
+    )
 
 
 __all__ = ["get_pms_brand_asset_projections"]

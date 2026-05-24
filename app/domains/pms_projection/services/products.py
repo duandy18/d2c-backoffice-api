@@ -8,6 +8,7 @@ from app.domains.pms_projection.contracts.products import (
 )
 from app.domains.pms_projection.models.products import PmsProductProjection
 from app.domains.pms_projection.repos.products import list_product_projections
+from app.domains.pms_projection.services.display_table import build_projection_display_table
 
 
 def _build_product(row: PmsProductProjection) -> PmsProductProjectionContract:
@@ -36,7 +37,11 @@ def _build_product(row: PmsProductProjection) -> PmsProductProjectionContract:
 
 def get_pms_product_projections(session: Session) -> PmsProductProjectionsResponse:
     rows = [_build_product(row) for row in list_product_projections(session)]
-    return PmsProductProjectionsResponse(count=len(rows), products=rows)
+    return PmsProductProjectionsResponse(
+        count=len(rows),
+        products=rows,
+        **build_projection_display_table("products", rows),
+    )
 
 
 __all__ = ["get_pms_product_projections"]

@@ -8,6 +8,7 @@ from app.domains.pms_projection.contracts.barcodes import (
 )
 from app.domains.pms_projection.models.barcodes import PmsBarcodeProjection
 from app.domains.pms_projection.repos.barcodes import list_barcode_projections
+from app.domains.pms_projection.services.display_table import build_projection_display_table
 
 
 def _build_barcode(row: PmsBarcodeProjection) -> PmsBarcodeProjectionContract:
@@ -31,7 +32,11 @@ def _build_barcode(row: PmsBarcodeProjection) -> PmsBarcodeProjectionContract:
 
 def get_pms_barcode_projections(session: Session) -> PmsBarcodeProjectionsResponse:
     rows = [_build_barcode(row) for row in list_barcode_projections(session)]
-    return PmsBarcodeProjectionsResponse(count=len(rows), barcodes=rows)
+    return PmsBarcodeProjectionsResponse(
+        count=len(rows),
+        barcodes=rows,
+        **build_projection_display_table("barcodes", rows),
+    )
 
 
 __all__ = ["get_pms_barcode_projections"]

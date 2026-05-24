@@ -10,6 +10,7 @@ from app.domains.pms_projection.models.display_categories import PmsDisplayCateg
 from app.domains.pms_projection.repos.display_categories import (
     list_display_category_projections,
 )
+from app.domains.pms_projection.services.display_table import build_projection_display_table
 
 
 def _build_display_category(
@@ -39,7 +40,11 @@ def get_pms_display_category_projections(
     session: Session,
 ) -> PmsDisplayCategoriesProjectionResponse:
     rows = [_build_display_category(row) for row in list_display_category_projections(session)]
-    return PmsDisplayCategoriesProjectionResponse(count=len(rows), display_categories=rows)
+    return PmsDisplayCategoriesProjectionResponse(
+        count=len(rows),
+        display_categories=rows,
+        **build_projection_display_table("display_categories", rows),
+    )
 
 
 __all__ = ["get_pms_display_category_projections"]

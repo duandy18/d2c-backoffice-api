@@ -8,6 +8,7 @@ from app.domains.pms_projection.contracts.brand_profiles import (
 )
 from app.domains.pms_projection.models.brand_profiles import PmsBrandProfileProjection
 from app.domains.pms_projection.repos.brand_profiles import list_brand_profile_projections
+from app.domains.pms_projection.services.display_table import build_projection_display_table
 
 
 def _build_brand_profile(row: PmsBrandProfileProjection) -> PmsBrandProfileProjectionContract:
@@ -33,7 +34,11 @@ def _build_brand_profile(row: PmsBrandProfileProjection) -> PmsBrandProfileProje
 
 def get_pms_brand_profile_projections(session: Session) -> PmsBrandProfilesProjectionResponse:
     rows = [_build_brand_profile(row) for row in list_brand_profile_projections(session)]
-    return PmsBrandProfilesProjectionResponse(count=len(rows), brand_profiles=rows)
+    return PmsBrandProfilesProjectionResponse(
+        count=len(rows),
+        brand_profiles=rows,
+        **build_projection_display_table("brand_profiles", rows),
+    )
 
 
 __all__ = ["get_pms_brand_profile_projections"]

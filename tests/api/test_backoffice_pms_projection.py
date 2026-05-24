@@ -139,3 +139,73 @@ def test_pms_projection_scope_sync_routes_are_registered() -> None:
         response = client.post(path)
         assert response.status_code == 401
         assert response.json() == {"detail": "backoffice_client_required"}
+
+
+def test_pms_projection_read_apis_include_display_table_contract() -> None:
+    client = TestClient(app)
+
+    expected_paths = {
+        "/backoffice/pms-projections/products": ("products", "d2c_pms_product_projection", "sku"),
+        "/backoffice/pms-projections/units": ("units", "d2c_pms_unit_projection", "uom"),
+        "/backoffice/pms-projections/sku-codes": (
+            "sku_codes",
+            "d2c_pms_sku_code_projection",
+            "sku_code",
+        ),
+        "/backoffice/pms-projections/barcodes": (
+            "barcodes",
+            "d2c_pms_barcode_projection",
+            "barcode",
+        ),
+        "/backoffice/pms-projections/item-contents": (
+            "item_contents",
+            "d2c_pms_item_content_projection",
+            "base_title",
+        ),
+        "/backoffice/pms-projections/item-assets": (
+            "item_assets",
+            "d2c_pms_item_asset_projection",
+            "url",
+        ),
+        "/backoffice/pms-projections/display-categories": (
+            "display_categories",
+            "d2c_pms_display_category_projection",
+            "path_code",
+        ),
+        "/backoffice/pms-projections/item-display-category-bindings": (
+            "item_display_category_bindings",
+            "d2c_pms_item_display_category_binding_projection",
+            "display_category",
+        ),
+        "/backoffice/pms-projections/brand-profiles": (
+            "brand_profiles",
+            "d2c_pms_brand_profile_projection",
+            "brand",
+        ),
+        "/backoffice/pms-projections/brand-assets": (
+            "brand_assets",
+            "d2c_pms_brand_asset_projection",
+            "url",
+        ),
+    }
+
+    for path, (resource, table_name, required_column_key) in expected_paths.items():
+        response = client.get(path, headers=BACKOFFICE_HEADERS)
+
+        assert response.status_code == 200
+        payload = response.json()
+
+        assert payload["resource"] == resource
+        assert payload["projection_table"] == table_name
+        assert isinstance(payload["columns"], list)
+        assert isinstance(payload["rows"], list)
+
+        column_keys = {column["key"] for column in payload["columns"]}
+        assert required_column_key in column_keys
+        assert "pms_updated_at" in column_keys
+        assert "synced_at" in column_keys
+
+        for column in payload["columns"]:
+            assert set(column) == {"key", "label", "kind", "source_field"}
+            assert column["key"]
+            assert column["label"]

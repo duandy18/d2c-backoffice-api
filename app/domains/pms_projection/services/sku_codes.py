@@ -8,6 +8,7 @@ from app.domains.pms_projection.contracts.sku_codes import (
 )
 from app.domains.pms_projection.models.sku_codes import PmsSkuCodeProjection
 from app.domains.pms_projection.repos.sku_codes import list_sku_code_projections
+from app.domains.pms_projection.services.display_table import build_projection_display_table
 
 
 def _build_sku_code(row: PmsSkuCodeProjection) -> PmsSkuCodeProjectionContract:
@@ -33,7 +34,11 @@ def _build_sku_code(row: PmsSkuCodeProjection) -> PmsSkuCodeProjectionContract:
 
 def get_pms_sku_code_projections(session: Session) -> PmsSkuCodeProjectionsResponse:
     rows = [_build_sku_code(row) for row in list_sku_code_projections(session)]
-    return PmsSkuCodeProjectionsResponse(count=len(rows), sku_codes=rows)
+    return PmsSkuCodeProjectionsResponse(
+        count=len(rows),
+        sku_codes=rows,
+        **build_projection_display_table("sku_codes", rows),
+    )
 
 
 __all__ = ["get_pms_sku_code_projections"]

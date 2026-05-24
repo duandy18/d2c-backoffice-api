@@ -8,6 +8,7 @@ from app.domains.pms_projection.contracts.item_assets import (
 )
 from app.domains.pms_projection.models.item_assets import PmsItemAssetProjection
 from app.domains.pms_projection.repos.item_assets import list_item_asset_projections
+from app.domains.pms_projection.services.display_table import build_projection_display_table
 
 
 def _build_item_asset(row: PmsItemAssetProjection) -> PmsItemAssetProjectionContract:
@@ -35,7 +36,11 @@ def _build_item_asset(row: PmsItemAssetProjection) -> PmsItemAssetProjectionCont
 
 def get_pms_item_asset_projections(session: Session) -> PmsItemAssetsProjectionResponse:
     rows = [_build_item_asset(row) for row in list_item_asset_projections(session)]
-    return PmsItemAssetsProjectionResponse(count=len(rows), item_assets=rows)
+    return PmsItemAssetsProjectionResponse(
+        count=len(rows),
+        item_assets=rows,
+        **build_projection_display_table("item_assets", rows),
+    )
 
 
 __all__ = ["get_pms_item_asset_projections"]
