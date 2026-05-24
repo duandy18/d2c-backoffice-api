@@ -14,6 +14,9 @@ DEV_TEST_DB_DSN ?= postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:
 DEV_ENV := D2C_BACKOFFICE_ENVIRONMENT="$(D2C_BACKOFFICE_ENV)" D2C_BACKOFFICE_DATABASE_URL="$(DEV_DB_DSN)" D2C_BACKOFFICE_TEST_DATABASE_URL="$(DEV_TEST_DB_DSN)" PYTHONPATH=.
 TEST_ENV := D2C_BACKOFFICE_ENVIRONMENT=test D2C_BACKOFFICE_DATABASE_URL="$(DEV_TEST_DB_DSN)" D2C_BACKOFFICE_TEST_DATABASE_URL="$(DEV_TEST_DB_DSN)" PYTHONPATH=.
 
+TESTS ?= tests
+PYTEST_ARGS ?=
+
 .PHONY: clean-pyc install lint test routes openapi check
 .PHONY: upgrade-dev alembic-check alembic-current alembic-history revision
 .PHONY: uvicorn uvicorn-up uvicorn-down uvicorn-restart uvicorn-status uvicorn-logs
@@ -32,7 +35,7 @@ lint: clean-pyc
 	$(VENV_PYTHON) -m ruff check app tests scripts alembic
 
 test: clean-pyc
-	$(TEST_ENV) $(VENV_PYTHON) -m pytest
+	$(TEST_ENV) $(VENV_PYTHON) -m pytest $(TESTS) $(PYTEST_ARGS)
 
 routes:
 	PYTHONPATH=. $(VENV_PYTHON) scripts/list_routes.py
