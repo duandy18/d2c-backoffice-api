@@ -10,6 +10,8 @@ from app.core.database import Base
 from app.domains.backoffice_pages.models.backoffice_page import BackofficePage  # noqa: F401
 from app.domains.listing.models.listing import (  # noqa: F401
     ProductListingConfig,
+    ProductListingContent,
+    ProductListingMedia,
     SkuListingConfig,
     StorefrontCategory,
     StorefrontCategoryBinding,

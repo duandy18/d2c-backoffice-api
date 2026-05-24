@@ -8,6 +8,8 @@ from app.core.config import load_settings
 from app.core.database import get_session_factory
 from app.domains.listing.models.listing import (
     ProductListingConfig,
+    ProductListingContent,
+    ProductListingMedia,
     SkuListingConfig,
     StorefrontCategory,
     StorefrontCategoryBinding,
@@ -144,10 +146,6 @@ def _seed_export_data() -> dict[str, str]:
             pms_item_id=pms_item_id,
             pms_sku=pms_sku,
             listing_code=listing_code,
-            display_name="商城展示商品名",
-            subtitle="商城副标题",
-            description_override="商城商品描述",
-            cover_image_url="https://example.test/product.png",
             listing_status="published",
             display_status="visible",
             sell_status="sellable",
@@ -158,6 +156,35 @@ def _seed_export_data() -> dict[str, str]:
         session.add(product_listing)
         session.flush()
 
+        session.add(
+            ProductListingContent(
+                product_listing_config_id=product_listing.id,
+                display_title="商城展示商品名",
+                subtitle="商城副标题",
+                short_description="商城短描述",
+                detail_description="商城商品描述",
+                seo_title="商城 SEO 标题",
+                seo_description="商城 SEO 描述",
+                selling_points=["卖点一", "卖点二"],
+                content_status="active",
+            )
+        )
+        session.add(
+            ProductListingMedia(
+                product_listing_config_id=product_listing.id,
+                media_type="image",
+                source_type="d2c_upload",
+                pms_asset_id=None,
+                object_key=None,
+                url="https://example.test/product.png",
+                alt_text="商城展示商品名",
+                usage_type="cover",
+                sort_order=10,
+                is_primary=True,
+                status="active",
+            )
+        )
+
         sku_listing = SkuListingConfig(
             product_listing_config_id=product_listing.id,
             pms_item_id=pms_item_id,
@@ -166,7 +193,6 @@ def _seed_export_data() -> dict[str, str]:
             pms_barcode_id=pms_barcode_id,
             sku_display_name="商城展示 SKU",
             sku_spec_text="1kg/袋",
-            sku_image_url="https://example.test/sku.png",
             listing_status="published",
             display_status="visible",
             sell_status="sellable",
@@ -304,10 +330,14 @@ def test_published_catalog_export_matches_runtime_contract_shape() -> None:
     product_by_code = {product["product_code"]: product for product in payload["products"]}
     product = product_by_code[values["listing_code"]]
     assert product["display_name"] == "商城展示商品名"
+    assert product["description"] == "商城商品描述"
+    assert product["image_url"] == "https://example.test/product.png"
     assert product["category_code"] == values["category_code"]
     assert product["brand_code"] == "brand_test"
     assert product["sell_status"] == "sellable"
     assert product["raw_payload"]["source_product_listing_config_id"] is not None
+    assert product["raw_payload"]["source_product_listing_content_id"] is not None
+    assert product["raw_payload"]["source_primary_media_id"] is not None
 
     sku_by_code = {sku["sku_code"]: sku for sku in payload["skus"]}
     sku = sku_by_code[values["sku_code"]]
