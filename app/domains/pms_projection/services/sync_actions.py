@@ -32,9 +32,15 @@ def sync_pms_projection_scope(
     return PmsProjectionSyncScopeResponse(
         scope=result.scope,
         endpoint=result.endpoint,
+        source_base_url=result.source_base_url,
+        source_endpoint=result.source_endpoint,
         status=result.status,
+        started_at=result.started_at,
+        finished_at=result.finished_at,
+        requested_by=result.requested_by,
         rows_fetched=result.rows_fetched,
         rows_upserted=result.rows_upserted,
+        rows_deleted=result.rows_deleted,
         error_code=result.error_code,
         error_message=result.error_message,
     )
