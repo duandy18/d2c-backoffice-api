@@ -12,6 +12,7 @@ from app.domains.pms_projection.models.category_bindings import (
 from app.domains.pms_projection.repos.category_bindings import (
     list_item_display_category_binding_projections,
 )
+from app.domains.pms_projection.services.display_table import build_projection_display_table
 
 
 def _build_item_display_category_binding(
@@ -45,6 +46,7 @@ def get_pms_item_display_category_binding_projections(
     return PmsItemDisplayCategoryBindingsProjectionResponse(
         count=len(rows),
         item_display_category_bindings=rows,
+        **build_projection_display_table("item_display_category_bindings", rows),
     )
 
 

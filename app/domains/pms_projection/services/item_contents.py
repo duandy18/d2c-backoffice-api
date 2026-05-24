@@ -8,6 +8,7 @@ from app.domains.pms_projection.contracts.item_contents import (
 )
 from app.domains.pms_projection.models.item_contents import PmsItemContentProjection
 from app.domains.pms_projection.repos.item_contents import list_item_content_projections
+from app.domains.pms_projection.services.display_table import build_projection_display_table
 
 
 def _build_item_content(row: PmsItemContentProjection) -> PmsItemContentProjectionContract:
@@ -37,7 +38,11 @@ def _build_item_content(row: PmsItemContentProjection) -> PmsItemContentProjecti
 
 def get_pms_item_content_projections(session: Session) -> PmsItemContentsProjectionResponse:
     rows = [_build_item_content(row) for row in list_item_content_projections(session)]
-    return PmsItemContentsProjectionResponse(count=len(rows), item_contents=rows)
+    return PmsItemContentsProjectionResponse(
+        count=len(rows),
+        item_contents=rows,
+        **build_projection_display_table("item_contents", rows),
+    )
 
 
 __all__ = ["get_pms_item_content_projections"]

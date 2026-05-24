@@ -8,6 +8,7 @@ from app.domains.pms_projection.contracts.units import (
 )
 from app.domains.pms_projection.models.units import PmsUnitProjection
 from app.domains.pms_projection.repos.units import list_unit_projections
+from app.domains.pms_projection.services.display_table import build_projection_display_table
 
 
 def _build_unit(row: PmsUnitProjection) -> PmsUnitProjectionContract:
@@ -32,7 +33,11 @@ def _build_unit(row: PmsUnitProjection) -> PmsUnitProjectionContract:
 
 def get_pms_unit_projections(session: Session) -> PmsUnitProjectionsResponse:
     rows = [_build_unit(row) for row in list_unit_projections(session)]
-    return PmsUnitProjectionsResponse(count=len(rows), units=rows)
+    return PmsUnitProjectionsResponse(
+        count=len(rows),
+        units=rows,
+        **build_projection_display_table("units", rows),
+    )
 
 
 __all__ = ["get_pms_unit_projections"]
