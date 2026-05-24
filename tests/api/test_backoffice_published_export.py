@@ -14,7 +14,7 @@ from app.domains.listing.models.listing import (
     StorefrontCategory,
     StorefrontCategoryBinding,
 )
-from app.domains.pms_projection.models.pms_projection import (
+from app.domains.pms_projection.models import (
     PmsBarcodeProjection,
     PmsBrandProfileProjection,
     PmsDisplayCategoryProjection,
@@ -184,6 +184,10 @@ def _seed_export_data() -> dict[str, str]:
                 raw_payload={"source": "pytest-fallback"},
             )
         )
+        # The binding projection has a real FK to the display category projection.
+        # Flush the category row first so the test fixture does not depend on
+        # implicit unit-of-work ordering across split ORM modules.
+        session.flush()
         session.add(
             PmsItemDisplayCategoryBindingProjection(
                 pms_binding_id=fallback_pms_binding_id,

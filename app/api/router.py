@@ -4,7 +4,9 @@ from fastapi import APIRouter
 
 from app.api.routes.backoffice.listing import router as backoffice_listing_router
 from app.api.routes.backoffice.pages import router as backoffice_pages_router
-from app.api.routes.backoffice.pms_projection import router as backoffice_pms_projection_router
+from app.api.routes.backoffice.pms_projection.router import (
+    router as backoffice_pms_projection_router,
+)
 from app.api.routes.backoffice.pricing import router as backoffice_pricing_router
 from app.api.routes.backoffice.promotions import router as backoffice_promotions_router
 from app.api.routes.backoffice.publish import router as backoffice_publish_router

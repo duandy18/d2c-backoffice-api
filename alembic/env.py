@@ -16,7 +16,7 @@ from app.domains.listing.models.listing import (  # noqa: F401
     StorefrontCategory,
     StorefrontCategoryBinding,
 )
-from app.domains.pms_projection.models.pms_projection import (  # noqa: F401
+from app.domains.pms_projection.models import (  # noqa: F401
     PmsBarcodeProjection,
     PmsBrandAssetProjection,
     PmsBrandProfileProjection,
