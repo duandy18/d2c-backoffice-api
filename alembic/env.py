@@ -8,14 +8,6 @@ from alembic import context
 from app.core.config import load_settings
 from app.core.database import Base
 from app.domains.backoffice_pages.models.backoffice_page import BackofficePage  # noqa: F401
-from app.domains.catalog.models.catalog import (  # noqa: F401
-    PriceList,
-    Product,
-    ProductCategory,
-    ProductSku,
-    SkuPrice,
-    Unit,
-)
 from app.domains.listing.models.listing import (  # noqa: F401
     ProductListingConfig,
     SkuListingConfig,

@@ -26,13 +26,15 @@ def test_backoffice_catalog_routes_are_retired() -> None:
 def test_backoffice_current_catalog_related_surfaces_remain_available() -> None:
     client = TestClient(app)
 
-    for path in (
+    backoffice_paths = (
         "/backoffice/pms-projections/health",
         "/backoffice/listing/health",
         "/backoffice/pricing/health",
         "/backoffice/publish/health",
         "/backoffice/storefront-categories/health",
-    ):
+    )
+
+    for path in backoffice_paths:
         response = client.get(path, headers=BACKOFFICE_HEADERS)
         assert response.status_code == 200
 
