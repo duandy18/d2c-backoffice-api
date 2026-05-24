@@ -10,6 +10,9 @@ def test_default_settings_are_backoffice_specific() -> None:
     assert settings.service_name == "d2c-backoffice-api"
     assert settings.service_client_code == "d2c-backoffice-service"
     assert settings.api_port == 8026
+    assert settings.pms_api_base_url == "http://127.0.0.1:8002"
+    assert settings.pms_service_client_code == "d2c-backoffice-service"
+    assert settings.pms_projection_sync_page_limit == 500
     assert settings.api_path == "/api/d2c-backoffice"
     assert settings.web_path == "/backoffice"
     assert settings.cors_allow_origins == (
