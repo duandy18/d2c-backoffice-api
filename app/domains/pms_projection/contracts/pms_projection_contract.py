@@ -109,6 +109,142 @@ class PmsBarcodeProjectionsResponse(BaseModel):
     barcodes: list[PmsBarcodeProjectionContract]
 
 
+class PmsItemContentProjectionContract(BaseModel):
+    id: int
+    pms_content_id: int
+    pms_item_id: int
+    base_title: str | None
+    base_description: str | None
+    short_description: str | None
+    spec_params: dict[str, Any] | list[Any] | None
+    material_text: str | None
+    ingredients_text: str | None
+    dimensions_text: str | None
+    weight_text: str | None
+    safety_instructions: str | None
+    usage_instructions: str | None
+    storage_instructions: str | None
+    status: str
+    pms_updated_at: datetime | None
+    synced_at: datetime
+    raw_payload: dict[str, Any] | None
+
+
+class PmsItemContentsProjectionResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    item_contents: list[PmsItemContentProjectionContract]
+
+
+class PmsItemAssetProjectionContract(BaseModel):
+    id: int
+    pms_asset_id: int
+    pms_item_id: int
+    asset_type: str
+    usage_type: str
+    source_type: str
+    object_key: str | None
+    url: str | None
+    alt_text: str | None
+    sort_order: int
+    is_primary: bool
+    status: str
+    raw_meta: dict[str, Any] | None
+    pms_updated_at: datetime | None
+    synced_at: datetime
+    raw_payload: dict[str, Any] | None
+
+
+class PmsItemAssetsProjectionResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    item_assets: list[PmsItemAssetProjectionContract]
+
+
+class PmsDisplayCategoryProjectionContract(BaseModel):
+    id: int
+    pms_display_category_id: int
+    parent_id: int | None
+    level: int
+    category_code: str
+    category_name: str
+    display_name: str | None
+    path_code: str
+    description: str | None
+    image_url: str | None
+    sort_order: int
+    is_active: bool
+    is_leaf: bool
+    pms_updated_at: datetime | None
+    synced_at: datetime
+    raw_payload: dict[str, Any] | None
+
+
+class PmsDisplayCategoriesProjectionResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    display_categories: list[PmsDisplayCategoryProjectionContract]
+
+
+class PmsItemDisplayCategoryBindingProjectionContract(BaseModel):
+    id: int
+    pms_binding_id: int
+    pms_item_id: int
+    pms_display_category_id: int
+    is_primary: bool
+    sort_order: int
+    pms_updated_at: datetime | None
+    synced_at: datetime
+    raw_payload: dict[str, Any] | None
+
+
+class PmsItemDisplayCategoryBindingsProjectionResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    item_display_category_bindings: list[PmsItemDisplayCategoryBindingProjectionContract]
+
+
+class PmsBrandProfileProjectionContract(BaseModel):
+    id: int
+    pms_profile_id: int
+    brand_id: int
+    display_name: str | None
+    official_name: str | None
+    brand_story: str | None
+    country_or_region: str | None
+    website_url: str | None
+    seo_title: str | None
+    seo_description: str | None
+    status: str
+    pms_updated_at: datetime | None
+    synced_at: datetime
+    raw_payload: dict[str, Any] | None
+
+
+class PmsBrandProfilesProjectionResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    brand_profiles: list[PmsBrandProfileProjectionContract]
+
+
+class PmsBrandAssetProjectionContract(BaseModel):
+    id: int
+    pms_asset_id: int
+    brand_id: int
+    asset_type: str
+    usage_type: str
+    object_key: str | None
+    url: str | None
+    alt_text: str | None
+    sort_order: int
+    is_primary: bool
+    status: str
+    raw_meta: dict[str, Any] | None
+    pms_updated_at: datetime | None
+    synced_at: datetime
+    raw_payload: dict[str, Any] | None
+
+
+class PmsBrandAssetsProjectionResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    brand_assets: list[PmsBrandAssetProjectionContract]
+
+
 class PmsProjectionSyncRunContract(BaseModel):
     id: int
     sync_scope: str

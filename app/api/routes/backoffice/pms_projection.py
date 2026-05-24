@@ -8,6 +8,12 @@ from sqlalchemy.orm import Session
 from app.core.database import get_session
 from app.domains.pms_projection.contracts.pms_projection_contract import (
     PmsBarcodeProjectionsResponse,
+    PmsBrandAssetsProjectionResponse,
+    PmsBrandProfilesProjectionResponse,
+    PmsDisplayCategoriesProjectionResponse,
+    PmsItemAssetsProjectionResponse,
+    PmsItemContentsProjectionResponse,
+    PmsItemDisplayCategoryBindingsProjectionResponse,
     PmsProductProjectionsResponse,
     PmsProjectionHealthResponse,
     PmsProjectionSyncRunsResponse,
@@ -16,6 +22,12 @@ from app.domains.pms_projection.contracts.pms_projection_contract import (
 )
 from app.domains.pms_projection.services.pms_projection_service import (
     get_pms_barcode_projections,
+    get_pms_brand_asset_projections,
+    get_pms_brand_profile_projections,
+    get_pms_display_category_projections,
+    get_pms_item_asset_projections,
+    get_pms_item_content_projections,
+    get_pms_item_display_category_binding_projections,
     get_pms_product_projections,
     get_pms_projection_health,
     get_pms_projection_sync_runs,
@@ -75,6 +87,57 @@ def pms_projection_barcodes(
     session: SessionDep,
 ) -> PmsBarcodeProjectionsResponse:
     return get_pms_barcode_projections(session)
+
+
+@router.get("/item-contents", response_model=PmsItemContentsProjectionResponse)
+def pms_projection_item_contents(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> PmsItemContentsProjectionResponse:
+    return get_pms_item_content_projections(session)
+
+
+@router.get("/item-assets", response_model=PmsItemAssetsProjectionResponse)
+def pms_projection_item_assets(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> PmsItemAssetsProjectionResponse:
+    return get_pms_item_asset_projections(session)
+
+
+@router.get("/display-categories", response_model=PmsDisplayCategoriesProjectionResponse)
+def pms_projection_display_categories(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> PmsDisplayCategoriesProjectionResponse:
+    return get_pms_display_category_projections(session)
+
+
+@router.get(
+    "/item-display-category-bindings",
+    response_model=PmsItemDisplayCategoryBindingsProjectionResponse,
+)
+def pms_projection_item_display_category_bindings(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> PmsItemDisplayCategoryBindingsProjectionResponse:
+    return get_pms_item_display_category_binding_projections(session)
+
+
+@router.get("/brand-profiles", response_model=PmsBrandProfilesProjectionResponse)
+def pms_projection_brand_profiles(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> PmsBrandProfilesProjectionResponse:
+    return get_pms_brand_profile_projections(session)
+
+
+@router.get("/brand-assets", response_model=PmsBrandAssetsProjectionResponse)
+def pms_projection_brand_assets(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> PmsBrandAssetsProjectionResponse:
+    return get_pms_brand_asset_projections(session)
 
 
 @router.get("/sync-runs", response_model=PmsProjectionSyncRunsResponse)

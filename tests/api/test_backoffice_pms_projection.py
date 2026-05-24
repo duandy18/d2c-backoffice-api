@@ -35,6 +35,14 @@ def test_pms_projection_empty_lists_are_stable() -> None:
         "/backoffice/pms-projections/units": "units",
         "/backoffice/pms-projections/sku-codes": "sku_codes",
         "/backoffice/pms-projections/barcodes": "barcodes",
+        "/backoffice/pms-projections/item-contents": "item_contents",
+        "/backoffice/pms-projections/item-assets": "item_assets",
+        "/backoffice/pms-projections/display-categories": "display_categories",
+        "/backoffice/pms-projections/item-display-category-bindings": (
+            "item_display_category_bindings"
+        ),
+        "/backoffice/pms-projections/brand-profiles": "brand_profiles",
+        "/backoffice/pms-projections/brand-assets": "brand_assets",
         "/backoffice/pms-projections/sync-runs": "sync_runs",
     }
 
