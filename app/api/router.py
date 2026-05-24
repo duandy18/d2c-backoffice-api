@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from app.api.routes.backoffice.catalog import router as backoffice_catalog_router
 from app.api.routes.backoffice.listing import router as backoffice_listing_router
 from app.api.routes.backoffice.pages import router as backoffice_pages_router
 from app.api.routes.backoffice.pms_projection import router as backoffice_pms_projection_router
@@ -23,6 +22,5 @@ api_router.include_router(backoffice_storefront_categories_router)
 api_router.include_router(backoffice_pms_projection_router)
 api_router.include_router(backoffice_publish_router)
 api_router.include_router(backoffice_published_export_router)
-api_router.include_router(backoffice_catalog_router)
 api_router.include_router(backoffice_pages_router)
 api_router.include_router(system_health_router)
