@@ -36,7 +36,7 @@ class D2CBackofficeSettings:
         "postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:5433/"
         "d2c_backoffice_test"
     )
-    pms_api_base_url: str = "http://127.0.0.1:8002"
+    pms_api_base_url: str = "http://127.0.0.1:8005"
     pms_service_client_code: str = "d2c-backoffice-service"
     pms_projection_sync_page_limit: int = 500
     cors_allow_origins: tuple[str, ...] = (
