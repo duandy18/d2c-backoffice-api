@@ -14,6 +14,10 @@ from app.domains.listing.models.listing import (
 )
 from app.domains.pms_projection.models.pms_projection import (
     PmsBarcodeProjection,
+    PmsBrandProfileProjection,
+    PmsDisplayCategoryProjection,
+    PmsItemAssetProjection,
+    PmsItemContentProjection,
     PmsProductProjection,
     PmsSkuCodeProjection,
     PmsUnitProjection,
@@ -89,12 +93,33 @@ def _empty_coupons(version: PublishVersion | None) -> PublishedCouponsExportResp
     )
 
 
+def _clean_text(value: str | None) -> str | None:
+    if value is None:
+        return None
+
+    text = value.strip()
+    return text or None
+
+
+def _first_text(*values: str | None) -> str | None:
+    for value in values:
+        cleaned = _clean_text(value)
+        if cleaned is not None:
+            return cleaned
+
+    return None
+
+
 def _product_raw_payload(
     listing: ProductListingConfig,
     content: ProductListingContent | None,
     primary_media: ProductListingMedia | None,
     pms_product: PmsProductProjection,
     category: StorefrontCategory | None,
+    pms_content: PmsItemContentProjection | None,
+    pms_primary_asset: PmsItemAssetProjection | None,
+    pms_display_category: PmsDisplayCategoryProjection | None,
+    pms_brand_profile: PmsBrandProfileProjection | None,
 ) -> dict[str, Any]:
     return {
         "source": "d2c-backoffice-api",
@@ -103,6 +128,12 @@ def _product_raw_payload(
         "source_primary_media_id": primary_media.id if primary_media else None,
         "pms_item_id": pms_product.pms_item_id,
         "pms_sku": pms_product.pms_sku,
+        "pms_item_content_id": pms_content.pms_content_id if pms_content else None,
+        "pms_item_asset_id": pms_primary_asset.pms_asset_id if pms_primary_asset else None,
+        "pms_display_category_id": (
+            pms_display_category.pms_display_category_id if pms_display_category else None
+        ),
+        "pms_brand_profile_id": pms_brand_profile.pms_profile_id if pms_brand_profile else None,
         "pms_category_code": pms_product.category_code,
         "pms_category_name": pms_product.category_name,
         "storefront_category_code": category.category_code if category else None,
@@ -117,13 +148,44 @@ def _build_product(
     primary_media: ProductListingMedia | None,
     pms_product: PmsProductProjection,
     category: StorefrontCategory | None,
+    pms_content: PmsItemContentProjection | None,
+    pms_primary_asset: PmsItemAssetProjection | None,
+    pms_display_category: PmsDisplayCategoryProjection | None,
+    pms_brand_profile: PmsBrandProfileProjection | None,
 ) -> PublishedProductExport:
-    category_code = category.category_code if category else pms_product.category_code
-    category_name = category.category_name if category else pms_product.category_name
-    display_name = content.display_title if content else pms_product.item_name
-    description = None
-    if content is not None:
-        description = content.detail_description or content.short_description
+    active_content = content if content is not None and content.content_status == "active" else None
+
+    category_code = _first_text(
+        category.category_code if category else None,
+        pms_display_category.category_code if pms_display_category else None,
+        pms_product.category_code,
+    )
+    category_name = _first_text(
+        category.category_name if category else None,
+        pms_display_category.display_name if pms_display_category else None,
+        pms_display_category.category_name if pms_display_category else None,
+        pms_product.category_name,
+    )
+    display_name = _first_text(
+        active_content.display_title if active_content else None,
+        pms_content.base_title if pms_content else None,
+        pms_product.item_name,
+    )
+    description = _first_text(
+        active_content.detail_description if active_content else None,
+        active_content.short_description if active_content else None,
+        pms_content.base_description if pms_content else None,
+        pms_content.short_description if pms_content else None,
+    )
+    image_url = _first_text(
+        primary_media.url if primary_media else None,
+        pms_primary_asset.url if pms_primary_asset else None,
+    )
+    brand_name = _first_text(
+        pms_brand_profile.display_name if pms_brand_profile else None,
+        pms_brand_profile.official_name if pms_brand_profile else None,
+        pms_product.brand_name,
+    )
 
     return PublishedProductExport(
         publish_version=publish_version,
@@ -131,13 +193,13 @@ def _build_product(
         pms_sku=pms_product.pms_sku,
         product_code=listing.listing_code,
         product_name=pms_product.item_name,
-        display_name=display_name,
+        display_name=display_name or pms_product.item_name,
         description=description,
-        image_url=primary_media.url if primary_media else None,
+        image_url=image_url,
         category_code=category_code,
         category_name=category_name,
         brand_code=pms_product.brand_code,
-        brand_name=pms_product.brand_name,
+        brand_name=brand_name,
         display_status=listing.display_status,
         sell_status=listing.sell_status,
         sort_order=listing.sort_order,
@@ -152,6 +214,10 @@ def _build_product(
             primary_media,
             pms_product,
             category,
+            pms_content,
+            pms_primary_asset,
+            pms_display_category,
+            pms_brand_profile,
         ),
     )
 
@@ -225,6 +291,10 @@ def get_published_catalog_export(
             primary_media,
             pms_product,
             category,
+            pms_content,
+            pms_primary_asset,
+            pms_display_category,
+            pms_brand_profile,
         )
         for (
             listing,
@@ -232,6 +302,10 @@ def get_published_catalog_export(
             primary_media,
             pms_product,
             category,
+            pms_content,
+            pms_primary_asset,
+            pms_display_category,
+            pms_brand_profile,
         ) in list_published_product_export_rows(session)
     ]
 

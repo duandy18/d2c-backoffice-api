@@ -13,6 +13,11 @@ from app.domains.listing.models.listing import (
 )
 from app.domains.pms_projection.models.pms_projection import (
     PmsBarcodeProjection,
+    PmsBrandProfileProjection,
+    PmsDisplayCategoryProjection,
+    PmsItemAssetProjection,
+    PmsItemContentProjection,
+    PmsItemDisplayCategoryBindingProjection,
     PmsProductProjection,
     PmsSkuCodeProjection,
     PmsUnitProjection,
@@ -50,6 +55,10 @@ def list_published_product_export_rows(
         ProductListingMedia | None,
         PmsProductProjection,
         StorefrontCategory | None,
+        PmsItemContentProjection | None,
+        PmsItemAssetProjection | None,
+        PmsDisplayCategoryProjection | None,
+        PmsBrandProfileProjection | None,
     ]
 ]:
     statement = (
@@ -59,6 +68,10 @@ def list_published_product_export_rows(
             ProductListingMedia,
             PmsProductProjection,
             StorefrontCategory,
+            PmsItemContentProjection,
+            PmsItemAssetProjection,
+            PmsDisplayCategoryProjection,
+            PmsBrandProfileProjection,
         )
         .join(
             PmsProductProjection,
@@ -87,6 +100,45 @@ def list_published_product_export_rows(
         .outerjoin(
             StorefrontCategory,
             StorefrontCategory.id == StorefrontCategoryBinding.storefront_category_id,
+        )
+        .outerjoin(
+            PmsItemContentProjection,
+            and_(
+                PmsItemContentProjection.pms_item_id == PmsProductProjection.pms_item_id,
+                PmsItemContentProjection.status == "active",
+            ),
+        )
+        .outerjoin(
+            PmsItemAssetProjection,
+            and_(
+                PmsItemAssetProjection.pms_item_id == PmsProductProjection.pms_item_id,
+                PmsItemAssetProjection.usage_type == "main",
+                PmsItemAssetProjection.is_primary.is_(True),
+                PmsItemAssetProjection.status == "active",
+            ),
+        )
+        .outerjoin(
+            PmsItemDisplayCategoryBindingProjection,
+            and_(
+                PmsItemDisplayCategoryBindingProjection.pms_item_id
+                == PmsProductProjection.pms_item_id,
+                PmsItemDisplayCategoryBindingProjection.is_primary.is_(True),
+            ),
+        )
+        .outerjoin(
+            PmsDisplayCategoryProjection,
+            and_(
+                PmsDisplayCategoryProjection.pms_display_category_id
+                == PmsItemDisplayCategoryBindingProjection.pms_display_category_id,
+                PmsDisplayCategoryProjection.is_active.is_(True),
+            ),
+        )
+        .outerjoin(
+            PmsBrandProfileProjection,
+            and_(
+                PmsBrandProfileProjection.brand_id == PmsProductProjection.brand_id,
+                PmsBrandProfileProjection.status == "active",
+            ),
         )
         .order_by(ProductListingConfig.sort_order, ProductListingConfig.id)
     )
