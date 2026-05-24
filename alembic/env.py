@@ -16,6 +16,11 @@ from app.domains.catalog.models.catalog import (  # noqa: F401
     SkuPrice,
     Unit,
 )
+from app.domains.promotions.models.promotion import (  # noqa: F401
+    Coupon,
+    Promotion,
+    PromotionTarget,
+)
 
 config = context.config
 
