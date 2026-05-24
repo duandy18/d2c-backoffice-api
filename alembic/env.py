@@ -18,6 +18,12 @@ from app.domains.listing.models.listing import (  # noqa: F401
 )
 from app.domains.pms_projection.models.pms_projection import (  # noqa: F401
     PmsBarcodeProjection,
+    PmsBrandAssetProjection,
+    PmsBrandProfileProjection,
+    PmsDisplayCategoryProjection,
+    PmsItemAssetProjection,
+    PmsItemContentProjection,
+    PmsItemDisplayCategoryBindingProjection,
     PmsProductProjection,
     PmsProjectionSyncRun,
     PmsSkuCodeProjection,
