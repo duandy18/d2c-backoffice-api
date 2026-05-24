@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 
 from app.domains.listing.models.listing import (
     ProductListingConfig,
+    ProductListingContent,
+    ProductListingMedia,
     SkuListingConfig,
     StorefrontCategory,
 )
@@ -89,12 +91,16 @@ def _empty_coupons(version: PublishVersion | None) -> PublishedCouponsExportResp
 
 def _product_raw_payload(
     listing: ProductListingConfig,
+    content: ProductListingContent | None,
+    primary_media: ProductListingMedia | None,
     pms_product: PmsProductProjection,
     category: StorefrontCategory | None,
 ) -> dict[str, Any]:
     return {
         "source": "d2c-backoffice-api",
         "source_product_listing_config_id": listing.id,
+        "source_product_listing_content_id": content.id if content else None,
+        "source_primary_media_id": primary_media.id if primary_media else None,
         "pms_item_id": pms_product.pms_item_id,
         "pms_sku": pms_product.pms_sku,
         "pms_category_code": pms_product.category_code,
@@ -107,11 +113,17 @@ def _build_product(
     publish_version: str,
     published_at: datetime,
     listing: ProductListingConfig,
+    content: ProductListingContent | None,
+    primary_media: ProductListingMedia | None,
     pms_product: PmsProductProjection,
     category: StorefrontCategory | None,
 ) -> PublishedProductExport:
     category_code = category.category_code if category else pms_product.category_code
     category_name = category.category_name if category else pms_product.category_name
+    display_name = content.display_title if content else pms_product.item_name
+    description = None
+    if content is not None:
+        description = content.detail_description or content.short_description
 
     return PublishedProductExport(
         publish_version=publish_version,
@@ -119,9 +131,9 @@ def _build_product(
         pms_sku=pms_product.pms_sku,
         product_code=listing.listing_code,
         product_name=pms_product.item_name,
-        display_name=listing.display_name,
-        description=listing.description_override,
-        image_url=listing.cover_image_url,
+        display_name=display_name,
+        description=description,
+        image_url=primary_media.url if primary_media else None,
         category_code=category_code,
         category_name=category_name,
         brand_code=pms_product.brand_code,
@@ -134,7 +146,13 @@ def _build_product(
         published_at=published_at,
         source_product_id=listing.id,
         source_updated_at=listing.updated_at,
-        raw_payload=_product_raw_payload(listing, pms_product, category),
+        raw_payload=_product_raw_payload(
+            listing,
+            content,
+            primary_media,
+            pms_product,
+            category,
+        ),
     )
 
 
@@ -203,10 +221,18 @@ def get_published_catalog_export(
             resolved_version,
             resolved_published_at,
             listing,
+            content,
+            primary_media,
             pms_product,
             category,
         )
-        for listing, pms_product, category in list_published_product_export_rows(session)
+        for (
+            listing,
+            content,
+            primary_media,
+            pms_product,
+            category,
+        ) in list_published_product_export_rows(session)
     ]
 
     skus = [

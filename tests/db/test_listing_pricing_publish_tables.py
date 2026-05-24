@@ -13,6 +13,8 @@ def test_listing_pricing_publish_tables_exist() -> None:
         table_names = set(inspector.get_table_names())
 
         assert "d2c_product_listing_configs" in table_names
+        assert "d2c_product_listing_contents" in table_names
+        assert "d2c_product_listing_media" in table_names
         assert "d2c_sku_listing_configs" in table_names
         assert "d2c_price_configs" in table_names
         assert "d2c_storefront_categories" in table_names
@@ -48,7 +50,6 @@ def test_listing_pricing_publish_core_columns_exist() -> None:
             "pms_item_id",
             "pms_sku",
             "listing_code",
-            "display_name",
             "listing_status",
             "display_status",
             "sell_status",
@@ -63,6 +64,48 @@ def test_listing_pricing_publish_core_columns_exist() -> None:
             "sku_display_name",
             "listing_status",
         }.issubset(sku_columns)
+        assert "sku_image_url" not in sku_columns
+
+        content_columns = {
+            column["name"]
+            for column in inspector.get_columns("d2c_product_listing_contents")
+        }
+        media_columns = {
+            column["name"]
+            for column in inspector.get_columns("d2c_product_listing_media")
+        }
+
+        assert {
+            "product_listing_config_id",
+            "display_title",
+            "subtitle",
+            "short_description",
+            "detail_description",
+            "seo_title",
+            "seo_description",
+            "selling_points",
+            "content_status",
+        }.issubset(content_columns)
+        assert {
+            "product_listing_config_id",
+            "media_type",
+            "source_type",
+            "pms_asset_id",
+            "object_key",
+            "url",
+            "alt_text",
+            "usage_type",
+            "sort_order",
+            "is_primary",
+            "status",
+        }.issubset(media_columns)
+
+        assert {
+            "display_name",
+            "subtitle",
+            "description_override",
+            "cover_image_url",
+        }.isdisjoint(product_columns)
 
         assert {
             "sku_listing_config_id",
@@ -113,6 +156,12 @@ def test_listing_pricing_publish_constraints_exist() -> None:
             constraint["name"]
             for constraint in inspector.get_unique_constraints("d2c_product_listing_configs")
         }
+        content_unique_names = {
+            constraint["name"]
+            for constraint in inspector.get_unique_constraints(
+                "d2c_product_listing_contents"
+            )
+        }
         sku_unique_names = {
             constraint["name"]
             for constraint in inspector.get_unique_constraints("d2c_sku_listing_configs")
@@ -136,6 +185,7 @@ def test_listing_pricing_publish_constraints_exist() -> None:
 
         assert "uq_d2c_product_listing_configs_pms_item_id" in product_unique_names
         assert "uq_d2c_product_listing_configs_listing_code" in product_unique_names
+        assert "uq_d2c_product_listing_contents_product" in content_unique_names
         assert "uq_d2c_sku_listing_configs_sku_code_uom" in sku_unique_names
         assert "uq_d2c_price_configs_code" in price_unique_names
         assert "uq_d2c_storefront_categories_code" in category_unique_names

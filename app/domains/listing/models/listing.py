@@ -2,13 +2,19 @@
 
 Listing configs are D2C-owned merchant decisions. They reference PMS projection
 identity but do not own PMS product master data.
+
+Content and media are split from listing identity so merchant display copy and
+image ordering can evolve without turning the listing config row into a mixed
+owner table.
 """
 
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Any
 
 from sqlalchemy import (
+    JSON,
     BigInteger,
     Boolean,
     CheckConstraint,
@@ -55,10 +61,6 @@ class ProductListingConfig(Base):
     )
     pms_sku: Mapped[str] = mapped_column(String(128), nullable=False)
     listing_code: Mapped[str] = mapped_column(String(96), nullable=False)
-    display_name: Mapped[str] = mapped_column(String(200), nullable=False)
-    subtitle: Mapped[str | None] = mapped_column(String(240), nullable=True)
-    description_override: Mapped[str | None] = mapped_column(Text, nullable=True)
-    cover_image_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     listing_status: Mapped[str] = mapped_column(
         String(32),
         nullable=False,
@@ -82,6 +84,120 @@ class ProductListingConfig(Base):
     )
     visible_from: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     visible_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+
+class ProductListingContent(Base):
+    __tablename__ = "d2c_product_listing_contents"
+    __table_args__ = (
+        UniqueConstraint(
+            "product_listing_config_id",
+            name="uq_d2c_product_listing_contents_product",
+        ),
+        Index("ix_d2c_product_listing_contents_status", "content_status"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    product_listing_config_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("d2c_product_listing_configs.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    display_title: Mapped[str] = mapped_column(String(200), nullable=False)
+    subtitle: Mapped[str | None] = mapped_column(String(240), nullable=True)
+    short_description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    detail_description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    seo_title: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    seo_description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    selling_points: Mapped[dict[str, Any] | list[Any] | None] = mapped_column(
+        JSON,
+        nullable=True,
+    )
+    content_status: Mapped[str] = mapped_column(
+        String(32),
+        nullable=False,
+        default="active",
+        server_default="active",
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+    )
+
+
+class ProductListingMedia(Base):
+    __tablename__ = "d2c_product_listing_media"
+    __table_args__ = (
+        CheckConstraint(
+            "object_key IS NOT NULL OR url IS NOT NULL",
+            name="ck_d2c_product_listing_media_location_present",
+        ),
+        CheckConstraint(
+            "sort_order >= 0",
+            name="ck_d2c_product_listing_media_sort_order_non_negative",
+        ),
+        Index("ix_d2c_product_listing_media_product", "product_listing_config_id"),
+        Index(
+            "ix_d2c_product_listing_media_usage_primary",
+            "product_listing_config_id",
+            "usage_type",
+            "is_primary",
+            "status",
+        ),
+        Index(
+            "ix_d2c_product_listing_media_sort",
+            "product_listing_config_id",
+            "usage_type",
+            "sort_order",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    product_listing_config_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("d2c_product_listing_configs.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    media_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    source_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    pms_asset_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    object_key: Mapped[str | None] = mapped_column(Text, nullable=True)
+    url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    alt_text: Mapped[str | None] = mapped_column(String(240), nullable=True)
+    usage_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    sort_order: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+        default=100,
+        server_default="100",
+    )
+    is_primary: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=False,
+        server_default="false",
+    )
+    status: Mapped[str] = mapped_column(
+        String(32),
+        nullable=False,
+        default="active",
+        server_default="active",
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
@@ -147,7 +263,6 @@ class SkuListingConfig(Base):
     )
     sku_display_name: Mapped[str] = mapped_column(String(200), nullable=False)
     sku_spec_text: Mapped[str | None] = mapped_column(String(240), nullable=True)
-    sku_image_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     listing_status: Mapped[str] = mapped_column(
         String(32),
         nullable=False,

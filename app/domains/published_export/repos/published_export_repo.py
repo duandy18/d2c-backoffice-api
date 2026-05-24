@@ -5,6 +5,8 @@ from sqlalchemy.orm import Session
 
 from app.domains.listing.models.listing import (
     ProductListingConfig,
+    ProductListingContent,
+    ProductListingMedia,
     SkuListingConfig,
     StorefrontCategory,
     StorefrontCategoryBinding,
@@ -41,12 +43,39 @@ def get_publish_version(
 
 def list_published_product_export_rows(
     session: Session,
-) -> list[tuple[ProductListingConfig, PmsProductProjection, StorefrontCategory | None]]:
+) -> list[
+    tuple[
+        ProductListingConfig,
+        ProductListingContent | None,
+        ProductListingMedia | None,
+        PmsProductProjection,
+        StorefrontCategory | None,
+    ]
+]:
     statement = (
-        select(ProductListingConfig, PmsProductProjection, StorefrontCategory)
+        select(
+            ProductListingConfig,
+            ProductListingContent,
+            ProductListingMedia,
+            PmsProductProjection,
+            StorefrontCategory,
+        )
         .join(
             PmsProductProjection,
             PmsProductProjection.pms_item_id == ProductListingConfig.pms_item_id,
+        )
+        .outerjoin(
+            ProductListingContent,
+            ProductListingContent.product_listing_config_id == ProductListingConfig.id,
+        )
+        .outerjoin(
+            ProductListingMedia,
+            and_(
+                ProductListingMedia.product_listing_config_id == ProductListingConfig.id,
+                ProductListingMedia.usage_type == "cover",
+                ProductListingMedia.is_primary.is_(True),
+                ProductListingMedia.status == "active",
+            ),
         )
         .outerjoin(
             StorefrontCategoryBinding,
