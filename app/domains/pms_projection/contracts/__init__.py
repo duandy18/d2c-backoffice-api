@@ -37,6 +37,7 @@ from app.domains.pms_projection.contracts.sku_codes import (
     PmsSkuCodeProjectionContract,
     PmsSkuCodeProjectionsResponse,
 )
+from app.domains.pms_projection.contracts.sync_actions import PmsProjectionSyncScopeResponse
 from app.domains.pms_projection.contracts.sync_runs import (
     PmsProjectionSyncRunContract,
     PmsProjectionSyncRunsResponse,
@@ -65,6 +66,7 @@ __all__ = [
     "PmsProductProjectionsResponse",
     "PmsProjectionHealthResponse",
     "PmsProjectionSyncRunContract",
+    "PmsProjectionSyncScopeResponse",
     "PmsProjectionSyncRunsResponse",
     "PmsSkuCodeProjectionContract",
     "PmsSkuCodeProjectionsResponse",
