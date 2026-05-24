@@ -26,8 +26,8 @@ jobs:
           --health-retries 20
 
     env:
-      DEV_DB_DSN: postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:5432/d2c_backoffice
-      DEV_TEST_DB_DSN: postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:5432/d2c_backoffice
+      D2C_BACKOFFICE_DEV_DB_DSN: postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:5432/d2c_backoffice
+      D2C_BACKOFFICE_DEV_TEST_DB_DSN: postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:5432/d2c_backoffice
       D2C_BACKOFFICE_DATABASE_URL: postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:5432/d2c_backoffice
       D2C_BACKOFFICE_TEST_DATABASE_URL: postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:5432/d2c_backoffice
 
