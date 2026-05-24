@@ -225,6 +225,8 @@ class PmsItemContentProjection(Base):
         ForeignKey("d2c_pms_product_projection.pms_item_id", ondelete="CASCADE"),
         nullable=False,
     )
+    item_sku: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    item_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
     base_title: Mapped[str | None] = mapped_column(String(200), nullable=True)
     base_description: Mapped[str | None] = mapped_column(Text, nullable=True)
     short_description: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -266,6 +268,8 @@ class PmsItemAssetProjection(Base):
         ForeignKey("d2c_pms_product_projection.pms_item_id", ondelete="CASCADE"),
         nullable=False,
     )
+    item_sku: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    item_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
     asset_type: Mapped[str] = mapped_column(String(32), nullable=False)
     usage_type: Mapped[str] = mapped_column(String(32), nullable=False)
     source_type: Mapped[str] = mapped_column(String(32), nullable=False)
@@ -376,6 +380,11 @@ class PmsItemDisplayCategoryBindingProjection(Base):
         ),
         nullable=False,
     )
+    item_sku: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    item_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    display_category_code: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    display_category_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    display_category_path_code: Mapped[str | None] = mapped_column(String(255), nullable=True)
     is_primary: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False, server_default="false"
     )
@@ -400,6 +409,8 @@ class PmsBrandProfileProjection(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     pms_profile_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
     brand_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    brand_code: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    brand_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
     display_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
     official_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
     brand_story: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -433,6 +444,8 @@ class PmsBrandAssetProjection(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     pms_asset_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
     brand_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    brand_code: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    brand_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
     asset_type: Mapped[str] = mapped_column(String(32), nullable=False)
     usage_type: Mapped[str] = mapped_column(String(32), nullable=False)
     object_key: Mapped[str | None] = mapped_column(Text, nullable=True)

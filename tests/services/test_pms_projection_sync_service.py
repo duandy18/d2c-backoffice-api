@@ -142,6 +142,8 @@ def _rows() -> dict[str, list[dict[str, Any]]]:
             {
                 "content_id": pms_content_id,
                 "item_id": pms_item_id,
+                "item_sku": sku,
+                "item_name": "PMS 商品",
                 "base_title": "标准展示标题",
                 "base_description": "标准展示说明",
                 "short_description": "短说明",
@@ -161,6 +163,8 @@ def _rows() -> dict[str, list[dict[str, Any]]]:
             {
                 "asset_id": pms_item_asset_id,
                 "item_id": pms_item_id,
+                "item_sku": sku,
+                "item_name": "PMS 商品",
                 "asset_type": "image",
                 "usage_type": "main",
                 "source_type": "external",
@@ -196,6 +200,11 @@ def _rows() -> dict[str, list[dict[str, Any]]]:
                 "binding_id": pms_binding_id,
                 "item_id": pms_item_id,
                 "display_category_id": pms_display_category_id,
+                "item_sku": sku,
+                "item_name": "PMS 商品",
+                "display_category_code": "CAT",
+                "display_category_name": "猫用品",
+                "display_category_path_code": "CAT",
                 "is_primary": True,
                 "sort_order": 10,
                 "pms_updated_at": "2026-05-24T00:00:00+00:00",
@@ -205,6 +214,8 @@ def _rows() -> dict[str, list[dict[str, Any]]]:
             {
                 "profile_id": pms_brand_profile_id,
                 "brand_id": brand_id,
+                "brand_code": "BRAND",
+                "brand_name": "品牌A",
                 "display_name": "品牌展示名",
                 "official_name": "官方品牌名",
                 "brand_story": "品牌故事",
@@ -220,6 +231,8 @@ def _rows() -> dict[str, list[dict[str, Any]]]:
             {
                 "asset_id": pms_brand_asset_id,
                 "brand_id": brand_id,
+                "brand_code": "BRAND",
+                "brand_name": "品牌A",
                 "asset_type": "image",
                 "usage_type": "logo",
                 "object_key": None,
@@ -370,7 +383,7 @@ def test_pms_projection_sync_all_upserts_projection_rows_and_logs_runs() -> None
             session.execute(
                 text(
                     """
-                    SELECT base_title, spec_params
+                    SELECT item_sku, item_name, base_title, spec_params
                     FROM d2c_pms_item_content_projection
                     LIMIT 1
                     """
@@ -383,7 +396,7 @@ def test_pms_projection_sync_all_upserts_projection_rows_and_logs_runs() -> None
             session.execute(
                 text(
                     """
-                    SELECT usage_type, url, is_primary
+                    SELECT item_sku, item_name, usage_type, url, is_primary
                     FROM d2c_pms_item_asset_projection
                     LIMIT 1
                     """
@@ -405,11 +418,29 @@ def test_pms_projection_sync_all_upserts_projection_rows_and_logs_runs() -> None
             .mappings()
             .one()
         )
+        binding = (
+            session.execute(
+                text(
+                    """
+                    SELECT
+                      item_sku,
+                      item_name,
+                      display_category_code,
+                      display_category_name,
+                      display_category_path_code
+                    FROM d2c_pms_item_display_category_binding_projection
+                    LIMIT 1
+                    """
+                )
+            )
+            .mappings()
+            .one()
+        )
         brand_profile = (
             session.execute(
                 text(
                     """
-                    SELECT display_name
+                    SELECT brand_code, brand_name, display_name
                     FROM d2c_pms_brand_profile_projection
                     LIMIT 1
                     """
@@ -418,13 +449,38 @@ def test_pms_projection_sync_all_upserts_projection_rows_and_logs_runs() -> None
             .mappings()
             .one()
         )
+        brand_asset = (
+            session.execute(
+                text(
+                    """
+                    SELECT brand_code, brand_name, usage_type
+                    FROM d2c_pms_brand_asset_projection
+                    LIMIT 1
+                    """
+                )
+            )
+            .mappings()
+            .one()
+        )
 
+    assert content["item_sku"] == product["pms_sku"]
+    assert content["item_name"] == "PMS 商品"
     assert content["base_title"] == "标准展示标题"
     assert content["spec_params"] == {"size": "S"}
+    assert item_asset["item_sku"] == product["pms_sku"]
+    assert item_asset["item_name"] == "PMS 商品"
     assert item_asset["usage_type"] == "main"
     assert item_asset["is_primary"] is True
     assert display_category["category_code"] == "CAT"
+    assert binding["item_sku"] == product["pms_sku"]
+    assert binding["display_category_code"] == "CAT"
+    assert binding["display_category_path_code"] == "CAT"
+    assert brand_profile["brand_code"] == "BRAND"
+    assert brand_profile["brand_name"] == "品牌A"
     assert brand_profile["display_name"] == "品牌展示名"
+    assert brand_asset["brand_code"] == "BRAND"
+    assert brand_asset["brand_name"] == "品牌A"
+    assert brand_asset["usage_type"] == "logo"
 
 
 def test_pms_projection_sync_is_idempotent_on_second_run() -> None:

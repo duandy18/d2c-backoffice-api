@@ -170,6 +170,8 @@ def test_pms_display_projection_core_columns_exist() -> None:
         assert {
             "pms_content_id",
             "pms_item_id",
+            "item_sku",
+            "item_name",
             "base_title",
             "base_description",
             "spec_params",
@@ -180,6 +182,8 @@ def test_pms_display_projection_core_columns_exist() -> None:
         assert {
             "pms_asset_id",
             "pms_item_id",
+            "item_sku",
+            "item_name",
             "asset_type",
             "usage_type",
             "source_type",
@@ -205,6 +209,11 @@ def test_pms_display_projection_core_columns_exist() -> None:
             "pms_binding_id",
             "pms_item_id",
             "pms_display_category_id",
+            "item_sku",
+            "item_name",
+            "display_category_code",
+            "display_category_name",
+            "display_category_path_code",
             "is_primary",
             "sort_order",
             "raw_payload",
@@ -213,6 +222,8 @@ def test_pms_display_projection_core_columns_exist() -> None:
         assert {
             "pms_profile_id",
             "brand_id",
+            "brand_code",
+            "brand_name",
             "display_name",
             "brand_story",
             "seo_title",
@@ -223,6 +234,8 @@ def test_pms_display_projection_core_columns_exist() -> None:
         assert {
             "pms_asset_id",
             "brand_id",
+            "brand_code",
+            "brand_name",
             "asset_type",
             "usage_type",
             "url",

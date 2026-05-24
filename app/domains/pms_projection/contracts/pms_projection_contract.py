@@ -113,6 +113,8 @@ class PmsItemContentProjectionContract(BaseModel):
     id: int
     pms_content_id: int
     pms_item_id: int
+    item_sku: str | None
+    item_name: str | None
     base_title: str | None
     base_description: str | None
     short_description: str | None
@@ -139,6 +141,8 @@ class PmsItemAssetProjectionContract(BaseModel):
     id: int
     pms_asset_id: int
     pms_item_id: int
+    item_sku: str | None
+    item_name: str | None
     asset_type: str
     usage_type: str
     source_type: str
@@ -188,6 +192,11 @@ class PmsItemDisplayCategoryBindingProjectionContract(BaseModel):
     pms_binding_id: int
     pms_item_id: int
     pms_display_category_id: int
+    item_sku: str | None
+    item_name: str | None
+    display_category_code: str | None
+    display_category_name: str | None
+    display_category_path_code: str | None
     is_primary: bool
     sort_order: int
     pms_updated_at: datetime | None
@@ -204,6 +213,8 @@ class PmsBrandProfileProjectionContract(BaseModel):
     id: int
     pms_profile_id: int
     brand_id: int
+    brand_code: str | None
+    brand_name: str | None
     display_name: str | None
     official_name: str | None
     brand_story: str | None
@@ -226,6 +237,8 @@ class PmsBrandAssetProjectionContract(BaseModel):
     id: int
     pms_asset_id: int
     brand_id: int
+    brand_code: str | None
+    brand_name: str | None
     asset_type: str
     usage_type: str
     object_key: str | None
