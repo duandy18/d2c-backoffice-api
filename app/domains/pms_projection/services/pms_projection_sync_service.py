@@ -197,6 +197,8 @@ def _item_content_values(row: dict[str, Any]) -> dict[str, Any]:
     return {
         "pms_content_id": int(row["content_id"]),
         "pms_item_id": int(row["item_id"]),
+        "item_sku": row.get("item_sku"),
+        "item_name": row.get("item_name"),
         "base_title": row.get("base_title"),
         "base_description": row.get("base_description"),
         "short_description": row.get("short_description"),
@@ -219,6 +221,8 @@ def _item_asset_values(row: dict[str, Any]) -> dict[str, Any]:
     return {
         "pms_asset_id": int(row["asset_id"]),
         "pms_item_id": int(row["item_id"]),
+        "item_sku": row.get("item_sku"),
+        "item_name": row.get("item_name"),
         "asset_type": str(row["asset_type"]),
         "usage_type": str(row["usage_type"]),
         "source_type": str(row["source_type"]),
@@ -260,6 +264,11 @@ def _item_display_category_binding_values(row: dict[str, Any]) -> dict[str, Any]
         "pms_binding_id": int(row["binding_id"]),
         "pms_item_id": int(row["item_id"]),
         "pms_display_category_id": int(row["display_category_id"]),
+        "item_sku": row.get("item_sku"),
+        "item_name": row.get("item_name"),
+        "display_category_code": row.get("display_category_code"),
+        "display_category_name": row.get("display_category_name"),
+        "display_category_path_code": row.get("display_category_path_code"),
         "is_primary": bool(row["is_primary"]),
         "sort_order": int(row["sort_order"]),
         "pms_updated_at": _parse_datetime(row.get("pms_updated_at")),
@@ -272,6 +281,8 @@ def _brand_profile_values(row: dict[str, Any]) -> dict[str, Any]:
     return {
         "pms_profile_id": int(row["profile_id"]),
         "brand_id": int(row["brand_id"]),
+        "brand_code": row.get("brand_code"),
+        "brand_name": row.get("brand_name"),
         "display_name": row.get("display_name"),
         "official_name": row.get("official_name"),
         "brand_story": row.get("brand_story"),
@@ -290,6 +301,8 @@ def _brand_asset_values(row: dict[str, Any]) -> dict[str, Any]:
     return {
         "pms_asset_id": int(row["asset_id"]),
         "brand_id": int(row["brand_id"]),
+        "brand_code": row.get("brand_code"),
+        "brand_name": row.get("brand_name"),
         "asset_type": str(row["asset_type"]),
         "usage_type": str(row["usage_type"]),
         "object_key": row.get("object_key"),
@@ -537,6 +550,8 @@ class PmsProjectionSyncService:
         excluded = statement.excluded
         update_values = {
             "pms_item_id": excluded.pms_item_id,
+            "item_sku": excluded.item_sku,
+            "item_name": excluded.item_name,
             "base_title": excluded.base_title,
             "base_description": excluded.base_description,
             "short_description": excluded.short_description,
@@ -567,6 +582,8 @@ class PmsProjectionSyncService:
         excluded = statement.excluded
         update_values = {
             "pms_item_id": excluded.pms_item_id,
+            "item_sku": excluded.item_sku,
+            "item_name": excluded.item_name,
             "asset_type": excluded.asset_type,
             "usage_type": excluded.usage_type,
             "source_type": excluded.source_type,
@@ -624,6 +641,11 @@ class PmsProjectionSyncService:
         update_values = {
             "pms_item_id": excluded.pms_item_id,
             "pms_display_category_id": excluded.pms_display_category_id,
+            "item_sku": excluded.item_sku,
+            "item_name": excluded.item_name,
+            "display_category_code": excluded.display_category_code,
+            "display_category_name": excluded.display_category_name,
+            "display_category_path_code": excluded.display_category_path_code,
             "is_primary": excluded.is_primary,
             "sort_order": excluded.sort_order,
             "pms_updated_at": excluded.pms_updated_at,
@@ -644,6 +666,8 @@ class PmsProjectionSyncService:
         excluded = statement.excluded
         update_values = {
             "brand_id": excluded.brand_id,
+            "brand_code": excluded.brand_code,
+            "brand_name": excluded.brand_name,
             "display_name": excluded.display_name,
             "official_name": excluded.official_name,
             "brand_story": excluded.brand_story,
@@ -670,6 +694,8 @@ class PmsProjectionSyncService:
         excluded = statement.excluded
         update_values = {
             "brand_id": excluded.brand_id,
+            "brand_code": excluded.brand_code,
+            "brand_name": excluded.brand_name,
             "asset_type": excluded.asset_type,
             "usage_type": excluded.usage_type,
             "object_key": excluded.object_key,
