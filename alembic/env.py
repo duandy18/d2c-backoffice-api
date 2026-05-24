@@ -16,11 +16,26 @@ from app.domains.catalog.models.catalog import (  # noqa: F401
     SkuPrice,
     Unit,
 )
+from app.domains.listing.models.listing import (  # noqa: F401
+    ProductListingConfig,
+    SkuListingConfig,
+    StorefrontCategory,
+    StorefrontCategoryBinding,
+)
+from app.domains.pms_projection.models.pms_projection import (  # noqa: F401
+    PmsBarcodeProjection,
+    PmsProductProjection,
+    PmsProjectionSyncRun,
+    PmsSkuCodeProjection,
+    PmsUnitProjection,
+)
+from app.domains.pricing.models.price_config import PriceConfig  # noqa: F401
 from app.domains.promotions.models.promotion import (  # noqa: F401
     Coupon,
     Promotion,
     PromotionTarget,
 )
+from app.domains.publish.models.publish_version import PublishVersion  # noqa: F401
 
 config = context.config
 
