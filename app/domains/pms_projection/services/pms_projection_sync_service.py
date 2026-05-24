@@ -10,19 +10,19 @@ from typing import Any, Protocol
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
-from app.domains.pms_projection.models.pms_projection import (
-    PmsBarcodeProjection,
-    PmsBrandAssetProjection,
-    PmsBrandProfileProjection,
-    PmsDisplayCategoryProjection,
-    PmsItemAssetProjection,
-    PmsItemContentProjection,
+from app.domains.pms_projection.models.barcodes import PmsBarcodeProjection
+from app.domains.pms_projection.models.brand_assets import PmsBrandAssetProjection
+from app.domains.pms_projection.models.brand_profiles import PmsBrandProfileProjection
+from app.domains.pms_projection.models.category_bindings import (
     PmsItemDisplayCategoryBindingProjection,
-    PmsProductProjection,
-    PmsProjectionSyncRun,
-    PmsSkuCodeProjection,
-    PmsUnitProjection,
 )
+from app.domains.pms_projection.models.display_categories import PmsDisplayCategoryProjection
+from app.domains.pms_projection.models.item_assets import PmsItemAssetProjection
+from app.domains.pms_projection.models.item_contents import PmsItemContentProjection
+from app.domains.pms_projection.models.products import PmsProductProjection
+from app.domains.pms_projection.models.sku_codes import PmsSkuCodeProjection
+from app.domains.pms_projection.models.sync_runs import PmsProjectionSyncRun
+from app.domains.pms_projection.models.units import PmsUnitProjection
 
 PMS_PROJECTION_SYNC_SCOPES = (
     "products",

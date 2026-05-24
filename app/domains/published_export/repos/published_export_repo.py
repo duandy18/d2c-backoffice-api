@@ -11,7 +11,7 @@ from app.domains.listing.models.listing import (
     StorefrontCategory,
     StorefrontCategoryBinding,
 )
-from app.domains.pms_projection.models.pms_projection import (
+from app.domains.pms_projection.models import (
     PmsBarcodeProjection,
     PmsBrandProfileProjection,
     PmsDisplayCategoryProjection,
