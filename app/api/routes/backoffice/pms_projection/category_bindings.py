@@ -6,9 +6,13 @@ from app.api.routes.backoffice.pms_projection.deps import BackofficeClientDep, S
 from app.domains.pms_projection.contracts.category_bindings import (
     PmsItemDisplayCategoryBindingsProjectionResponse,
 )
+from app.domains.pms_projection.contracts.sync_actions import (
+    PmsProjectionSyncScopeResponse,
+)
 from app.domains.pms_projection.services.category_bindings import (
     get_pms_item_display_category_binding_projections,
 )
+from app.domains.pms_projection.services.sync_actions import sync_pms_projection_scope
 
 router = APIRouter()
 
@@ -22,6 +26,14 @@ def pms_projection_item_display_category_bindings(
     session: SessionDep,
 ) -> PmsItemDisplayCategoryBindingsProjectionResponse:
     return get_pms_item_display_category_binding_projections(session)
+
+
+@router.post("/item-display-category-bindings/sync", response_model=PmsProjectionSyncScopeResponse)
+def pms_projection_item_display_category_bindings_sync(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> PmsProjectionSyncScopeResponse:
+    return sync_pms_projection_scope(session, scope="item_display_category_bindings")
 
 
 __all__ = ["router"]
