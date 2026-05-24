@@ -48,9 +48,15 @@ class PmsProjectionFeedReader(Protocol):
 class PmsProjectionSyncScopeResult:
     scope: str
     endpoint: str | None
+    source_base_url: str | None
+    source_endpoint: str | None
     status: str
+    started_at: datetime
+    finished_at: datetime
+    requested_by: str | None
     rows_fetched: int
     rows_upserted: int
+    rows_deleted: int
     error_code: str | None = None
     error_message: str | None = None
 
@@ -347,10 +353,12 @@ class PmsProjectionSyncService:
 
         endpoint: str | None = None
         source_base_url = _source_base_url(self.feed_reader)
+        started_at = datetime.now(UTC)
 
         try:
             endpoint, rows = self.feed_reader.fetch_all(scope)
             rows_upserted = self._upsert_scope(scope, rows)
+            finished_at = datetime.now(UTC)
 
             run = PmsProjectionSyncRun(
                 sync_scope=scope,
@@ -358,12 +366,13 @@ class PmsProjectionSyncService:
                 source_base_url=source_base_url,
                 source_endpoint=endpoint,
                 status="success",
+                started_at=started_at,
+                finished_at=finished_at,
                 requested_by=requested_by,
                 rows_fetched=len(rows),
                 rows_upserted=rows_upserted,
                 rows_deleted=0,
                 raw_summary={"scope": scope, "rows_fetched": len(rows)},
-                finished_at=datetime.now(UTC),
             )
             self.session.add(run)
             self.session.commit()
@@ -371,18 +380,27 @@ class PmsProjectionSyncService:
             return PmsProjectionSyncScopeResult(
                 scope=scope,
                 endpoint=endpoint,
+                source_base_url=source_base_url,
+                source_endpoint=endpoint,
                 status="success",
+                started_at=started_at,
+                finished_at=finished_at,
+                requested_by=requested_by,
                 rows_fetched=len(rows),
                 rows_upserted=rows_upserted,
+                rows_deleted=0,
             )
         except Exception as exc:
             self.session.rollback()
+            finished_at = datetime.now(UTC)
             run = PmsProjectionSyncRun(
                 sync_scope=scope,
                 source_service="pms-api",
                 source_base_url=source_base_url,
                 source_endpoint=endpoint,
                 status="failed",
+                started_at=started_at,
+                finished_at=finished_at,
                 requested_by=requested_by,
                 rows_fetched=0,
                 rows_upserted=0,
@@ -390,7 +408,6 @@ class PmsProjectionSyncService:
                 error_code=type(exc).__name__,
                 error_message=str(exc),
                 raw_summary={"scope": scope},
-                finished_at=datetime.now(UTC),
             )
             self.session.add(run)
             self.session.commit()
@@ -398,9 +415,15 @@ class PmsProjectionSyncService:
             return PmsProjectionSyncScopeResult(
                 scope=scope,
                 endpoint=endpoint,
+                source_base_url=source_base_url,
+                source_endpoint=endpoint,
                 status="failed",
+                started_at=started_at,
+                finished_at=finished_at,
+                requested_by=requested_by,
                 rows_fetched=0,
                 rows_upserted=0,
+                rows_deleted=0,
                 error_code=type(exc).__name__,
                 error_message=str(exc),
             )

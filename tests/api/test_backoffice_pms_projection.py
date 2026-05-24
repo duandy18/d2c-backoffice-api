@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -75,12 +77,19 @@ def test_pms_projection_scope_sync_invokes_products_sync(monkeypatch) -> None:
     def fake_sync_scope(session, *, scope: str, requested_by: str = "backoffice-ui"):
         seen["scope"] = scope
         seen["requested_by"] = requested_by
+        now = datetime(2026, 5, 24, 14, 0, 0, tzinfo=UTC)
         return PmsProjectionSyncScopeResponse(
             scope=scope,
             endpoint="/pms/read/v1/projection-feed/items",
+            source_base_url="http://pms-api.test",
+            source_endpoint="/pms/read/v1/projection-feed/items",
             status="success",
+            started_at=now,
+            finished_at=now,
+            requested_by=requested_by,
             rows_fetched=2,
             rows_upserted=2,
+            rows_deleted=0,
             error_code=None,
             error_message=None,
         )
@@ -94,15 +103,20 @@ def test_pms_projection_scope_sync_invokes_products_sync(monkeypatch) -> None:
     )
 
     assert response.status_code == 200
-    assert response.json() == {
-        "scope": "products",
-        "endpoint": "/pms/read/v1/projection-feed/items",
-        "status": "success",
-        "rows_fetched": 2,
-        "rows_upserted": 2,
-        "error_code": None,
-        "error_message": None,
-    }
+    payload = response.json()
+    assert payload["scope"] == "products"
+    assert payload["endpoint"] == "/pms/read/v1/projection-feed/items"
+    assert payload["source_base_url"] == "http://pms-api.test"
+    assert payload["source_endpoint"] == "/pms/read/v1/projection-feed/items"
+    assert payload["status"] == "success"
+    assert payload["started_at"] == "2026-05-24T14:00:00Z"
+    assert payload["finished_at"] == "2026-05-24T14:00:00Z"
+    assert payload["requested_by"] == "backoffice-ui"
+    assert payload["rows_fetched"] == 2
+    assert payload["rows_upserted"] == 2
+    assert payload["rows_deleted"] == 0
+    assert payload["error_code"] is None
+    assert payload["error_message"] is None
     assert seen == {"scope": "products", "requested_by": "backoffice-ui"}
 
 

@@ -260,6 +260,11 @@ def test_pms_projection_sync_all_upserts_projection_rows_and_logs_runs() -> None
         )
 
     assert result.status == "success"
+    assert result.scopes[0].source_base_url == "http://pms-api.test"
+    assert result.scopes[0].source_endpoint == "/pms/read/v1/projection-feed/products"
+    assert result.scopes[0].requested_by == "pytest"
+    assert result.scopes[0].rows_deleted == 0
+    assert result.scopes[0].finished_at >= result.scopes[0].started_at
     assert [scope.scope for scope in result.scopes] == [
         "products",
         "units",
