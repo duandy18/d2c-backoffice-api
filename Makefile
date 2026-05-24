@@ -11,14 +11,22 @@ HEALTH_URL ?= http://127.0.0.1:$(PORT)/system/health
 DEV_DB_DSN ?= postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:5433/d2c_backoffice
 DEV_TEST_DB_DSN ?= postgresql+psycopg://d2c_backoffice:d2c_backoffice@127.0.0.1:5433/d2c_backoffice_test
 
+PMS_API_BASE_URL ?= http://127.0.0.1:8002
+PMS_SERVICE_CLIENT_CODE ?= d2c-backoffice-service
+PMS_PROJECTION_SYNC_PAGE_LIMIT ?= 500
+PMS_PROJECTION_SYNC_REQUESTED_BY ?= make
+
 DEV_ENV := D2C_BACKOFFICE_ENVIRONMENT="$(D2C_BACKOFFICE_ENV)" D2C_BACKOFFICE_DATABASE_URL="$(DEV_DB_DSN)" D2C_BACKOFFICE_TEST_DATABASE_URL="$(DEV_TEST_DB_DSN)" PYTHONPATH=.
 TEST_ENV := D2C_BACKOFFICE_ENVIRONMENT=test D2C_BACKOFFICE_DATABASE_URL="$(DEV_TEST_DB_DSN)" D2C_BACKOFFICE_TEST_DATABASE_URL="$(DEV_TEST_DB_DSN)" PYTHONPATH=.
+PMS_SYNC_ENV := $(DEV_ENV) D2C_BACKOFFICE_PMS_API_BASE_URL="$(PMS_API_BASE_URL)" D2C_BACKOFFICE_PMS_SERVICE_CLIENT_CODE="$(PMS_SERVICE_CLIENT_CODE)" D2C_BACKOFFICE_PMS_PROJECTION_SYNC_PAGE_LIMIT="$(PMS_PROJECTION_SYNC_PAGE_LIMIT)"
 
 TESTS ?= tests
 PYTEST_ARGS ?=
 
 .PHONY: clean-pyc install lint test routes openapi check
 .PHONY: upgrade-dev alembic-check alembic-current alembic-history revision
+.PHONY: pms-projection-sync pms-projection-sync-products pms-projection-sync-units
+.PHONY: pms-projection-sync-sku-codes pms-projection-sync-barcodes
 .PHONY: uvicorn uvicorn-up uvicorn-down uvicorn-restart uvicorn-status uvicorn-logs
 .PHONY: up down restart status logs
 
@@ -59,6 +67,21 @@ alembic-history:
 
 revision:
 	$(DEV_ENV) $(VENV_PYTHON) -m alembic revision --autogenerate -m "$(MSG)"
+
+pms-projection-sync: clean-pyc
+	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope all --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
+
+pms-projection-sync-products: clean-pyc
+	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope products --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
+
+pms-projection-sync-units: clean-pyc
+	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope units --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
+
+pms-projection-sync-sku-codes: clean-pyc
+	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope sku_codes --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
+
+pms-projection-sync-barcodes: clean-pyc
+	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope barcodes --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
 
 uvicorn:
 	PYTHONPATH=. $(VENV_PYTHON) -m uvicorn app.main:app --host $(HOST) --port $(PORT)
