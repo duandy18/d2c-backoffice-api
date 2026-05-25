@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
+from app.api.routes.backoffice.client_presentation import (
+    router as backoffice_client_presentation_router,
+)
 from app.api.routes.backoffice.groups import router as backoffice_groups_router
 from app.api.routes.backoffice.listing import router as backoffice_listing_router
 from app.api.routes.backoffice.offers import router as backoffice_offers_router
@@ -31,6 +34,7 @@ api_router.include_router(backoffice_pricing_router)
 api_router.include_router(backoffice_listing_router)
 api_router.include_router(backoffice_storefront_categories_router)
 api_router.include_router(backoffice_storefront_sections_router)
+api_router.include_router(backoffice_client_presentation_router)
 api_router.include_router(backoffice_pms_projection_router)
 api_router.include_router(backoffice_publish_router)
 api_router.include_router(backoffice_published_export_router)

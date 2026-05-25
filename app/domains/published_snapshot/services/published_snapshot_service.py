@@ -9,6 +9,12 @@ from sqlalchemy.orm import Session
 
 from app.domains.publish.models.publish_version import PublishVersion
 from app.domains.published_export.contracts.published_export_contract import (
+    PublishedClientBlockTypesExportResponse,
+    PublishedClientBlockTypeSnapshotExport,
+    PublishedClientPagesExportResponse,
+    PublishedClientPageSnapshotExport,
+    PublishedClientRegionsExportResponse,
+    PublishedClientRegionSnapshotExport,
     PublishedCouponSnapshotExport,
     PublishedCouponsSnapshotExportResponse,
     PublishedGroupExport,
@@ -33,6 +39,9 @@ from app.domains.published_export.contracts.published_export_contract import (
     PublishedStorefrontSectionSnapshotExport,
 )
 from app.domains.published_snapshot.models.published_snapshot import (
+    PublishedClientBlockType,
+    PublishedClientPage,
+    PublishedClientRegion,
     PublishedCoupon,
     PublishedGroup,
     PublishedOffer,
@@ -50,6 +59,9 @@ from app.domains.published_snapshot.repos.published_snapshot_repo import (
     add_published_rows,
     delete_snapshot_by_version,
     latest_publish_version,
+    list_owner_client_block_types,
+    list_owner_client_pages,
+    list_owner_client_regions,
     list_owner_components,
     list_owner_coupons,
     list_owner_groups,
@@ -61,6 +73,9 @@ from app.domains.published_snapshot.repos.published_snapshot_repo import (
     list_owner_storefront_section_layout_rows,
     list_owner_storefront_section_position_rows,
     list_owner_storefront_section_rows,
+    list_published_client_block_types,
+    list_published_client_pages,
+    list_published_client_regions,
     list_published_components,
     list_published_coupons,
     list_published_groups,
@@ -104,6 +119,77 @@ def create_storefront_snapshot(
     add_publish_version(session, version)
 
     rows: list[object] = []
+
+    for page in list_owner_client_pages(session):
+        rows.append(
+            PublishedClientPage(
+                publish_version=resolved_version,
+                page_code=page.page_code,
+                page_type=page.page_type,
+                route_path=page.route_path,
+                title=page.title,
+                description=page.description,
+                seo_title=page.seo_title,
+                seo_description=page.seo_description,
+                sort_order=page.sort_order,
+                display_status=page.display_status,
+                is_active=page.is_active,
+                published_at=now,
+                source_page_id=page.id,
+                raw_payload={"source": "d2c_client_pages", "source_page_id": page.id},
+            )
+        )
+
+    for region, page in list_owner_client_regions(session):
+        rows.append(
+            PublishedClientRegion(
+                publish_version=resolved_version,
+                page_code=page.page_code,
+                region_code=region.region_code,
+                region_type=region.region_type,
+                title=region.title,
+                description=region.description,
+                sort_order=region.sort_order,
+                is_required=region.is_required,
+                max_blocks=region.max_blocks,
+                allowed_block_types=region.allowed_block_types,
+                display_status=region.display_status,
+                is_active=region.is_active,
+                published_at=now,
+                source_region_id=region.id,
+                raw_payload={
+                    "source": "d2c_client_regions",
+                    "source_region_id": region.id,
+                    "source_page_id": page.id,
+                },
+            )
+        )
+
+    for block_type in list_owner_client_block_types(session):
+        rows.append(
+            PublishedClientBlockType(
+                publish_version=resolved_version,
+                block_type=block_type.block_type,
+                display_name=block_type.display_name,
+                description=block_type.description,
+                renderer_key=block_type.renderer_key,
+                data_contract_version=block_type.data_contract_version,
+                allowed_region_types=block_type.allowed_region_types,
+                allowed_content_types=block_type.allowed_content_types,
+                layout_schema=block_type.layout_schema,
+                slot_schema=block_type.slot_schema,
+                action_schema=block_type.action_schema,
+                analytics_schema=block_type.analytics_schema,
+                display_status=block_type.display_status,
+                is_active=block_type.is_active,
+                published_at=now,
+                source_block_type_id=block_type.id,
+                raw_payload={
+                    "source": "d2c_client_block_types",
+                    "source_block_type_id": block_type.id,
+                },
+            )
+        )
 
     for group in list_owner_groups(session):
         rows.append(
@@ -340,6 +426,68 @@ def create_storefront_snapshot(
 
 def _version_or_none(session: Session, publish_version: str | None) -> PublishVersion | None:
     return latest_publish_version(session, publish_version)
+
+
+
+def get_published_client_pages_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedClientPagesExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedClientPagesExportResponse(publish_version=None, count=0, pages=[])
+
+    pages = [
+        PublishedClientPageSnapshotExport(**row.__dict__)
+        for row in list_published_client_pages(session, version.publish_version)
+    ]
+    return PublishedClientPagesExportResponse(
+        publish_version=version.publish_version,
+        count=len(pages),
+        pages=pages,
+    )
+
+
+def get_published_client_regions_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedClientRegionsExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedClientRegionsExportResponse(publish_version=None, count=0, regions=[])
+
+    regions = [
+        PublishedClientRegionSnapshotExport(**row.__dict__)
+        for row in list_published_client_regions(session, version.publish_version)
+    ]
+    return PublishedClientRegionsExportResponse(
+        publish_version=version.publish_version,
+        count=len(regions),
+        regions=regions,
+    )
+
+
+def get_published_client_block_types_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedClientBlockTypesExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedClientBlockTypesExportResponse(
+            publish_version=None,
+            count=0,
+            block_types=[],
+        )
+
+    block_types = [
+        PublishedClientBlockTypeSnapshotExport(**row.__dict__)
+        for row in list_published_client_block_types(session, version.publish_version)
+    ]
+    return PublishedClientBlockTypesExportResponse(
+        publish_version=version.publish_version,
+        count=len(block_types),
+        block_types=block_types,
+    )
 
 
 def get_published_groups_snapshot(

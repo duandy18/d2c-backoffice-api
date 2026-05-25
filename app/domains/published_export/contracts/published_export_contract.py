@@ -142,6 +142,79 @@ class PublishedCouponsExportResponse(BaseModel):
     coupons: list[PublishedCouponExport]
 
 
+class PublishedClientPageSnapshotExport(BaseModel):
+    publish_version: str
+    page_code: str
+    page_type: str
+    route_path: str
+    title: str
+    description: str | None
+    seo_title: str | None
+    seo_description: str | None
+    sort_order: int
+    display_status: str
+    is_active: bool
+    published_at: datetime
+    source_page_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedClientPagesExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    pages: list[PublishedClientPageSnapshotExport]
+
+
+class PublishedClientRegionSnapshotExport(BaseModel):
+    publish_version: str
+    page_code: str
+    region_code: str
+    region_type: str
+    title: str
+    description: str | None
+    sort_order: int
+    is_required: bool
+    max_blocks: int | None
+    allowed_block_types: list[str] | None
+    display_status: str
+    is_active: bool
+    published_at: datetime
+    source_region_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedClientRegionsExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    regions: list[PublishedClientRegionSnapshotExport]
+
+
+class PublishedClientBlockTypeSnapshotExport(BaseModel):
+    publish_version: str
+    block_type: str
+    display_name: str
+    description: str | None
+    renderer_key: str
+    data_contract_version: str
+    allowed_region_types: list[str] | None
+    allowed_content_types: list[str] | None
+    layout_schema: dict[str, Any] | None
+    slot_schema: dict[str, Any] | None
+    action_schema: dict[str, Any] | None
+    analytics_schema: dict[str, Any] | None
+    display_status: str
+    is_active: bool
+    published_at: datetime
+    source_block_type_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedClientBlockTypesExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    block_types: list[PublishedClientBlockTypeSnapshotExport]
+
+
 class PublishedGroupExport(BaseModel):
     publish_version: str
     group_code: str

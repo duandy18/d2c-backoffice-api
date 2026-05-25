@@ -8,6 +8,9 @@ from sqlalchemy.orm import Session
 from app.core.database import get_session
 from app.domains.published_export.contracts.published_export_contract import (
     PublishedCatalogExportResponse,
+    PublishedClientBlockTypesExportResponse,
+    PublishedClientPagesExportResponse,
+    PublishedClientRegionsExportResponse,
     PublishedCouponsExportResponse,
     PublishedCouponsSnapshotExportResponse,
     PublishedExportHealthResponse,
@@ -32,6 +35,9 @@ from app.domains.published_export.services.published_export_service import (
     get_published_promotions_export,
 )
 from app.domains.published_snapshot.services.published_snapshot_service import (
+    get_published_client_block_types_snapshot,
+    get_published_client_pages_snapshot,
+    get_published_client_regions_snapshot,
     get_published_coupons_snapshot,
     get_published_groups_snapshot,
     get_published_offer_components_snapshot,
@@ -105,6 +111,33 @@ def published_coupons_export(
     publish_version: Annotated[str | None, Query()] = None,
 ) -> PublishedCouponsExportResponse:
     return get_published_coupons_export(session, publish_version)
+
+
+@router.get("/snapshot/client-pages", response_model=PublishedClientPagesExportResponse)
+def published_snapshot_client_pages_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedClientPagesExportResponse:
+    return get_published_client_pages_snapshot(session, publish_version)
+
+
+@router.get("/snapshot/client-regions", response_model=PublishedClientRegionsExportResponse)
+def published_snapshot_client_regions_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedClientRegionsExportResponse:
+    return get_published_client_regions_snapshot(session, publish_version)
+
+
+@router.get("/snapshot/client-block-types", response_model=PublishedClientBlockTypesExportResponse)
+def published_snapshot_client_block_types_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedClientBlockTypesExportResponse:
+    return get_published_client_block_types_snapshot(session, publish_version)
 
 
 @router.get("/snapshot/groups", response_model=PublishedGroupsExportResponse)
