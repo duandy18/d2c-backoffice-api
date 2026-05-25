@@ -28,3 +28,16 @@ class PublishVersionContract(BaseModel):
 class PublishVersionsResponse(BaseModel):
     count: int = Field(..., ge=0)
     publish_versions: list[PublishVersionContract]
+
+
+class PublishStorefrontRequest(BaseModel):
+    publish_version: str | None = Field(default=None, max_length=64)
+    published_by: str | None = Field(default=None, max_length=120)
+    note: str | None = None
+
+
+class PublishStorefrontResponse(BaseModel):
+    publish_version: str
+    publish_scope: str
+    status: str
+    published_at: datetime | None

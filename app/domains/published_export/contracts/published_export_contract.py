@@ -140,3 +140,185 @@ class PublishedCouponsExportResponse(BaseModel):
     publish_version: str | None
     count: int = Field(..., ge=0)
     coupons: list[PublishedCouponExport]
+
+
+class PublishedGroupExport(BaseModel):
+    publish_version: str
+    group_code: str
+    group_name: str
+    group_kind: str
+    description: str | None
+    image_url: str | None
+    sort_order: int
+    display_status: str
+    is_active: bool
+    published_at: datetime
+    source_group_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedGroupsExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    groups: list[PublishedGroupExport]
+
+
+class PublishedOfferSnapshotExport(BaseModel):
+    publish_version: str
+    offer_code: str
+    offer_type: str
+    title: str
+    subtitle: str | None
+    description: str | None
+    image_url: str | None
+    display_status: str
+    sell_status: str
+    published_at: datetime
+    source_offer_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedOffersExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    offers: list[PublishedOfferSnapshotExport]
+
+
+class PublishedOfferComponentSnapshotExport(BaseModel):
+    publish_version: str
+    offer_code: str
+    component_no: int
+    pms_item_id: int
+    pms_sku: str
+    pms_sku_code_id: int
+    sku_code: str
+    pms_item_uom_id: int
+    uom_code: str
+    uom_name: str
+    pms_barcode_id: int | None
+    barcode: str | None
+    quantity: str
+    component_role: str
+    sort_order: int
+    required: bool
+    published_at: datetime
+    source_component_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedOfferComponentsExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    components: list[PublishedOfferComponentSnapshotExport]
+
+
+class PublishedOfferPriceSnapshotExport(BaseModel):
+    publish_version: str
+    offer_code: str
+    price_code: str
+    channel: str
+    currency: str
+    price_cents: int
+    compare_at_price_cents: int | None
+    effective_from: datetime | None
+    effective_until: datetime | None
+    is_active: bool
+    priority: int
+    published_at: datetime
+    source_price_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedOfferPricesExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    prices: list[PublishedOfferPriceSnapshotExport]
+
+
+class PublishedOfferPositionSnapshotExport(BaseModel):
+    publish_version: str
+    position_code: str
+    group_code: str
+    offer_code: str
+    sort_order: int
+    position_source: str
+    is_featured: bool
+    visible_from: datetime | None
+    visible_until: datetime | None
+    is_active: bool
+    published_at: datetime
+    source_position_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedOfferPositionsExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    positions: list[PublishedOfferPositionSnapshotExport]
+
+
+class PublishedPromotionRuleSnapshotExport(BaseModel):
+    publish_version: str
+    promotion_code: str
+    promotion_name: str
+    description: str | None
+    promotion_type: str
+    discount_type: str
+    discount_value: int
+    threshold_amount_cents: int | None
+    max_discount_cents: int | None
+    currency: str
+    starts_at: datetime | None
+    ends_at: datetime | None
+    priority: int
+    stackable: bool
+    is_active: bool
+    display_badge: str | None
+    published_at: datetime
+    source_promotion_rule_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedPromotionRulesExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    promotion_rules: list[PublishedPromotionRuleSnapshotExport]
+
+
+class PublishedPromotionTargetSnapshotExport(BaseModel):
+    publish_version: str
+    promotion_code: str
+    target_type: str
+    target_id: int | None
+    target_code: str | None
+    published_at: datetime
+    source_target_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedPromotionTargetsExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    promotion_targets: list[PublishedPromotionTargetSnapshotExport]
+
+
+class PublishedCouponSnapshotExport(BaseModel):
+    publish_version: str
+    coupon_code: str
+    coupon_name: str
+    promotion_code: str
+    coupon_type: str
+    total_limit: int | None
+    per_customer_limit: int | None
+    starts_at: datetime | None
+    ends_at: datetime | None
+    is_active: bool
+    published_at: datetime
+    source_coupon_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedCouponsSnapshotExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    coupons: list[PublishedCouponSnapshotExport]
