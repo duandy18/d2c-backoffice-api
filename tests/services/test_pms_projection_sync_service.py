@@ -38,6 +38,10 @@ def _clear_projection_tables() -> None:
     with session_factory() as session:
         # Listing/pricing tables hold RESTRICT FKs to PMS projection rows.
         # Clear merchant-owned dependent rows first, then clear projection rows.
+        session.execute(text("DELETE FROM d2c_offer_positions"))
+        session.execute(text("DELETE FROM d2c_offer_prices"))
+        session.execute(text("DELETE FROM d2c_offer_components"))
+        session.execute(text("DELETE FROM d2c_offers"))
         session.execute(text("DELETE FROM d2c_price_configs"))
         session.execute(text("DELETE FROM d2c_storefront_category_bindings"))
         session.execute(text("DELETE FROM d2c_storefront_categories"))
