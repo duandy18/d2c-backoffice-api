@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
-BACKOFFICE_HEADERS = {"X-Backoffice-Client": "d2c-backoffice-web"}
+BACKOFFICE_HEADERS = {"X-Backoffice-Client": "d2c-backoffice"}
 
 
 def test_storefront_sections_require_backoffice_client() -> None:

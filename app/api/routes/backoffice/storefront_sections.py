@@ -33,7 +33,7 @@ SessionDep = Annotated[Session, Depends(get_session)]
 def require_backoffice_client(
     x_backoffice_client: Annotated[str | None, Header(alias="X-Backoffice-Client")] = None,
 ) -> None:
-    if x_backoffice_client != "d2c-backoffice-web":
+    if x_backoffice_client != "d2c-backoffice":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="backoffice_client_required",
