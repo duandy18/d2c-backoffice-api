@@ -20,6 +20,8 @@ from app.domains.client_presentation.contracts.client_presentation_contract impo
     ClientPresentationPageContract,
     ClientPresentationPageCreateRequest,
     ClientPresentationPagesResponse,
+    ClientPresentationPreviewResponse,
+    ClientPresentationPublishRuntimeStatusResponse,
     ClientPresentationRegionContract,
     ClientPresentationRegionCreateRequest,
     ClientPresentationRegionsResponse,
@@ -29,6 +31,7 @@ from app.domains.client_presentation.contracts.client_presentation_contract impo
     ClientPresentationTrackingPoliciesResponse,
     ClientPresentationTrackingPolicyContract,
     ClientPresentationTrackingPolicyCreateRequest,
+    ClientPresentationValidationReportResponse,
     ClientPresentationVisibilityRuleContract,
     ClientPresentationVisibilityRuleCreateRequest,
     ClientPresentationVisibilityRulesResponse,
@@ -49,9 +52,12 @@ from app.domains.client_presentation.services.client_presentation_service import
     get_client_presentation_data_bindings,
     get_client_presentation_health,
     get_client_presentation_pages,
+    get_client_presentation_preview,
+    get_client_presentation_publish_runtime_status,
     get_client_presentation_regions,
     get_client_presentation_surfaces,
     get_client_presentation_tracking_policies,
+    get_client_presentation_validation_report,
     get_client_presentation_visibility_rules,
 )
 
@@ -278,3 +284,43 @@ def client_presentation_tracking_policies_create(
         return create_client_presentation_tracking_policy(session, payload)
     except ClientPresentationDuplicateCodeError as exc:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+
+
+
+@router.get("/preview", response_model=ClientPresentationPreviewResponse)
+def client_presentation_preview(
+    _: BackofficeClientDep,
+    session: SessionDep,
+    page_code: Annotated[str, Query()] = "home",
+    surface_code: Annotated[str | None, Query()] = None,
+) -> ClientPresentationPreviewResponse:
+    try:
+        return get_client_presentation_preview(
+            session,
+            page_code=page_code,
+            surface_code=surface_code,
+        )
+    except ClientPresentationPageNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+
+@router.get(
+    "/validation-report",
+    response_model=ClientPresentationValidationReportResponse,
+)
+def client_presentation_validation_report(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationValidationReportResponse:
+    return get_client_presentation_validation_report(session)
+
+
+@router.get(
+    "/publish-runtime-status",
+    response_model=ClientPresentationPublishRuntimeStatusResponse,
+)
+def client_presentation_publish_runtime_status(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationPublishRuntimeStatusResponse:
+    return get_client_presentation_publish_runtime_status(session)

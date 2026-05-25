@@ -1,5 +1,6 @@
 """Client presentation services."""
 
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -17,15 +18,24 @@ from app.domains.client_presentation.contracts.client_presentation_contract impo
     ClientPresentationPageContract,
     ClientPresentationPageCreateRequest,
     ClientPresentationPagesResponse,
+    ClientPresentationPreviewBlock,
+    ClientPresentationPreviewPage,
+    ClientPresentationPreviewPosition,
+    ClientPresentationPreviewRegion,
+    ClientPresentationPreviewResponse,
+    ClientPresentationPublishRuntimeStatusResponse,
     ClientPresentationRegionContract,
     ClientPresentationRegionCreateRequest,
     ClientPresentationRegionsResponse,
+    ClientPresentationRuntimeSnapshotCount,
     ClientPresentationSurfaceContract,
     ClientPresentationSurfaceCreateRequest,
     ClientPresentationSurfacesResponse,
     ClientPresentationTrackingPoliciesResponse,
     ClientPresentationTrackingPolicyContract,
     ClientPresentationTrackingPolicyCreateRequest,
+    ClientPresentationValidationIssue,
+    ClientPresentationValidationReportResponse,
     ClientPresentationVisibilityRuleContract,
     ClientPresentationVisibilityRuleCreateRequest,
     ClientPresentationVisibilityRulesResponse,
@@ -66,6 +76,30 @@ from app.domains.client_presentation.repos.client_presentation_repo import (
     list_surfaces,
     list_tracking_policies,
     list_visibility_rules,
+)
+from app.domains.publish.models.publish_version import PublishVersion
+from app.domains.published_snapshot.models.published_snapshot import (
+    PublishedClientActionPolicy,
+    PublishedClientBlockType,
+    PublishedClientDataBinding,
+    PublishedClientPage,
+    PublishedClientRegion,
+    PublishedClientSurface,
+    PublishedClientTrackingPolicy,
+    PublishedClientVisibilityRule,
+    PublishedStorefrontSection,
+    PublishedStorefrontSectionLayout,
+    PublishedStorefrontSectionPosition,
+)
+from app.domains.storefront_sections.models.storefront_section import (
+    StorefrontSection,
+    StorefrontSectionLayout,
+    StorefrontSectionPosition,
+)
+from app.domains.storefront_sections.repos.storefront_section_repo import (
+    get_layout_by_section_id,
+    list_section_position_rows,
+    list_section_rows,
 )
 
 
@@ -628,3 +662,399 @@ def create_client_presentation_tracking_policy(
         ) from exc
 
     return _build_tracking_policy_contract(policy)
+
+
+
+def _known_client_targets(session: Session) -> dict[str, set[str]]:
+    pages = {row.page_code for row in list_pages(session)}
+    regions = {row.region_code for row, _page in list_all_region_rows(session)}
+    block_types = {row.block_type for row in list_block_types(session)}
+    sections = {section.section_code for section, _group in list_section_rows(session)}
+    return {
+        "global": {"client_presentation"},
+        "page": pages,
+        "region": regions,
+        "block_type": block_types,
+        "section": sections,
+    }
+
+
+def _target_exists(targets: dict[str, set[str]], target_type: str, target_code: str) -> bool:
+    if target_type == "global":
+        return True
+    return target_code in targets.get(target_type, set())
+
+
+def _count_owner(session: Session, model: type[object]) -> int:
+    return int(session.scalar(select(func.count()).select_from(model)) or 0)
+
+
+def _count_snapshot(
+    session: Session,
+    model: type[object],
+    publish_version: str | None,
+) -> int:
+    if publish_version is None:
+        return 0
+    return int(
+        session.scalar(
+            select(func.count()).select_from(model).where(model.publish_version == publish_version)
+        )
+        or 0
+    )
+
+
+def _latest_publish_version(session: Session) -> PublishVersion | None:
+    statement = (
+        select(PublishVersion)
+        .where(PublishVersion.status == "published")
+        .where(PublishVersion.publish_scope.in_(("storefront", "all")))
+        .order_by(PublishVersion.published_at.desc().nullslast(), PublishVersion.id.desc())
+        .limit(1)
+    )
+    return session.scalar(statement)
+
+
+def get_client_presentation_validation_report(
+    session: Session,
+) -> ClientPresentationValidationReportResponse:
+    issues: list[ClientPresentationValidationIssue] = []
+
+    pages = {row.page_code for row in list_pages(session)}
+    regions = {row.region_code: row for row, _page in list_all_region_rows(session)}
+    block_types = {row.block_type: row for row in list_block_types(session)}
+    renderer_keys = {row.renderer_key for row in block_types.values()}
+    targets = _known_client_targets(session)
+
+    for region in regions.values():
+        for block_type in _as_list(region.allowed_block_types):
+            if block_type not in block_types:
+                issues.append(
+                    ClientPresentationValidationIssue(
+                        severity="blocking",
+                        code="region_block_type_missing",
+                        message="Region references a block type that is not registered.",
+                        target_type="region",
+                        target_code=region.region_code,
+                    )
+                )
+
+    for surface in list_surfaces(session):
+        for renderer_key in _as_list(surface.supported_renderer_keys):
+            if renderer_key not in renderer_keys:
+                issues.append(
+                    ClientPresentationValidationIssue(
+                        severity="blocking",
+                        code="surface_renderer_missing",
+                        message="Surface references a renderer key without a block type.",
+                        target_type="surface",
+                        target_code=surface.surface_code,
+                    )
+                )
+
+    for binding in list_data_bindings(session):
+        if not _target_exists(targets, binding.target_type, binding.target_code):
+            issues.append(
+                ClientPresentationValidationIssue(
+                    severity="blocking",
+                    code="data_binding_target_missing",
+                    message="Data binding target is not a known client presentation target.",
+                    target_type=binding.target_type,
+                    target_code=binding.target_code,
+                )
+            )
+
+    for rule in list_visibility_rules(session):
+        if not _target_exists(targets, rule.target_type, rule.target_code):
+            issues.append(
+                ClientPresentationValidationIssue(
+                    severity="blocking",
+                    code="visibility_target_missing",
+                    message="Visibility rule target is not a known client presentation target.",
+                    target_type=rule.target_type,
+                    target_code=rule.target_code,
+                )
+            )
+
+    for policy in list_action_policies(session):
+        if not _target_exists(targets, policy.target_type, policy.target_code):
+            issues.append(
+                ClientPresentationValidationIssue(
+                    severity="blocking",
+                    code="action_target_missing",
+                    message="Action policy target is not a known client presentation target.",
+                    target_type=policy.target_type,
+                    target_code=policy.target_code,
+                )
+            )
+        if policy.target_page_code is not None and policy.target_page_code not in pages:
+            issues.append(
+                ClientPresentationValidationIssue(
+                    severity="blocking",
+                    code="action_target_page_missing",
+                    message="Action policy target page is not registered.",
+                    target_type="action_policy",
+                    target_code=policy.policy_code,
+                )
+            )
+
+    for policy in list_tracking_policies(session):
+        if not _target_exists(targets, policy.target_type, policy.target_code):
+            issues.append(
+                ClientPresentationValidationIssue(
+                    severity="blocking",
+                    code="tracking_target_missing",
+                    message="Tracking policy target is not a known client presentation target.",
+                    target_type=policy.target_type,
+                    target_code=policy.target_code,
+                )
+            )
+
+    blocking_count = sum(1 for issue in issues if issue.severity == "blocking")
+    warning_count = sum(1 for issue in issues if issue.severity == "warning")
+
+    return ClientPresentationValidationReportResponse(
+        can_publish=blocking_count == 0,
+        issue_count=len(issues),
+        blocking_issue_count=blocking_count,
+        warning_issue_count=warning_count,
+        checked_counts={
+            "pages": len(pages),
+            "regions": len(regions),
+            "block_types": len(block_types),
+            "surfaces": len(list_surfaces(session)),
+            "data_bindings": len(list_data_bindings(session)),
+            "visibility_rules": len(list_visibility_rules(session)),
+            "action_policies": len(list_action_policies(session)),
+            "tracking_policies": len(list_tracking_policies(session)),
+            "sections": len(list_section_rows(session)),
+        },
+        issues=issues,
+    )
+
+
+def _layout_payload(layout: StorefrontSectionLayout | None) -> dict[str, object] | None:
+    if layout is None:
+        return None
+    return {
+        "display_type": layout.display_type,
+        "columns_desktop": layout.columns_desktop,
+        "columns_tablet": layout.columns_tablet,
+        "columns_mobile": layout.columns_mobile,
+        "card_size": layout.card_size,
+        "image_ratio": layout.image_ratio,
+        "show_promotion_badge": layout.show_promotion_badge,
+        "show_sales_summary": layout.show_sales_summary,
+        "show_review_summary": layout.show_review_summary,
+        "show_compare_price": layout.show_compare_price,
+        "show_quantity_stepper": layout.show_quantity_stepper,
+        "max_items": layout.max_items,
+    }
+
+
+def _preview_positions(
+    session: Session,
+    section: StorefrontSection,
+) -> list[ClientPresentationPreviewPosition]:
+    return [
+        ClientPresentationPreviewPosition(
+            position_code=position.position_code,
+            offer_code=offer.offer_code,
+            sort_order=position.sort_order,
+            position_type=position.position_type,
+            is_featured=position.is_featured,
+            is_active=position.is_active,
+        )
+        for position, offer in list_section_position_rows(session, section.id)
+    ]
+
+
+def get_client_presentation_preview(
+    session: Session,
+    *,
+    page_code: str,
+    surface_code: str | None = None,
+) -> ClientPresentationPreviewResponse:
+    page = get_page_by_code(session, page_code)
+    if page is None:
+        raise ClientPresentationPageNotFoundError("client_page_not_found")
+
+    region_rows = list_region_rows_by_page_id(session, page.id)
+    sections = [section for section, _group in list_section_rows(session)]
+    bindings = list_data_bindings(session)
+    visibility_rules = list_visibility_rules(session)
+    action_policies = list_action_policies(session)
+    tracking_policies = list_tracking_policies(session)
+
+    preview_regions: list[ClientPresentationPreviewRegion] = []
+
+    for region, _page in region_rows:
+        allowed_block_types = _as_list(region.allowed_block_types)
+        blocks: list[ClientPresentationPreviewBlock] = []
+
+        for section in sections:
+            if section.section_type not in allowed_block_types:
+                continue
+
+            layout = get_layout_by_section_id(session, section.id)
+            data_binding_codes = [
+                binding.binding_code
+                for binding in bindings
+                if (
+                    binding.target_type == "block_type"
+                    and binding.target_code == section.section_type
+                )
+                or (binding.target_type == "region" and binding.target_code == region.region_code)
+                or (
+                    binding.target_type == "section"
+                    and binding.target_code == section.section_code
+                )
+            ]
+            visibility_rule_codes = [
+                rule.rule_code
+                for rule in visibility_rules
+                if rule.target_type == "global"
+                or (rule.target_type == "region" and rule.target_code == region.region_code)
+                or (rule.target_type == "block_type" and rule.target_code == section.section_type)
+                or (rule.target_type == "section" and rule.target_code == section.section_code)
+            ]
+            action_policy_codes = [
+                policy.policy_code
+                for policy in action_policies
+                if policy.target_type == "block_type" and policy.target_code == section.section_type
+            ]
+            tracking_policy_codes = [
+                policy.policy_code
+                for policy in tracking_policies
+                if policy.target_type == "block_type" and policy.target_code == section.section_type
+            ]
+
+            blocks.append(
+                ClientPresentationPreviewBlock(
+                    block_code=section.section_code,
+                    block_type=section.section_type,
+                    title=section.title,
+                    layout=_layout_payload(layout),
+                    data_binding_codes=data_binding_codes,
+                    visibility_rule_codes=visibility_rule_codes,
+                    action_policy_codes=action_policy_codes,
+                    tracking_policy_codes=tracking_policy_codes,
+                    positions=_preview_positions(session, section),
+                )
+            )
+
+        preview_regions.append(
+            ClientPresentationPreviewRegion(
+                region_code=region.region_code,
+                region_type=region.region_type,
+                title=region.title,
+                sort_order=region.sort_order,
+                allowed_block_types=allowed_block_types,
+                blocks=blocks,
+            )
+        )
+
+    return ClientPresentationPreviewResponse(
+        page_code=page.page_code,
+        surface_code=surface_code,
+        generated_from="owner",
+        page=ClientPresentationPreviewPage(
+            page_code=page.page_code,
+            page_type=page.page_type,
+            route_path=page.route_path,
+            title=page.title,
+            regions=preview_regions,
+        ),
+    )
+
+
+def get_client_presentation_publish_runtime_status(
+    session: Session,
+) -> ClientPresentationPublishRuntimeStatusResponse:
+    latest = _latest_publish_version(session)
+    publish_version = latest.publish_version if latest is not None else None
+
+    snapshot_counts = [
+        ClientPresentationRuntimeSnapshotCount(
+            name="client_pages",
+            owner_count=_count_owner(session, ClientPresentationPage),
+            latest_snapshot_count=_count_snapshot(session, PublishedClientPage, publish_version),
+        ),
+        ClientPresentationRuntimeSnapshotCount(
+            name="client_regions",
+            owner_count=_count_owner(session, ClientPresentationRegion),
+            latest_snapshot_count=_count_snapshot(session, PublishedClientRegion, publish_version),
+        ),
+        ClientPresentationRuntimeSnapshotCount(
+            name="client_block_types",
+            owner_count=_count_owner(session, ClientPresentationBlockType),
+            latest_snapshot_count=_count_snapshot(
+                session, PublishedClientBlockType, publish_version
+            ),
+        ),
+        ClientPresentationRuntimeSnapshotCount(
+            name="client_surfaces",
+            owner_count=_count_owner(session, ClientPresentationSurface),
+            latest_snapshot_count=_count_snapshot(session, PublishedClientSurface, publish_version),
+        ),
+        ClientPresentationRuntimeSnapshotCount(
+            name="client_data_bindings",
+            owner_count=_count_owner(session, ClientPresentationDataBinding),
+            latest_snapshot_count=_count_snapshot(
+                session, PublishedClientDataBinding, publish_version
+            ),
+        ),
+        ClientPresentationRuntimeSnapshotCount(
+            name="client_visibility_rules",
+            owner_count=_count_owner(session, ClientPresentationVisibilityRule),
+            latest_snapshot_count=_count_snapshot(
+                session, PublishedClientVisibilityRule, publish_version
+            ),
+        ),
+        ClientPresentationRuntimeSnapshotCount(
+            name="client_action_policies",
+            owner_count=_count_owner(session, ClientPresentationActionPolicy),
+            latest_snapshot_count=_count_snapshot(
+                session, PublishedClientActionPolicy, publish_version
+            ),
+        ),
+        ClientPresentationRuntimeSnapshotCount(
+            name="client_tracking_policies",
+            owner_count=_count_owner(session, ClientPresentationTrackingPolicy),
+            latest_snapshot_count=_count_snapshot(
+                session, PublishedClientTrackingPolicy, publish_version
+            ),
+        ),
+        ClientPresentationRuntimeSnapshotCount(
+            name="storefront_sections",
+            owner_count=_count_owner(session, StorefrontSection),
+            latest_snapshot_count=_count_snapshot(
+                session, PublishedStorefrontSection, publish_version
+            ),
+        ),
+        ClientPresentationRuntimeSnapshotCount(
+            name="storefront_section_layouts",
+            owner_count=_count_owner(session, StorefrontSectionLayout),
+            latest_snapshot_count=_count_snapshot(
+                session, PublishedStorefrontSectionLayout, publish_version
+            ),
+        ),
+        ClientPresentationRuntimeSnapshotCount(
+            name="storefront_section_positions",
+            owner_count=_count_owner(session, StorefrontSectionPosition),
+            latest_snapshot_count=_count_snapshot(
+                session, PublishedStorefrontSectionPosition, publish_version
+            ),
+        ),
+    ]
+
+    return ClientPresentationPublishRuntimeStatusResponse(
+        latest_publish_version=publish_version,
+        latest_published_at=latest.published_at if latest is not None else None,
+        runtime_sync_status="backoffice_snapshot_ready",
+        runtime_sync_note=(
+            "d2c-backoffice-api owns publish snapshots; d2c-api runtime sync status "
+            "is verified by downstream sync jobs."
+        ),
+        snapshot_counts=snapshot_counts,
+    )
