@@ -108,7 +108,7 @@ class PublishedPromotionExport(BaseModel):
     stackable: bool
     is_active: bool
     published_at: datetime
-    source_promotion_id: int | None
+    source_promotion_rule_id: int | None
     source_updated_at: datetime | None
     raw_payload: dict[str, Any] | None
 

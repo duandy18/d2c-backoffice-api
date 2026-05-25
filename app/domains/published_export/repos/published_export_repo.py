@@ -23,7 +23,7 @@ from app.domains.pms_projection.models import (
     PmsUnitProjection,
 )
 from app.domains.pricing.models.price_config import PriceConfig
-from app.domains.promotions.models.promotion import Coupon, Promotion
+from app.domains.promotions.models.promotion_rule import Coupon, PromotionRule
 from app.domains.publish.models.publish_version import PublishVersion
 
 
@@ -205,15 +205,15 @@ def list_published_price_export_rows(
     return list(session.execute(statement).all())
 
 
-def list_published_promotion_export_rows(session: Session) -> list[Promotion]:
-    statement = select(Promotion).order_by(Promotion.priority, Promotion.id)
+def list_published_promotion_export_rows(session: Session) -> list[PromotionRule]:
+    statement = select(PromotionRule).order_by(PromotionRule.priority, PromotionRule.id)
     return list(session.scalars(statement).all())
 
 
-def list_published_coupon_export_rows(session: Session) -> list[tuple[Coupon, Promotion]]:
+def list_published_coupon_export_rows(session: Session) -> list[tuple[Coupon, PromotionRule]]:
     statement = (
-        select(Coupon, Promotion)
-        .join(Promotion, Promotion.id == Coupon.promotion_id)
+        select(Coupon, PromotionRule)
+        .join(PromotionRule, PromotionRule.id == Coupon.promotion_rule_id)
         .order_by(Coupon.id)
     )
     return list(session.execute(statement).all())

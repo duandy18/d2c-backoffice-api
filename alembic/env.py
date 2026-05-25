@@ -37,9 +37,9 @@ from app.domains.pms_projection.models import (  # noqa: F401
     PmsUnitProjection,
 )
 from app.domains.pricing.models.price_config import PriceConfig  # noqa: F401
-from app.domains.promotions.models.promotion import (  # noqa: F401
+from app.domains.promotions.models.promotion_rule import (  # noqa: F401
     Coupon,
-    Promotion,
+    PromotionRule,
     PromotionTarget,
 )
 from app.domains.publish.models.publish_version import PublishVersion  # noqa: F401

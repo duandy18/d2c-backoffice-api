@@ -23,7 +23,7 @@ from app.domains.pms_projection.models import (
     PmsUnitProjection,
 )
 from app.domains.pricing.models.price_config import PriceConfig
-from app.domains.promotions.models.promotion import Coupon, Promotion
+from app.domains.promotions.models.promotion_rule import Coupon, PromotionRule
 from app.domains.publish.models.publish_version import PublishVersion
 from app.domains.published_export.contracts.published_export_contract import (
     PublishedCatalogExportResponse,
@@ -389,10 +389,10 @@ def get_published_prices_export(
     )
 
 
-def _promotion_raw_payload(promotion: Promotion) -> dict[str, Any]:
+def _promotion_raw_payload(promotion: PromotionRule) -> dict[str, Any]:
     return {
         "source": "d2c-backoffice-api",
-        "source_promotion_id": promotion.id,
+        "source_promotion_rule_id": promotion.id,
         "status": promotion.status,
     }
 
@@ -400,17 +400,17 @@ def _promotion_raw_payload(promotion: Promotion) -> dict[str, Any]:
 def _build_promotion(
     publish_version: str,
     published_at: datetime,
-    promotion: Promotion,
+    promotion: PromotionRule,
 ) -> PublishedPromotionExport:
     return PublishedPromotionExport(
         publish_version=publish_version,
         promotion_code=promotion.promotion_code,
-        promotion_name=promotion.name,
+        promotion_name=promotion.promotion_name,
         promotion_type=promotion.promotion_type,
         discount_type=promotion.discount_type,
         discount_value=promotion.discount_value,
-        scope_type=promotion.scope_type,
-        min_order_amount_cents=promotion.min_order_amount_cents,
+        scope_type="targets",
+        min_order_amount_cents=promotion.threshold_amount_cents,
         max_discount_cents=promotion.max_discount_cents,
         currency=promotion.currency,
         starts_at=promotion.starts_at,
@@ -419,7 +419,7 @@ def _build_promotion(
         stackable=promotion.stackable,
         is_active=promotion.is_active,
         published_at=published_at,
-        source_promotion_id=promotion.id,
+        source_promotion_rule_id=promotion.id,
         source_updated_at=promotion.updated_at,
         raw_payload=_promotion_raw_payload(promotion),
     )
@@ -448,11 +448,11 @@ def get_published_promotions_export(
     )
 
 
-def _coupon_raw_payload(coupon: Coupon, promotion: Promotion) -> dict[str, Any]:
+def _coupon_raw_payload(coupon: Coupon, promotion: PromotionRule) -> dict[str, Any]:
     return {
         "source": "d2c-backoffice-api",
         "source_coupon_id": coupon.id,
-        "source_promotion_id": promotion.id,
+        "source_promotion_rule_id": promotion.id,
         "status": coupon.status,
     }
 
@@ -461,12 +461,12 @@ def _build_coupon(
     publish_version: str,
     published_at: datetime,
     coupon: Coupon,
-    promotion: Promotion,
+    promotion: PromotionRule,
 ) -> PublishedCouponExport:
     return PublishedCouponExport(
         publish_version=publish_version,
         coupon_code=coupon.coupon_code,
-        coupon_name=coupon.name,
+        coupon_name=coupon.coupon_name,
         promotion_code=promotion.promotion_code,
         coupon_type=coupon.coupon_type,
         total_limit=coupon.total_limit,

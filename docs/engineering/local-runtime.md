@@ -35,7 +35,7 @@ make uvicorn-down
 
 - /backoffice/pages/*
 - /backoffice/catalog/*
-- /backoffice/promotions/*
+- /backoffice/promotion-rules/*
 - 商品表
 - 价格表
 - 促销表

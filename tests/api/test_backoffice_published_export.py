@@ -26,7 +26,7 @@ from app.domains.pms_projection.models import (
     PmsUnitProjection,
 )
 from app.domains.pricing.models.price_config import PriceConfig
-from app.domains.promotions.models.promotion import Coupon, Promotion
+from app.domains.promotions.models.promotion_rule import Coupon, PromotionRule
 from app.domains.publish.models.publish_version import PublishVersion
 from app.main import app
 
@@ -382,15 +382,13 @@ def _seed_export_data() -> dict[str, str]:
             )
         )
 
-        promotion = Promotion(
+        promotion = PromotionRule(
             promotion_code=promotion_code,
-            name="测试促销",
+            promotion_name="测试促销",
             description="pytest promotion",
             promotion_type="store_campaign",
             discount_type="percentage",
             discount_value=10,
-            scope_type="all_store",
-            min_order_amount_cents=None,
             max_discount_cents=None,
             currency="USD",
             starts_at=None,
@@ -399,6 +397,7 @@ def _seed_export_data() -> dict[str, str]:
             priority=10,
             stackable=False,
             is_active=True,
+            display_badge="测试促销",
         )
         session.add(promotion)
         session.flush()
@@ -406,8 +405,8 @@ def _seed_export_data() -> dict[str, str]:
         session.add(
             Coupon(
                 coupon_code=coupon_code,
-                name="测试优惠券",
-                promotion_id=promotion.id,
+                coupon_name="测试优惠券",
+                promotion_rule_id=promotion.id,
                 coupon_type="public_code",
                 total_limit=100,
                 per_customer_limit=1,

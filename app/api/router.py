@@ -10,7 +10,9 @@ from app.api.routes.backoffice.pms_projection.router import (
     router as backoffice_pms_projection_router,
 )
 from app.api.routes.backoffice.pricing import router as backoffice_pricing_router
-from app.api.routes.backoffice.promotions import router as backoffice_promotions_router
+from app.api.routes.backoffice.promotion_rules import (
+    router as backoffice_promotion_rules_router,
+)
 from app.api.routes.backoffice.publish import router as backoffice_publish_router
 from app.api.routes.backoffice.published_export import router as backoffice_published_export_router
 from app.api.routes.backoffice.storefront_categories import (
@@ -21,7 +23,7 @@ from app.api.routes.system.health import router as system_health_router
 api_router = APIRouter()
 api_router.include_router(backoffice_groups_router)
 api_router.include_router(backoffice_offers_router)
-api_router.include_router(backoffice_promotions_router)
+api_router.include_router(backoffice_promotion_rules_router)
 api_router.include_router(backoffice_pricing_router)
 api_router.include_router(backoffice_listing_router)
 api_router.include_router(backoffice_storefront_categories_router)
