@@ -8,6 +8,7 @@ from alembic import context
 from app.core.config import load_settings
 from app.core.database import Base
 from app.domains.backoffice_pages.models.backoffice_page import BackofficePage  # noqa: F401
+from app.domains.groups.models.group import Group  # noqa: F401
 from app.domains.listing.models.listing import (  # noqa: F401
     ProductListingConfig,
     ProductListingContent,
@@ -15,6 +16,12 @@ from app.domains.listing.models.listing import (  # noqa: F401
     SkuListingConfig,
     StorefrontCategory,
     StorefrontCategoryBinding,
+)
+from app.domains.offers.models.offer import (  # noqa: F401
+    Offer,
+    OfferComponent,
+    OfferPosition,
+    OfferPrice,
 )
 from app.domains.pms_projection.models import (  # noqa: F401
     PmsBarcodeProjection,

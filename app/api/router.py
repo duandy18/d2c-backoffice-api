@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
+from app.api.routes.backoffice.groups import router as backoffice_groups_router
 from app.api.routes.backoffice.listing import router as backoffice_listing_router
+from app.api.routes.backoffice.offers import router as backoffice_offers_router
 from app.api.routes.backoffice.pages import router as backoffice_pages_router
 from app.api.routes.backoffice.pms_projection.router import (
     router as backoffice_pms_projection_router,
@@ -17,6 +19,8 @@ from app.api.routes.backoffice.storefront_categories import (
 from app.api.routes.system.health import router as system_health_router
 
 api_router = APIRouter()
+api_router.include_router(backoffice_groups_router)
+api_router.include_router(backoffice_offers_router)
 api_router.include_router(backoffice_promotions_router)
 api_router.include_router(backoffice_pricing_router)
 api_router.include_router(backoffice_listing_router)
