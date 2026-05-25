@@ -133,3 +133,195 @@ class ClientPresentationBlockTypeContract(BaseModel):
 class ClientPresentationBlockTypesResponse(BaseModel):
     count: int = Field(..., ge=0)
     block_types: list[ClientPresentationBlockTypeContract]
+
+
+class ClientPresentationSurfaceCreateRequest(BaseModel):
+    surface_code: str = Field(..., min_length=1, max_length=64)
+    surface_name: str = Field(..., min_length=1, max_length=160)
+    surface_type: str = Field(..., min_length=1, max_length=32)
+    device_family: str = Field(..., min_length=1, max_length=32)
+    breakpoint_profile: dict[str, Any] | None = None
+    supported_renderer_keys: list[str] = Field(default_factory=list)
+    is_active: bool = True
+    source_type: str = Field(default="manual", min_length=1, max_length=32)
+    source_ref: str | None = Field(default=None, max_length=160)
+
+
+class ClientPresentationSurfaceContract(BaseModel):
+    id: int
+    surface_code: str
+    surface_name: str
+    surface_type: str
+    device_family: str
+    breakpoint_profile: dict[str, Any] | None
+    supported_renderer_keys: list[str]
+    is_active: bool
+    source_type: str
+    source_ref: str | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class ClientPresentationSurfacesResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    surfaces: list[ClientPresentationSurfaceContract]
+
+
+class ClientPresentationDataBindingCreateRequest(BaseModel):
+    binding_code: str = Field(..., min_length=1, max_length=96)
+    target_type: str = Field(..., min_length=1, max_length=32)
+    target_code: str = Field(..., min_length=1, max_length=120)
+    data_source_type: str = Field(..., min_length=1, max_length=32)
+    data_source_ref: str | None = Field(default=None, max_length=160)
+    content_type: str = Field(..., min_length=1, max_length=32)
+    query_params: dict[str, Any] | None = None
+    result_limit: int | None = Field(default=None, ge=1)
+    sort_policy: dict[str, Any] | None = None
+    refresh_policy: dict[str, Any] | None = None
+    is_active: bool = True
+    source_type: str = Field(default="manual", min_length=1, max_length=32)
+    source_ref: str | None = Field(default=None, max_length=160)
+
+
+class ClientPresentationDataBindingContract(BaseModel):
+    id: int
+    binding_code: str
+    target_type: str
+    target_code: str
+    data_source_type: str
+    data_source_ref: str | None
+    content_type: str
+    query_params: dict[str, Any] | None
+    result_limit: int | None
+    sort_policy: dict[str, Any] | None
+    refresh_policy: dict[str, Any] | None
+    is_active: bool
+    source_type: str
+    source_ref: str | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class ClientPresentationDataBindingsResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    data_bindings: list[ClientPresentationDataBindingContract]
+
+
+class ClientPresentationVisibilityRuleCreateRequest(BaseModel):
+    rule_code: str = Field(..., min_length=1, max_length=96)
+    target_type: str = Field(..., min_length=1, max_length=32)
+    target_code: str = Field(..., min_length=1, max_length=120)
+    client_surface_codes: list[str] = Field(default_factory=list)
+    customer_segments: list[str] = Field(default_factory=list)
+    login_state: str | None = Field(default=None, max_length=32)
+    locale: str | None = Field(default=None, max_length=16)
+    currency: str | None = Field(default=None, max_length=3)
+    visible_from: datetime | None = None
+    visible_until: datetime | None = None
+    rule_expression: dict[str, Any] | None = None
+    priority: int = Field(default=100, ge=0)
+    is_active: bool = True
+    source_type: str = Field(default="manual", min_length=1, max_length=32)
+    source_ref: str | None = Field(default=None, max_length=160)
+
+
+class ClientPresentationVisibilityRuleContract(BaseModel):
+    id: int
+    rule_code: str
+    target_type: str
+    target_code: str
+    client_surface_codes: list[str]
+    customer_segments: list[str]
+    login_state: str | None
+    locale: str | None
+    currency: str | None
+    visible_from: datetime | None
+    visible_until: datetime | None
+    rule_expression: dict[str, Any] | None
+    priority: int
+    is_active: bool
+    source_type: str
+    source_ref: str | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class ClientPresentationVisibilityRulesResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    visibility_rules: list[ClientPresentationVisibilityRuleContract]
+
+
+class ClientPresentationActionPolicyCreateRequest(BaseModel):
+    policy_code: str = Field(..., min_length=1, max_length=96)
+    target_type: str = Field(..., min_length=1, max_length=32)
+    target_code: str = Field(..., min_length=1, max_length=120)
+    action_type: str = Field(..., min_length=1, max_length=32)
+    label: str | None = Field(default=None, max_length=120)
+    target_url: str | None = None
+    target_page_code: str | None = Field(default=None, max_length=96)
+    target_ref: str | None = Field(default=None, max_length=160)
+    open_mode: str = Field(default="same", min_length=1, max_length=32)
+    action_payload: dict[str, Any] | None = None
+    is_active: bool = True
+    source_type: str = Field(default="manual", min_length=1, max_length=32)
+    source_ref: str | None = Field(default=None, max_length=160)
+
+
+class ClientPresentationActionPolicyContract(BaseModel):
+    id: int
+    policy_code: str
+    target_type: str
+    target_code: str
+    action_type: str
+    label: str | None
+    target_url: str | None
+    target_page_code: str | None
+    target_ref: str | None
+    open_mode: str
+    action_payload: dict[str, Any] | None
+    is_active: bool
+    source_type: str
+    source_ref: str | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class ClientPresentationActionPoliciesResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    action_policies: list[ClientPresentationActionPolicyContract]
+
+
+class ClientPresentationTrackingPolicyCreateRequest(BaseModel):
+    policy_code: str = Field(..., min_length=1, max_length=96)
+    target_type: str = Field(..., min_length=1, max_length=32)
+    target_code: str = Field(..., min_length=1, max_length=120)
+    event_name: str = Field(..., min_length=1, max_length=96)
+    event_type: str = Field(..., min_length=1, max_length=32)
+    event_trigger: str = Field(..., min_length=1, max_length=32)
+    tracking_params: dict[str, Any] | None = None
+    is_required: bool = False
+    is_active: bool = True
+    source_type: str = Field(default="manual", min_length=1, max_length=32)
+    source_ref: str | None = Field(default=None, max_length=160)
+
+
+class ClientPresentationTrackingPolicyContract(BaseModel):
+    id: int
+    policy_code: str
+    target_type: str
+    target_code: str
+    event_name: str
+    event_type: str
+    event_trigger: str
+    tracking_params: dict[str, Any] | None
+    is_required: bool
+    is_active: bool
+    source_type: str
+    source_ref: str | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class ClientPresentationTrackingPoliciesResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    tracking_policies: list[ClientPresentationTrackingPolicyContract]

@@ -8,9 +8,14 @@ from sqlalchemy.orm import Session
 from app.core.database import get_session
 from app.domains.published_export.contracts.published_export_contract import (
     PublishedCatalogExportResponse,
+    PublishedClientActionPoliciesExportResponse,
     PublishedClientBlockTypesExportResponse,
+    PublishedClientDataBindingsExportResponse,
     PublishedClientPagesExportResponse,
     PublishedClientRegionsExportResponse,
+    PublishedClientSurfacesExportResponse,
+    PublishedClientTrackingPoliciesExportResponse,
+    PublishedClientVisibilityRulesExportResponse,
     PublishedCouponsExportResponse,
     PublishedCouponsSnapshotExportResponse,
     PublishedExportHealthResponse,
@@ -35,9 +40,14 @@ from app.domains.published_export.services.published_export_service import (
     get_published_promotions_export,
 )
 from app.domains.published_snapshot.services.published_snapshot_service import (
+    get_published_client_action_policies_snapshot,
     get_published_client_block_types_snapshot,
+    get_published_client_data_bindings_snapshot,
     get_published_client_pages_snapshot,
     get_published_client_regions_snapshot,
+    get_published_client_surfaces_snapshot,
+    get_published_client_tracking_policies_snapshot,
+    get_published_client_visibility_rules_snapshot,
     get_published_coupons_snapshot,
     get_published_groups_snapshot,
     get_published_offer_components_snapshot,
@@ -111,6 +121,65 @@ def published_coupons_export(
     publish_version: Annotated[str | None, Query()] = None,
 ) -> PublishedCouponsExportResponse:
     return get_published_coupons_export(session, publish_version)
+
+
+
+
+@router.get("/snapshot/client-surfaces", response_model=PublishedClientSurfacesExportResponse)
+def published_snapshot_client_surfaces_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedClientSurfacesExportResponse:
+    return get_published_client_surfaces_snapshot(session, publish_version)
+
+
+@router.get(
+    "/snapshot/client-data-bindings",
+    response_model=PublishedClientDataBindingsExportResponse,
+)
+def published_snapshot_client_data_bindings_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedClientDataBindingsExportResponse:
+    return get_published_client_data_bindings_snapshot(session, publish_version)
+
+
+@router.get(
+    "/snapshot/client-visibility-rules",
+    response_model=PublishedClientVisibilityRulesExportResponse,
+)
+def published_snapshot_client_visibility_rules_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedClientVisibilityRulesExportResponse:
+    return get_published_client_visibility_rules_snapshot(session, publish_version)
+
+
+@router.get(
+    "/snapshot/client-action-policies",
+    response_model=PublishedClientActionPoliciesExportResponse,
+)
+def published_snapshot_client_action_policies_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedClientActionPoliciesExportResponse:
+    return get_published_client_action_policies_snapshot(session, publish_version)
+
+
+@router.get(
+    "/snapshot/client-tracking-policies",
+    response_model=PublishedClientTrackingPoliciesExportResponse,
+)
+def published_snapshot_client_tracking_policies_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedClientTrackingPoliciesExportResponse:
+    return get_published_client_tracking_policies_snapshot(session, publish_version)
 
 
 @router.get("/snapshot/client-pages", response_model=PublishedClientPagesExportResponse)

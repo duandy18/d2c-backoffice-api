@@ -465,3 +465,119 @@ class PublishedStorefrontSectionLayoutsExportResponse(BaseModel):
     publish_version: str | None
     count: int
     layouts: list[PublishedStorefrontSectionLayoutSnapshotExport]
+
+
+class PublishedClientSurfaceSnapshotExport(BaseModel):
+    publish_version: str
+    surface_code: str
+    surface_name: str
+    surface_type: str
+    device_family: str
+    breakpoint_profile: dict[str, Any] | None
+    supported_renderer_keys: list[str] | None
+    is_active: bool
+    published_at: datetime
+    source_surface_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedClientSurfacesExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    surfaces: list[PublishedClientSurfaceSnapshotExport]
+
+
+class PublishedClientDataBindingSnapshotExport(BaseModel):
+    publish_version: str
+    binding_code: str
+    target_type: str
+    target_code: str
+    data_source_type: str
+    data_source_ref: str | None
+    content_type: str
+    query_params: dict[str, Any] | None
+    result_limit: int | None
+    sort_policy: dict[str, Any] | None
+    refresh_policy: dict[str, Any] | None
+    is_active: bool
+    published_at: datetime
+    source_binding_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedClientDataBindingsExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    data_bindings: list[PublishedClientDataBindingSnapshotExport]
+
+
+class PublishedClientVisibilityRuleSnapshotExport(BaseModel):
+    publish_version: str
+    rule_code: str
+    target_type: str
+    target_code: str
+    client_surface_codes: list[str] | None
+    customer_segments: list[str] | None
+    login_state: str | None
+    locale: str | None
+    currency: str | None
+    visible_from: datetime | None
+    visible_until: datetime | None
+    rule_expression: dict[str, Any] | None
+    priority: int
+    is_active: bool
+    published_at: datetime
+    source_rule_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedClientVisibilityRulesExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    visibility_rules: list[PublishedClientVisibilityRuleSnapshotExport]
+
+
+class PublishedClientActionPolicySnapshotExport(BaseModel):
+    publish_version: str
+    policy_code: str
+    target_type: str
+    target_code: str
+    action_type: str
+    label: str | None
+    target_url: str | None
+    target_page_code: str | None
+    target_ref: str | None
+    open_mode: str
+    action_payload: dict[str, Any] | None
+    is_active: bool
+    published_at: datetime
+    source_policy_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedClientActionPoliciesExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    action_policies: list[PublishedClientActionPolicySnapshotExport]
+
+
+class PublishedClientTrackingPolicySnapshotExport(BaseModel):
+    publish_version: str
+    policy_code: str
+    target_type: str
+    target_code: str
+    event_name: str
+    event_type: str
+    event_trigger: str
+    tracking_params: dict[str, Any] | None
+    is_required: bool
+    is_active: bool
+    published_at: datetime
+    source_policy_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedClientTrackingPoliciesExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    tracking_policies: list[PublishedClientTrackingPolicySnapshotExport]

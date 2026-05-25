@@ -2350,6 +2350,536 @@
         }
       }
     },
+    "/backoffice/client-presentation/surfaces": {
+      "get": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Surfaces List",
+        "operationId": "client_presentation_surfaces_list_backoffice_client_presentation_surfaces_get",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationSurfacesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Surfaces Create",
+        "operationId": "client_presentation_surfaces_create_backoffice_client_presentation_surfaces_post",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPresentationSurfaceCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationSurfaceContract"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/data-bindings": {
+      "get": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Data Bindings List",
+        "operationId": "client_presentation_data_bindings_list_backoffice_client_presentation_data_bindings_get",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationDataBindingsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Data Bindings Create",
+        "operationId": "client_presentation_data_bindings_create_backoffice_client_presentation_data_bindings_post",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPresentationDataBindingCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationDataBindingContract"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/visibility-rules": {
+      "get": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Visibility Rules List",
+        "operationId": "client_presentation_visibility_rules_list_backoffice_client_presentation_visibility_rules_get",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationVisibilityRulesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Visibility Rules Create",
+        "operationId": "client_presentation_visibility_rules_create_backoffice_client_presentation_visibility_rules_post",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPresentationVisibilityRuleCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationVisibilityRuleContract"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/action-policies": {
+      "get": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Action Policies List",
+        "operationId": "client_presentation_action_policies_list_backoffice_client_presentation_action_policies_get",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationActionPoliciesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Action Policies Create",
+        "operationId": "client_presentation_action_policies_create_backoffice_client_presentation_action_policies_post",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPresentationActionPolicyCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationActionPolicyContract"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/tracking-policies": {
+      "get": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Tracking Policies List",
+        "operationId": "client_presentation_tracking_policies_list_backoffice_client_presentation_tracking_policies_get",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationTrackingPoliciesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Tracking Policies Create",
+        "operationId": "client_presentation_tracking_policies_create_backoffice_client_presentation_tracking_policies_post",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPresentationTrackingPolicyCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationTrackingPolicyContract"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/backoffice/pms-projections/health": {
       "get": {
         "tags": [
@@ -3877,6 +4407,331 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PublishedCouponsExportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/read/v1/published/snapshot/client-surfaces": {
+      "get": {
+        "tags": [
+          "backoffice-read-v1-published"
+        ],
+        "summary": "Published Snapshot Client Surfaces Export",
+        "operationId": "published_snapshot_client_surfaces_export_backoffice_read_v1_published_snapshot_client_surfaces_get",
+        "parameters": [
+          {
+            "name": "publish_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Publish Version"
+            }
+          },
+          {
+            "name": "X-Service-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Service-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishedClientSurfacesExportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/read/v1/published/snapshot/client-data-bindings": {
+      "get": {
+        "tags": [
+          "backoffice-read-v1-published"
+        ],
+        "summary": "Published Snapshot Client Data Bindings Export",
+        "operationId": "published_snapshot_client_data_bindings_export_backoffice_read_v1_published_snapshot_client_data_bindings_get",
+        "parameters": [
+          {
+            "name": "publish_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Publish Version"
+            }
+          },
+          {
+            "name": "X-Service-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Service-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishedClientDataBindingsExportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/read/v1/published/snapshot/client-visibility-rules": {
+      "get": {
+        "tags": [
+          "backoffice-read-v1-published"
+        ],
+        "summary": "Published Snapshot Client Visibility Rules Export",
+        "operationId": "published_snapshot_client_visibility_rules_export_backoffice_read_v1_published_snapshot_client_visibility_rules_get",
+        "parameters": [
+          {
+            "name": "publish_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Publish Version"
+            }
+          },
+          {
+            "name": "X-Service-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Service-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishedClientVisibilityRulesExportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/read/v1/published/snapshot/client-action-policies": {
+      "get": {
+        "tags": [
+          "backoffice-read-v1-published"
+        ],
+        "summary": "Published Snapshot Client Action Policies Export",
+        "operationId": "published_snapshot_client_action_policies_export_backoffice_read_v1_published_snapshot_client_action_policies_get",
+        "parameters": [
+          {
+            "name": "publish_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Publish Version"
+            }
+          },
+          {
+            "name": "X-Service-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Service-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishedClientActionPoliciesExportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/read/v1/published/snapshot/client-tracking-policies": {
+      "get": {
+        "tags": [
+          "backoffice-read-v1-published"
+        ],
+        "summary": "Published Snapshot Client Tracking Policies Export",
+        "operationId": "published_snapshot_client_tracking_policies_export_backoffice_read_v1_published_snapshot_client_tracking_policies_get",
+        "parameters": [
+          {
+            "name": "publish_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Publish Version"
+            }
+          },
+          {
+            "name": "X-Service-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Service-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishedClientTrackingPoliciesExportResponse"
                 }
               }
             }
@@ -7833,6 +8688,287 @@
         ],
         "title": "BackofficeStorefrontSectionsResponse"
       },
+      "ClientPresentationActionPoliciesResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "action_policies": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationActionPolicyContract"
+            },
+            "type": "array",
+            "title": "Action Policies"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "action_policies"
+        ],
+        "title": "ClientPresentationActionPoliciesResponse"
+      },
+      "ClientPresentationActionPolicyContract": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "policy_code": {
+            "type": "string",
+            "title": "Policy Code"
+          },
+          "target_type": {
+            "type": "string",
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "title": "Target Code"
+          },
+          "action_type": {
+            "type": "string",
+            "title": "Action Type"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "target_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Url"
+          },
+          "target_page_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Page Code"
+          },
+          "target_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Ref"
+          },
+          "open_mode": {
+            "type": "string",
+            "title": "Open Mode"
+          },
+          "action_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Payload"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "policy_code",
+          "target_type",
+          "target_code",
+          "action_type",
+          "label",
+          "target_url",
+          "target_page_code",
+          "target_ref",
+          "open_mode",
+          "action_payload",
+          "is_active",
+          "source_type",
+          "source_ref",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ClientPresentationActionPolicyContract"
+      },
+      "ClientPresentationActionPolicyCreateRequest": {
+        "properties": {
+          "policy_code": {
+            "type": "string",
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Policy Code"
+          },
+          "target_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Target Code"
+          },
+          "action_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Action Type"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "target_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Url"
+          },
+          "target_page_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 96
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Page Code"
+          },
+          "target_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Ref"
+          },
+          "open_mode": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Open Mode",
+            "default": "same"
+          },
+          "action_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Payload"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "source_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Source Type",
+            "default": "manual"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          }
+        },
+        "type": "object",
+        "required": [
+          "policy_code",
+          "target_type",
+          "target_code",
+          "action_type"
+        ],
+        "title": "ClientPresentationActionPolicyCreateRequest"
+      },
       "ClientPresentationBlockTypeContract": {
         "properties": {
           "id": {
@@ -8146,6 +9282,290 @@
           "block_types"
         ],
         "title": "ClientPresentationBlockTypesResponse"
+      },
+      "ClientPresentationDataBindingContract": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "binding_code": {
+            "type": "string",
+            "title": "Binding Code"
+          },
+          "target_type": {
+            "type": "string",
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "title": "Target Code"
+          },
+          "data_source_type": {
+            "type": "string",
+            "title": "Data Source Type"
+          },
+          "data_source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Source Ref"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "Content Type"
+          },
+          "query_params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query Params"
+          },
+          "result_limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result Limit"
+          },
+          "sort_policy": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort Policy"
+          },
+          "refresh_policy": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refresh Policy"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "binding_code",
+          "target_type",
+          "target_code",
+          "data_source_type",
+          "data_source_ref",
+          "content_type",
+          "query_params",
+          "result_limit",
+          "sort_policy",
+          "refresh_policy",
+          "is_active",
+          "source_type",
+          "source_ref",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ClientPresentationDataBindingContract"
+      },
+      "ClientPresentationDataBindingCreateRequest": {
+        "properties": {
+          "binding_code": {
+            "type": "string",
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Binding Code"
+          },
+          "target_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Target Code"
+          },
+          "data_source_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Data Source Type"
+          },
+          "data_source_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Source Ref"
+          },
+          "content_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Content Type"
+          },
+          "query_params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query Params"
+          },
+          "result_limit": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result Limit"
+          },
+          "sort_policy": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort Policy"
+          },
+          "refresh_policy": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refresh Policy"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "source_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Source Type",
+            "default": "manual"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          }
+        },
+        "type": "object",
+        "required": [
+          "binding_code",
+          "target_type",
+          "target_code",
+          "data_source_type",
+          "content_type"
+        ],
+        "title": "ClientPresentationDataBindingCreateRequest"
+      },
+      "ClientPresentationDataBindingsResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "data_bindings": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationDataBindingContract"
+            },
+            "type": "array",
+            "title": "Data Bindings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "data_bindings"
+        ],
+        "title": "ClientPresentationDataBindingsResponse"
       },
       "ClientPresentationHealthResponse": {
         "properties": {
@@ -8664,6 +10084,728 @@
           "regions"
         ],
         "title": "ClientPresentationRegionsResponse"
+      },
+      "ClientPresentationSurfaceContract": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "surface_code": {
+            "type": "string",
+            "title": "Surface Code"
+          },
+          "surface_name": {
+            "type": "string",
+            "title": "Surface Name"
+          },
+          "surface_type": {
+            "type": "string",
+            "title": "Surface Type"
+          },
+          "device_family": {
+            "type": "string",
+            "title": "Device Family"
+          },
+          "breakpoint_profile": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Breakpoint Profile"
+          },
+          "supported_renderer_keys": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Supported Renderer Keys"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "surface_code",
+          "surface_name",
+          "surface_type",
+          "device_family",
+          "breakpoint_profile",
+          "supported_renderer_keys",
+          "is_active",
+          "source_type",
+          "source_ref",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ClientPresentationSurfaceContract"
+      },
+      "ClientPresentationSurfaceCreateRequest": {
+        "properties": {
+          "surface_code": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Surface Code"
+          },
+          "surface_name": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Surface Name"
+          },
+          "surface_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Surface Type"
+          },
+          "device_family": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Device Family"
+          },
+          "breakpoint_profile": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Breakpoint Profile"
+          },
+          "supported_renderer_keys": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Supported Renderer Keys"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "source_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Source Type",
+            "default": "manual"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          }
+        },
+        "type": "object",
+        "required": [
+          "surface_code",
+          "surface_name",
+          "surface_type",
+          "device_family"
+        ],
+        "title": "ClientPresentationSurfaceCreateRequest"
+      },
+      "ClientPresentationSurfacesResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "surfaces": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationSurfaceContract"
+            },
+            "type": "array",
+            "title": "Surfaces"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "surfaces"
+        ],
+        "title": "ClientPresentationSurfacesResponse"
+      },
+      "ClientPresentationTrackingPoliciesResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "tracking_policies": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationTrackingPolicyContract"
+            },
+            "type": "array",
+            "title": "Tracking Policies"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "tracking_policies"
+        ],
+        "title": "ClientPresentationTrackingPoliciesResponse"
+      },
+      "ClientPresentationTrackingPolicyContract": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "policy_code": {
+            "type": "string",
+            "title": "Policy Code"
+          },
+          "target_type": {
+            "type": "string",
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "title": "Target Code"
+          },
+          "event_name": {
+            "type": "string",
+            "title": "Event Name"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "event_trigger": {
+            "type": "string",
+            "title": "Event Trigger"
+          },
+          "tracking_params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tracking Params"
+          },
+          "is_required": {
+            "type": "boolean",
+            "title": "Is Required"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "policy_code",
+          "target_type",
+          "target_code",
+          "event_name",
+          "event_type",
+          "event_trigger",
+          "tracking_params",
+          "is_required",
+          "is_active",
+          "source_type",
+          "source_ref",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ClientPresentationTrackingPolicyContract"
+      },
+      "ClientPresentationTrackingPolicyCreateRequest": {
+        "properties": {
+          "policy_code": {
+            "type": "string",
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Policy Code"
+          },
+          "target_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Target Code"
+          },
+          "event_name": {
+            "type": "string",
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Event Name"
+          },
+          "event_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Event Type"
+          },
+          "event_trigger": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Event Trigger"
+          },
+          "tracking_params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tracking Params"
+          },
+          "is_required": {
+            "type": "boolean",
+            "title": "Is Required",
+            "default": false
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "source_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Source Type",
+            "default": "manual"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          }
+        },
+        "type": "object",
+        "required": [
+          "policy_code",
+          "target_type",
+          "target_code",
+          "event_name",
+          "event_type",
+          "event_trigger"
+        ],
+        "title": "ClientPresentationTrackingPolicyCreateRequest"
+      },
+      "ClientPresentationVisibilityRuleContract": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "rule_code": {
+            "type": "string",
+            "title": "Rule Code"
+          },
+          "target_type": {
+            "type": "string",
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "title": "Target Code"
+          },
+          "client_surface_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Client Surface Codes"
+          },
+          "customer_segments": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Customer Segments"
+          },
+          "login_state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Login State"
+          },
+          "locale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "visible_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible From"
+          },
+          "visible_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible Until"
+          },
+          "rule_expression": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Expression"
+          },
+          "priority": {
+            "type": "integer",
+            "title": "Priority"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "rule_code",
+          "target_type",
+          "target_code",
+          "client_surface_codes",
+          "customer_segments",
+          "login_state",
+          "locale",
+          "currency",
+          "visible_from",
+          "visible_until",
+          "rule_expression",
+          "priority",
+          "is_active",
+          "source_type",
+          "source_ref",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ClientPresentationVisibilityRuleContract"
+      },
+      "ClientPresentationVisibilityRuleCreateRequest": {
+        "properties": {
+          "rule_code": {
+            "type": "string",
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Rule Code"
+          },
+          "target_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Target Code"
+          },
+          "client_surface_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Client Surface Codes"
+          },
+          "customer_segments": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Customer Segments"
+          },
+          "login_state": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Login State"
+          },
+          "locale": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 16
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "visible_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible From"
+          },
+          "visible_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible Until"
+          },
+          "rule_expression": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Expression"
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Priority",
+            "default": 100
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "source_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Source Type",
+            "default": "manual"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rule_code",
+          "target_type",
+          "target_code"
+        ],
+        "title": "ClientPresentationVisibilityRuleCreateRequest"
+      },
+      "ClientPresentationVisibilityRulesResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "visibility_rules": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationVisibilityRuleContract"
+            },
+            "type": "array",
+            "title": "Visibility Rules"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "visibility_rules"
+        ],
+        "title": "ClientPresentationVisibilityRulesResponse"
       },
       "HTTPValidationError": {
         "properties": {
@@ -11762,6 +13904,175 @@
         ],
         "title": "PublishedCatalogExportResponse"
       },
+      "PublishedClientActionPoliciesExportResponse": {
+        "properties": {
+          "publish_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publish Version"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "action_policies": {
+            "items": {
+              "$ref": "#/components/schemas/PublishedClientActionPolicySnapshotExport"
+            },
+            "type": "array",
+            "title": "Action Policies"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "count",
+          "action_policies"
+        ],
+        "title": "PublishedClientActionPoliciesExportResponse"
+      },
+      "PublishedClientActionPolicySnapshotExport": {
+        "properties": {
+          "publish_version": {
+            "type": "string",
+            "title": "Publish Version"
+          },
+          "policy_code": {
+            "type": "string",
+            "title": "Policy Code"
+          },
+          "target_type": {
+            "type": "string",
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "title": "Target Code"
+          },
+          "action_type": {
+            "type": "string",
+            "title": "Action Type"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "target_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Url"
+          },
+          "target_page_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Page Code"
+          },
+          "target_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Ref"
+          },
+          "open_mode": {
+            "type": "string",
+            "title": "Open Mode"
+          },
+          "action_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Action Payload"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Published At"
+          },
+          "source_policy_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Policy Id"
+          },
+          "raw_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "policy_code",
+          "target_type",
+          "target_code",
+          "action_type",
+          "label",
+          "target_url",
+          "target_page_code",
+          "target_ref",
+          "open_mode",
+          "action_payload",
+          "is_active",
+          "published_at",
+          "source_policy_id",
+          "raw_payload"
+        ],
+        "title": "PublishedClientActionPolicySnapshotExport"
+      },
       "PublishedClientBlockTypeSnapshotExport": {
         "properties": {
           "publish_version": {
@@ -11963,6 +14274,177 @@
           "block_types"
         ],
         "title": "PublishedClientBlockTypesExportResponse"
+      },
+      "PublishedClientDataBindingSnapshotExport": {
+        "properties": {
+          "publish_version": {
+            "type": "string",
+            "title": "Publish Version"
+          },
+          "binding_code": {
+            "type": "string",
+            "title": "Binding Code"
+          },
+          "target_type": {
+            "type": "string",
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "title": "Target Code"
+          },
+          "data_source_type": {
+            "type": "string",
+            "title": "Data Source Type"
+          },
+          "data_source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Source Ref"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "Content Type"
+          },
+          "query_params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query Params"
+          },
+          "result_limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result Limit"
+          },
+          "sort_policy": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort Policy"
+          },
+          "refresh_policy": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refresh Policy"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Published At"
+          },
+          "source_binding_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Binding Id"
+          },
+          "raw_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "binding_code",
+          "target_type",
+          "target_code",
+          "data_source_type",
+          "data_source_ref",
+          "content_type",
+          "query_params",
+          "result_limit",
+          "sort_policy",
+          "refresh_policy",
+          "is_active",
+          "published_at",
+          "source_binding_id",
+          "raw_payload"
+        ],
+        "title": "PublishedClientDataBindingSnapshotExport"
+      },
+      "PublishedClientDataBindingsExportResponse": {
+        "properties": {
+          "publish_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publish Version"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "data_bindings": {
+            "items": {
+              "$ref": "#/components/schemas/PublishedClientDataBindingSnapshotExport"
+            },
+            "type": "array",
+            "title": "Data Bindings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "count",
+          "data_bindings"
+        ],
+        "title": "PublishedClientDataBindingsExportResponse"
       },
       "PublishedClientPageSnapshotExport": {
         "properties": {
@@ -12269,6 +14751,476 @@
           "regions"
         ],
         "title": "PublishedClientRegionsExportResponse"
+      },
+      "PublishedClientSurfaceSnapshotExport": {
+        "properties": {
+          "publish_version": {
+            "type": "string",
+            "title": "Publish Version"
+          },
+          "surface_code": {
+            "type": "string",
+            "title": "Surface Code"
+          },
+          "surface_name": {
+            "type": "string",
+            "title": "Surface Name"
+          },
+          "surface_type": {
+            "type": "string",
+            "title": "Surface Type"
+          },
+          "device_family": {
+            "type": "string",
+            "title": "Device Family"
+          },
+          "breakpoint_profile": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Breakpoint Profile"
+          },
+          "supported_renderer_keys": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supported Renderer Keys"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Published At"
+          },
+          "source_surface_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Surface Id"
+          },
+          "raw_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "surface_code",
+          "surface_name",
+          "surface_type",
+          "device_family",
+          "breakpoint_profile",
+          "supported_renderer_keys",
+          "is_active",
+          "published_at",
+          "source_surface_id",
+          "raw_payload"
+        ],
+        "title": "PublishedClientSurfaceSnapshotExport"
+      },
+      "PublishedClientSurfacesExportResponse": {
+        "properties": {
+          "publish_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publish Version"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "surfaces": {
+            "items": {
+              "$ref": "#/components/schemas/PublishedClientSurfaceSnapshotExport"
+            },
+            "type": "array",
+            "title": "Surfaces"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "count",
+          "surfaces"
+        ],
+        "title": "PublishedClientSurfacesExportResponse"
+      },
+      "PublishedClientTrackingPoliciesExportResponse": {
+        "properties": {
+          "publish_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publish Version"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "tracking_policies": {
+            "items": {
+              "$ref": "#/components/schemas/PublishedClientTrackingPolicySnapshotExport"
+            },
+            "type": "array",
+            "title": "Tracking Policies"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "count",
+          "tracking_policies"
+        ],
+        "title": "PublishedClientTrackingPoliciesExportResponse"
+      },
+      "PublishedClientTrackingPolicySnapshotExport": {
+        "properties": {
+          "publish_version": {
+            "type": "string",
+            "title": "Publish Version"
+          },
+          "policy_code": {
+            "type": "string",
+            "title": "Policy Code"
+          },
+          "target_type": {
+            "type": "string",
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "title": "Target Code"
+          },
+          "event_name": {
+            "type": "string",
+            "title": "Event Name"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "event_trigger": {
+            "type": "string",
+            "title": "Event Trigger"
+          },
+          "tracking_params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tracking Params"
+          },
+          "is_required": {
+            "type": "boolean",
+            "title": "Is Required"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Published At"
+          },
+          "source_policy_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Policy Id"
+          },
+          "raw_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "policy_code",
+          "target_type",
+          "target_code",
+          "event_name",
+          "event_type",
+          "event_trigger",
+          "tracking_params",
+          "is_required",
+          "is_active",
+          "published_at",
+          "source_policy_id",
+          "raw_payload"
+        ],
+        "title": "PublishedClientTrackingPolicySnapshotExport"
+      },
+      "PublishedClientVisibilityRuleSnapshotExport": {
+        "properties": {
+          "publish_version": {
+            "type": "string",
+            "title": "Publish Version"
+          },
+          "rule_code": {
+            "type": "string",
+            "title": "Rule Code"
+          },
+          "target_type": {
+            "type": "string",
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "title": "Target Code"
+          },
+          "client_surface_codes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Surface Codes"
+          },
+          "customer_segments": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Customer Segments"
+          },
+          "login_state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Login State"
+          },
+          "locale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "visible_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible From"
+          },
+          "visible_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible Until"
+          },
+          "rule_expression": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Expression"
+          },
+          "priority": {
+            "type": "integer",
+            "title": "Priority"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Published At"
+          },
+          "source_rule_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Rule Id"
+          },
+          "raw_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "rule_code",
+          "target_type",
+          "target_code",
+          "client_surface_codes",
+          "customer_segments",
+          "login_state",
+          "locale",
+          "currency",
+          "visible_from",
+          "visible_until",
+          "rule_expression",
+          "priority",
+          "is_active",
+          "published_at",
+          "source_rule_id",
+          "raw_payload"
+        ],
+        "title": "PublishedClientVisibilityRuleSnapshotExport"
+      },
+      "PublishedClientVisibilityRulesExportResponse": {
+        "properties": {
+          "publish_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publish Version"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "visibility_rules": {
+            "items": {
+              "$ref": "#/components/schemas/PublishedClientVisibilityRuleSnapshotExport"
+            },
+            "type": "array",
+            "title": "Visibility Rules"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "count",
+          "visibility_rules"
+        ],
+        "title": "PublishedClientVisibilityRulesExportResponse"
       },
       "PublishedCouponExport": {
         "properties": {

@@ -9,12 +9,22 @@ from sqlalchemy.orm import Session
 
 from app.domains.publish.models.publish_version import PublishVersion
 from app.domains.published_export.contracts.published_export_contract import (
+    PublishedClientActionPoliciesExportResponse,
+    PublishedClientActionPolicySnapshotExport,
     PublishedClientBlockTypesExportResponse,
     PublishedClientBlockTypeSnapshotExport,
+    PublishedClientDataBindingsExportResponse,
+    PublishedClientDataBindingSnapshotExport,
     PublishedClientPagesExportResponse,
     PublishedClientPageSnapshotExport,
     PublishedClientRegionsExportResponse,
     PublishedClientRegionSnapshotExport,
+    PublishedClientSurfacesExportResponse,
+    PublishedClientSurfaceSnapshotExport,
+    PublishedClientTrackingPoliciesExportResponse,
+    PublishedClientTrackingPolicySnapshotExport,
+    PublishedClientVisibilityRulesExportResponse,
+    PublishedClientVisibilityRuleSnapshotExport,
     PublishedCouponSnapshotExport,
     PublishedCouponsSnapshotExportResponse,
     PublishedGroupExport,
@@ -39,9 +49,14 @@ from app.domains.published_export.contracts.published_export_contract import (
     PublishedStorefrontSectionSnapshotExport,
 )
 from app.domains.published_snapshot.models.published_snapshot import (
+    PublishedClientActionPolicy,
     PublishedClientBlockType,
+    PublishedClientDataBinding,
     PublishedClientPage,
     PublishedClientRegion,
+    PublishedClientSurface,
+    PublishedClientTrackingPolicy,
+    PublishedClientVisibilityRule,
     PublishedCoupon,
     PublishedGroup,
     PublishedOffer,
@@ -59,9 +74,14 @@ from app.domains.published_snapshot.repos.published_snapshot_repo import (
     add_published_rows,
     delete_snapshot_by_version,
     latest_publish_version,
+    list_owner_client_action_policies,
     list_owner_client_block_types,
+    list_owner_client_data_bindings,
     list_owner_client_pages,
     list_owner_client_regions,
+    list_owner_client_surfaces,
+    list_owner_client_tracking_policies,
+    list_owner_client_visibility_rules,
     list_owner_components,
     list_owner_coupons,
     list_owner_groups,
@@ -73,9 +93,14 @@ from app.domains.published_snapshot.repos.published_snapshot_repo import (
     list_owner_storefront_section_layout_rows,
     list_owner_storefront_section_position_rows,
     list_owner_storefront_section_rows,
+    list_published_client_action_policies,
     list_published_client_block_types,
+    list_published_client_data_bindings,
     list_published_client_pages,
     list_published_client_regions,
+    list_published_client_surfaces,
+    list_published_client_tracking_policies,
+    list_published_client_visibility_rules,
     list_published_components,
     list_published_coupons,
     list_published_groups,
@@ -119,6 +144,123 @@ def create_storefront_snapshot(
     add_publish_version(session, version)
 
     rows: list[object] = []
+
+
+    for surface in list_owner_client_surfaces(session):
+        rows.append(
+            PublishedClientSurface(
+                publish_version=resolved_version,
+                surface_code=surface.surface_code,
+                surface_name=surface.surface_name,
+                surface_type=surface.surface_type,
+                device_family=surface.device_family,
+                breakpoint_profile=surface.breakpoint_profile,
+                supported_renderer_keys=surface.supported_renderer_keys,
+                is_active=surface.is_active,
+                published_at=now,
+                source_surface_id=surface.id,
+                raw_payload={
+                    "source": "d2c_client_surfaces",
+                    "source_surface_id": surface.id,
+                },
+            )
+        )
+
+    for binding in list_owner_client_data_bindings(session):
+        rows.append(
+            PublishedClientDataBinding(
+                publish_version=resolved_version,
+                binding_code=binding.binding_code,
+                target_type=binding.target_type,
+                target_code=binding.target_code,
+                data_source_type=binding.data_source_type,
+                data_source_ref=binding.data_source_ref,
+                content_type=binding.content_type,
+                query_params=binding.query_params,
+                result_limit=binding.result_limit,
+                sort_policy=binding.sort_policy,
+                refresh_policy=binding.refresh_policy,
+                is_active=binding.is_active,
+                published_at=now,
+                source_binding_id=binding.id,
+                raw_payload={
+                    "source": "d2c_client_data_bindings",
+                    "source_binding_id": binding.id,
+                },
+            )
+        )
+
+    for rule in list_owner_client_visibility_rules(session):
+        rows.append(
+            PublishedClientVisibilityRule(
+                publish_version=resolved_version,
+                rule_code=rule.rule_code,
+                target_type=rule.target_type,
+                target_code=rule.target_code,
+                client_surface_codes=rule.client_surface_codes,
+                customer_segments=rule.customer_segments,
+                login_state=rule.login_state,
+                locale=rule.locale,
+                currency=rule.currency,
+                visible_from=rule.visible_from,
+                visible_until=rule.visible_until,
+                rule_expression=rule.rule_expression,
+                priority=rule.priority,
+                is_active=rule.is_active,
+                published_at=now,
+                source_rule_id=rule.id,
+                raw_payload={
+                    "source": "d2c_client_visibility_rules",
+                    "source_rule_id": rule.id,
+                },
+            )
+        )
+
+    for policy in list_owner_client_action_policies(session):
+        rows.append(
+            PublishedClientActionPolicy(
+                publish_version=resolved_version,
+                policy_code=policy.policy_code,
+                target_type=policy.target_type,
+                target_code=policy.target_code,
+                action_type=policy.action_type,
+                label=policy.label,
+                target_url=policy.target_url,
+                target_page_code=policy.target_page_code,
+                target_ref=policy.target_ref,
+                open_mode=policy.open_mode,
+                action_payload=policy.action_payload,
+                is_active=policy.is_active,
+                published_at=now,
+                source_policy_id=policy.id,
+                raw_payload={
+                    "source": "d2c_client_action_policies",
+                    "source_policy_id": policy.id,
+                },
+            )
+        )
+
+    for policy in list_owner_client_tracking_policies(session):
+        rows.append(
+            PublishedClientTrackingPolicy(
+                publish_version=resolved_version,
+                policy_code=policy.policy_code,
+                target_type=policy.target_type,
+                target_code=policy.target_code,
+                event_name=policy.event_name,
+                event_type=policy.event_type,
+                event_trigger=policy.event_trigger,
+                tracking_params=policy.tracking_params,
+                is_required=policy.is_required,
+                is_active=policy.is_active,
+                published_at=now,
+                source_policy_id=policy.id,
+                raw_payload={
+                    "source": "d2c_client_tracking_policies",
+                    "source_policy_id": policy.id,
+                },
+            )
+        )
 
     for page in list_owner_client_pages(session):
         rows.append(
@@ -427,6 +569,119 @@ def create_storefront_snapshot(
 def _version_or_none(session: Session, publish_version: str | None) -> PublishVersion | None:
     return latest_publish_version(session, publish_version)
 
+
+
+
+
+def get_published_client_surfaces_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedClientSurfacesExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedClientSurfacesExportResponse(publish_version=None, count=0, surfaces=[])
+
+    surfaces = [
+        PublishedClientSurfaceSnapshotExport(**row.__dict__)
+        for row in list_published_client_surfaces(session, version.publish_version)
+    ]
+    return PublishedClientSurfacesExportResponse(
+        publish_version=version.publish_version,
+        count=len(surfaces),
+        surfaces=surfaces,
+    )
+
+
+def get_published_client_data_bindings_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedClientDataBindingsExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedClientDataBindingsExportResponse(
+            publish_version=None,
+            count=0,
+            data_bindings=[],
+        )
+
+    data_bindings = [
+        PublishedClientDataBindingSnapshotExport(**row.__dict__)
+        for row in list_published_client_data_bindings(session, version.publish_version)
+    ]
+    return PublishedClientDataBindingsExportResponse(
+        publish_version=version.publish_version,
+        count=len(data_bindings),
+        data_bindings=data_bindings,
+    )
+
+
+def get_published_client_visibility_rules_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedClientVisibilityRulesExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedClientVisibilityRulesExportResponse(
+            publish_version=None,
+            count=0,
+            visibility_rules=[],
+        )
+
+    visibility_rules = [
+        PublishedClientVisibilityRuleSnapshotExport(**row.__dict__)
+        for row in list_published_client_visibility_rules(session, version.publish_version)
+    ]
+    return PublishedClientVisibilityRulesExportResponse(
+        publish_version=version.publish_version,
+        count=len(visibility_rules),
+        visibility_rules=visibility_rules,
+    )
+
+
+def get_published_client_action_policies_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedClientActionPoliciesExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedClientActionPoliciesExportResponse(
+            publish_version=None,
+            count=0,
+            action_policies=[],
+        )
+
+    action_policies = [
+        PublishedClientActionPolicySnapshotExport(**row.__dict__)
+        for row in list_published_client_action_policies(session, version.publish_version)
+    ]
+    return PublishedClientActionPoliciesExportResponse(
+        publish_version=version.publish_version,
+        count=len(action_policies),
+        action_policies=action_policies,
+    )
+
+
+def get_published_client_tracking_policies_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedClientTrackingPoliciesExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedClientTrackingPoliciesExportResponse(
+            publish_version=None,
+            count=0,
+            tracking_policies=[],
+        )
+
+    tracking_policies = [
+        PublishedClientTrackingPolicySnapshotExport(**row.__dict__)
+        for row in list_published_client_tracking_policies(session, version.publish_version)
+    ]
+    return PublishedClientTrackingPoliciesExportResponse(
+        publish_version=version.publish_version,
+        count=len(tracking_policies),
+        tracking_policies=tracking_policies,
+    )
 
 
 def get_published_client_pages_snapshot(
