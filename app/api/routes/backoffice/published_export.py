@@ -9,9 +9,17 @@ from app.core.database import get_session
 from app.domains.published_export.contracts.published_export_contract import (
     PublishedCatalogExportResponse,
     PublishedCouponsExportResponse,
+    PublishedCouponsSnapshotExportResponse,
     PublishedExportHealthResponse,
+    PublishedGroupsExportResponse,
+    PublishedOfferComponentsExportResponse,
+    PublishedOfferPositionsExportResponse,
+    PublishedOfferPricesExportResponse,
+    PublishedOffersExportResponse,
     PublishedPricesExportResponse,
+    PublishedPromotionRulesExportResponse,
     PublishedPromotionsExportResponse,
+    PublishedPromotionTargetsExportResponse,
 )
 from app.domains.published_export.services.published_export_service import (
     get_published_catalog_export,
@@ -19,6 +27,16 @@ from app.domains.published_export.services.published_export_service import (
     get_published_export_health,
     get_published_prices_export,
     get_published_promotions_export,
+)
+from app.domains.published_snapshot.services.published_snapshot_service import (
+    get_published_coupons_snapshot,
+    get_published_groups_snapshot,
+    get_published_offer_components_snapshot,
+    get_published_offer_positions_snapshot,
+    get_published_offer_prices_snapshot,
+    get_published_offers_snapshot,
+    get_published_promotion_rules_snapshot,
+    get_published_promotion_targets_snapshot,
 )
 
 router = APIRouter(
@@ -46,6 +64,7 @@ def published_export_health(_: ServiceClientDep) -> PublishedExportHealthRespons
     return get_published_export_health()
 
 
+# Legacy read-v1 exports kept until d2c-api runtime sync is moved to Offer snapshots.
 @router.get("/catalog", response_model=PublishedCatalogExportResponse)
 def published_catalog_export(
     _: ServiceClientDep,
@@ -80,3 +99,75 @@ def published_coupons_export(
     publish_version: Annotated[str | None, Query()] = None,
 ) -> PublishedCouponsExportResponse:
     return get_published_coupons_export(session, publish_version)
+
+
+@router.get("/snapshot/groups", response_model=PublishedGroupsExportResponse)
+def published_snapshot_groups_export(
+    _: ServiceClientDep,
+    session: SessionDep,
+    publish_version: Annotated[str | None, Query()] = None,
+) -> PublishedGroupsExportResponse:
+    return get_published_groups_snapshot(session, publish_version)
+
+
+@router.get("/snapshot/offers", response_model=PublishedOffersExportResponse)
+def published_snapshot_offers_export(
+    _: ServiceClientDep,
+    session: SessionDep,
+    publish_version: Annotated[str | None, Query()] = None,
+) -> PublishedOffersExportResponse:
+    return get_published_offers_snapshot(session, publish_version)
+
+
+@router.get("/snapshot/offer-components", response_model=PublishedOfferComponentsExportResponse)
+def published_snapshot_offer_components_export(
+    _: ServiceClientDep,
+    session: SessionDep,
+    publish_version: Annotated[str | None, Query()] = None,
+) -> PublishedOfferComponentsExportResponse:
+    return get_published_offer_components_snapshot(session, publish_version)
+
+
+@router.get("/snapshot/offer-prices", response_model=PublishedOfferPricesExportResponse)
+def published_snapshot_offer_prices_export(
+    _: ServiceClientDep,
+    session: SessionDep,
+    publish_version: Annotated[str | None, Query()] = None,
+) -> PublishedOfferPricesExportResponse:
+    return get_published_offer_prices_snapshot(session, publish_version)
+
+
+@router.get("/snapshot/offer-positions", response_model=PublishedOfferPositionsExportResponse)
+def published_snapshot_offer_positions_export(
+    _: ServiceClientDep,
+    session: SessionDep,
+    publish_version: Annotated[str | None, Query()] = None,
+) -> PublishedOfferPositionsExportResponse:
+    return get_published_offer_positions_snapshot(session, publish_version)
+
+
+@router.get("/snapshot/promotion-rules", response_model=PublishedPromotionRulesExportResponse)
+def published_snapshot_promotion_rules_export(
+    _: ServiceClientDep,
+    session: SessionDep,
+    publish_version: Annotated[str | None, Query()] = None,
+) -> PublishedPromotionRulesExportResponse:
+    return get_published_promotion_rules_snapshot(session, publish_version)
+
+
+@router.get("/snapshot/promotion-targets", response_model=PublishedPromotionTargetsExportResponse)
+def published_snapshot_promotion_targets_export(
+    _: ServiceClientDep,
+    session: SessionDep,
+    publish_version: Annotated[str | None, Query()] = None,
+) -> PublishedPromotionTargetsExportResponse:
+    return get_published_promotion_targets_snapshot(session, publish_version)
+
+
+@router.get("/snapshot/coupons", response_model=PublishedCouponsSnapshotExportResponse)
+def published_snapshot_coupons_export(
+    _: ServiceClientDep,
+    session: SessionDep,
+    publish_version: Annotated[str | None, Query()] = None,
+) -> PublishedCouponsSnapshotExportResponse:
+    return get_published_coupons_snapshot(session, publish_version)

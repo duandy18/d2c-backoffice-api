@@ -43,6 +43,16 @@ from app.domains.promotions.models.promotion_rule import (  # noqa: F401
     PromotionTarget,
 )
 from app.domains.publish.models.publish_version import PublishVersion  # noqa: F401
+from app.domains.published_snapshot.models.published_snapshot import (  # noqa: F401
+    PublishedCoupon,
+    PublishedGroup,
+    PublishedOffer,
+    PublishedOfferComponent,
+    PublishedOfferPosition,
+    PublishedOfferPrice,
+    PublishedPromotionRule,
+    PublishedPromotionTarget,
+)
 
 config = context.config
 

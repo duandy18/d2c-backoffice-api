@@ -8,11 +8,16 @@ from sqlalchemy.orm import Session
 from app.core.database import get_session
 from app.domains.publish.contracts.publish_contract import (
     BackofficePublishHealthResponse,
+    PublishStorefrontRequest,
+    PublishStorefrontResponse,
     PublishVersionsResponse,
 )
 from app.domains.publish.services.publish_service import (
     get_backoffice_publish_health,
     get_publish_versions,
+)
+from app.domains.published_snapshot.services.published_snapshot_service import (
+    create_storefront_snapshot,
 )
 
 router = APIRouter(prefix="/backoffice/publish", tags=["backoffice-publish"])
@@ -43,3 +48,23 @@ def backoffice_publish_versions(
     session: SessionDep,
 ) -> PublishVersionsResponse:
     return get_publish_versions(session)
+
+
+@router.post("", response_model=PublishStorefrontResponse, status_code=status.HTTP_201_CREATED)
+def backoffice_publish_storefront(
+    payload: PublishStorefrontRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> PublishStorefrontResponse:
+    version = create_storefront_snapshot(
+        session,
+        publish_version=payload.publish_version,
+        published_by=payload.published_by,
+        note=payload.note,
+    )
+    return PublishStorefrontResponse(
+        publish_version=version.publish_version,
+        publish_scope=version.publish_scope,
+        status=version.status,
+        published_at=version.published_at,
+    )
