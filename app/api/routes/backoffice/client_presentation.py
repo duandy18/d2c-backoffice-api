@@ -7,9 +7,15 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_session
 from app.domains.client_presentation.contracts.client_presentation_contract import (
+    ClientPresentationActionPoliciesResponse,
+    ClientPresentationActionPolicyContract,
+    ClientPresentationActionPolicyCreateRequest,
     ClientPresentationBlockTypeContract,
     ClientPresentationBlockTypeCreateRequest,
     ClientPresentationBlockTypesResponse,
+    ClientPresentationDataBindingContract,
+    ClientPresentationDataBindingCreateRequest,
+    ClientPresentationDataBindingsResponse,
     ClientPresentationHealthResponse,
     ClientPresentationPageContract,
     ClientPresentationPageCreateRequest,
@@ -17,17 +23,36 @@ from app.domains.client_presentation.contracts.client_presentation_contract impo
     ClientPresentationRegionContract,
     ClientPresentationRegionCreateRequest,
     ClientPresentationRegionsResponse,
+    ClientPresentationSurfaceContract,
+    ClientPresentationSurfaceCreateRequest,
+    ClientPresentationSurfacesResponse,
+    ClientPresentationTrackingPoliciesResponse,
+    ClientPresentationTrackingPolicyContract,
+    ClientPresentationTrackingPolicyCreateRequest,
+    ClientPresentationVisibilityRuleContract,
+    ClientPresentationVisibilityRuleCreateRequest,
+    ClientPresentationVisibilityRulesResponse,
 )
 from app.domains.client_presentation.services.client_presentation_service import (
     ClientPresentationDuplicateCodeError,
     ClientPresentationPageNotFoundError,
+    create_client_presentation_action_policy,
     create_client_presentation_block_type,
+    create_client_presentation_data_binding,
     create_client_presentation_page,
     create_client_presentation_region,
+    create_client_presentation_surface,
+    create_client_presentation_tracking_policy,
+    create_client_presentation_visibility_rule,
+    get_client_presentation_action_policies,
     get_client_presentation_block_types,
+    get_client_presentation_data_bindings,
     get_client_presentation_health,
     get_client_presentation_pages,
     get_client_presentation_regions,
+    get_client_presentation_surfaces,
+    get_client_presentation_tracking_policies,
+    get_client_presentation_visibility_rules,
 )
 
 router = APIRouter(
@@ -130,5 +155,126 @@ def client_presentation_block_types_create(
 ) -> ClientPresentationBlockTypeContract:
     try:
         return create_client_presentation_block_type(session, payload)
+    except ClientPresentationDuplicateCodeError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+
+
+
+@router.get("/surfaces", response_model=ClientPresentationSurfacesResponse)
+def client_presentation_surfaces_list(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationSurfacesResponse:
+    return get_client_presentation_surfaces(session)
+
+
+@router.post(
+    "/surfaces",
+    response_model=ClientPresentationSurfaceContract,
+    status_code=status.HTTP_201_CREATED,
+)
+def client_presentation_surfaces_create(
+    payload: ClientPresentationSurfaceCreateRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationSurfaceContract:
+    try:
+        return create_client_presentation_surface(session, payload)
+    except ClientPresentationDuplicateCodeError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+
+
+@router.get("/data-bindings", response_model=ClientPresentationDataBindingsResponse)
+def client_presentation_data_bindings_list(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationDataBindingsResponse:
+    return get_client_presentation_data_bindings(session)
+
+
+@router.post(
+    "/data-bindings",
+    response_model=ClientPresentationDataBindingContract,
+    status_code=status.HTTP_201_CREATED,
+)
+def client_presentation_data_bindings_create(
+    payload: ClientPresentationDataBindingCreateRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationDataBindingContract:
+    try:
+        return create_client_presentation_data_binding(session, payload)
+    except ClientPresentationDuplicateCodeError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+
+
+@router.get("/visibility-rules", response_model=ClientPresentationVisibilityRulesResponse)
+def client_presentation_visibility_rules_list(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationVisibilityRulesResponse:
+    return get_client_presentation_visibility_rules(session)
+
+
+@router.post(
+    "/visibility-rules",
+    response_model=ClientPresentationVisibilityRuleContract,
+    status_code=status.HTTP_201_CREATED,
+)
+def client_presentation_visibility_rules_create(
+    payload: ClientPresentationVisibilityRuleCreateRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationVisibilityRuleContract:
+    try:
+        return create_client_presentation_visibility_rule(session, payload)
+    except ClientPresentationDuplicateCodeError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+
+
+@router.get("/action-policies", response_model=ClientPresentationActionPoliciesResponse)
+def client_presentation_action_policies_list(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationActionPoliciesResponse:
+    return get_client_presentation_action_policies(session)
+
+
+@router.post(
+    "/action-policies",
+    response_model=ClientPresentationActionPolicyContract,
+    status_code=status.HTTP_201_CREATED,
+)
+def client_presentation_action_policies_create(
+    payload: ClientPresentationActionPolicyCreateRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationActionPolicyContract:
+    try:
+        return create_client_presentation_action_policy(session, payload)
+    except ClientPresentationDuplicateCodeError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+
+
+@router.get("/tracking-policies", response_model=ClientPresentationTrackingPoliciesResponse)
+def client_presentation_tracking_policies_list(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationTrackingPoliciesResponse:
+    return get_client_presentation_tracking_policies(session)
+
+
+@router.post(
+    "/tracking-policies",
+    response_model=ClientPresentationTrackingPolicyContract,
+    status_code=status.HTTP_201_CREATED,
+)
+def client_presentation_tracking_policies_create(
+    payload: ClientPresentationTrackingPolicyCreateRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationTrackingPolicyContract:
+    try:
+        return create_client_presentation_tracking_policy(session, payload)
     except ClientPresentationDuplicateCodeError as exc:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc

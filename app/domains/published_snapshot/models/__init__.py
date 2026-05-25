@@ -1,7 +1,12 @@
 from app.domains.published_snapshot.models.published_snapshot import (
+    PublishedClientActionPolicy,
     PublishedClientBlockType,
+    PublishedClientDataBinding,
     PublishedClientPage,
     PublishedClientRegion,
+    PublishedClientSurface,
+    PublishedClientTrackingPolicy,
+    PublishedClientVisibilityRule,
     PublishedCoupon,
     PublishedGroup,
     PublishedOffer,
@@ -16,7 +21,12 @@ from app.domains.published_snapshot.models.published_snapshot import (
 )
 
 __all__ = [
+    "PublishedClientActionPolicy",
     "PublishedClientBlockType",
+    "PublishedClientDataBinding",
+    "PublishedClientSurface",
+    "PublishedClientTrackingPolicy",
+    "PublishedClientVisibilityRule",
     "PublishedClientPage",
     "PublishedClientRegion",
     "PublishedCoupon",

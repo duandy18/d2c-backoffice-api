@@ -4,18 +4,28 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.domains.client_presentation.models.client_presentation import (
+    ClientPresentationActionPolicy,
     ClientPresentationBlockType,
+    ClientPresentationDataBinding,
     ClientPresentationPage,
     ClientPresentationRegion,
+    ClientPresentationSurface,
+    ClientPresentationTrackingPolicy,
+    ClientPresentationVisibilityRule,
 )
 from app.domains.groups.models.group import Group
 from app.domains.offers.models.offer import Offer, OfferComponent, OfferPosition, OfferPrice
 from app.domains.promotions.models.promotion_rule import Coupon, PromotionRule, PromotionTarget
 from app.domains.publish.models.publish_version import PublishVersion
 from app.domains.published_snapshot.models.published_snapshot import (
+    PublishedClientActionPolicy,
     PublishedClientBlockType,
+    PublishedClientDataBinding,
     PublishedClientPage,
     PublishedClientRegion,
+    PublishedClientSurface,
+    PublishedClientTrackingPolicy,
+    PublishedClientVisibilityRule,
     PublishedCoupon,
     PublishedGroup,
     PublishedOffer,
@@ -43,7 +53,12 @@ def add_publish_version(session: Session, publish_version: PublishVersion) -> Pu
 
 def delete_snapshot_by_version(session: Session, publish_version: str) -> None:
     for model in (
-        PublishedClientBlockType,
+        PublishedClientActionPolicy,
+    PublishedClientBlockType,
+    PublishedClientDataBinding,
+    PublishedClientSurface,
+    PublishedClientTrackingPolicy,
+    PublishedClientVisibilityRule,
         PublishedClientRegion,
         PublishedClientPage,
         PublishedCoupon,
@@ -93,6 +108,74 @@ def list_owner_client_block_types(session: Session) -> list[ClientPresentationBl
             select(ClientPresentationBlockType).order_by(
                 ClientPresentationBlockType.block_type,
                 ClientPresentationBlockType.id,
+            )
+        ).all()
+    )
+
+
+def list_owner_client_surfaces(session: Session) -> list[ClientPresentationSurface]:
+    return list(
+        session.scalars(
+            select(ClientPresentationSurface).order_by(
+                ClientPresentationSurface.surface_code,
+                ClientPresentationSurface.id,
+            )
+        ).all()
+    )
+
+
+def list_owner_client_data_bindings(session: Session) -> list[ClientPresentationDataBinding]:
+    return list(
+        session.scalars(
+            select(ClientPresentationDataBinding).order_by(
+                ClientPresentationDataBinding.target_type,
+                ClientPresentationDataBinding.target_code,
+                ClientPresentationDataBinding.binding_code,
+            )
+        ).all()
+    )
+
+
+def list_owner_client_visibility_rules(
+    session: Session,
+) -> list[ClientPresentationVisibilityRule]:
+    return list(
+        session.scalars(
+            select(ClientPresentationVisibilityRule).order_by(
+                ClientPresentationVisibilityRule.target_type,
+                ClientPresentationVisibilityRule.target_code,
+                ClientPresentationVisibilityRule.priority,
+                ClientPresentationVisibilityRule.rule_code,
+            )
+        ).all()
+    )
+
+
+def list_owner_client_action_policies(
+    session: Session,
+) -> list[ClientPresentationActionPolicy]:
+    return list(
+        session.scalars(
+            select(ClientPresentationActionPolicy).order_by(
+                ClientPresentationActionPolicy.target_type,
+                ClientPresentationActionPolicy.target_code,
+                ClientPresentationActionPolicy.action_type,
+                ClientPresentationActionPolicy.policy_code,
+            )
+        ).all()
+    )
+
+
+def list_owner_client_tracking_policies(
+    session: Session,
+) -> list[ClientPresentationTrackingPolicy]:
+    return list(
+        session.scalars(
+            select(ClientPresentationTrackingPolicy).order_by(
+                ClientPresentationTrackingPolicy.target_type,
+                ClientPresentationTrackingPolicy.target_code,
+                ClientPresentationTrackingPolicy.event_name,
+                ClientPresentationTrackingPolicy.policy_code,
             )
         ).all()
     )
@@ -213,6 +296,82 @@ def list_published_client_block_types(
             select(PublishedClientBlockType)
             .where(PublishedClientBlockType.publish_version == publish_version)
             .order_by(PublishedClientBlockType.block_type, PublishedClientBlockType.id)
+        ).all()
+    )
+
+
+def list_published_client_surfaces(
+    session: Session, publish_version: str
+) -> list[PublishedClientSurface]:
+    return list(
+        session.scalars(
+            select(PublishedClientSurface)
+            .where(PublishedClientSurface.publish_version == publish_version)
+            .order_by(PublishedClientSurface.surface_code, PublishedClientSurface.id)
+        ).all()
+    )
+
+
+def list_published_client_data_bindings(
+    session: Session, publish_version: str
+) -> list[PublishedClientDataBinding]:
+    return list(
+        session.scalars(
+            select(PublishedClientDataBinding)
+            .where(PublishedClientDataBinding.publish_version == publish_version)
+            .order_by(
+                PublishedClientDataBinding.target_type,
+                PublishedClientDataBinding.target_code,
+                PublishedClientDataBinding.binding_code,
+            )
+        ).all()
+    )
+
+
+def list_published_client_visibility_rules(
+    session: Session, publish_version: str
+) -> list[PublishedClientVisibilityRule]:
+    return list(
+        session.scalars(
+            select(PublishedClientVisibilityRule)
+            .where(PublishedClientVisibilityRule.publish_version == publish_version)
+            .order_by(
+                PublishedClientVisibilityRule.target_type,
+                PublishedClientVisibilityRule.target_code,
+                PublishedClientVisibilityRule.priority,
+            )
+        ).all()
+    )
+
+
+def list_published_client_action_policies(
+    session: Session, publish_version: str
+) -> list[PublishedClientActionPolicy]:
+    return list(
+        session.scalars(
+            select(PublishedClientActionPolicy)
+            .where(PublishedClientActionPolicy.publish_version == publish_version)
+            .order_by(
+                PublishedClientActionPolicy.target_type,
+                PublishedClientActionPolicy.target_code,
+                PublishedClientActionPolicy.action_type,
+            )
+        ).all()
+    )
+
+
+def list_published_client_tracking_policies(
+    session: Session, publish_version: str
+) -> list[PublishedClientTrackingPolicy]:
+    return list(
+        session.scalars(
+            select(PublishedClientTrackingPolicy)
+            .where(PublishedClientTrackingPolicy.publish_version == publish_version)
+            .order_by(
+                PublishedClientTrackingPolicy.target_type,
+                PublishedClientTrackingPolicy.target_code,
+                PublishedClientTrackingPolicy.event_name,
+            )
         ).all()
     )
 
