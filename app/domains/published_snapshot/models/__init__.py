@@ -7,11 +7,15 @@ from app.domains.published_snapshot.models.published_snapshot import (
     PublishedOfferPrice,
     PublishedPromotionRule,
     PublishedPromotionTarget,
+    PublishedStorefrontSection,
+    PublishedStorefrontSectionLayout,
 )
 
 __all__ = [
     "PublishedCoupon",
     "PublishedGroup",
+    "PublishedStorefrontSectionLayout",
+    "PublishedStorefrontSection",
     "PublishedOffer",
     "PublishedOfferComponent",
     "PublishedOfferPosition",
