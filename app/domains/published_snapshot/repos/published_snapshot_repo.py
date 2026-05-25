@@ -3,11 +3,19 @@
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
+from app.domains.client_presentation.models.client_presentation import (
+    ClientPresentationBlockType,
+    ClientPresentationPage,
+    ClientPresentationRegion,
+)
 from app.domains.groups.models.group import Group
 from app.domains.offers.models.offer import Offer, OfferComponent, OfferPosition, OfferPrice
 from app.domains.promotions.models.promotion_rule import Coupon, PromotionRule, PromotionTarget
 from app.domains.publish.models.publish_version import PublishVersion
 from app.domains.published_snapshot.models.published_snapshot import (
+    PublishedClientBlockType,
+    PublishedClientPage,
+    PublishedClientRegion,
     PublishedCoupon,
     PublishedGroup,
     PublishedOffer,
@@ -35,6 +43,9 @@ def add_publish_version(session: Session, publish_version: PublishVersion) -> Pu
 
 def delete_snapshot_by_version(session: Session, publish_version: str) -> None:
     for model in (
+        PublishedClientBlockType,
+        PublishedClientRegion,
+        PublishedClientPage,
         PublishedCoupon,
         PublishedPromotionTarget,
         PublishedPromotionRule,
@@ -48,6 +59,43 @@ def delete_snapshot_by_version(session: Session, publish_version: str) -> None:
         PublishedGroup,
     ):
         session.execute(delete(model).where(model.publish_version == publish_version))
+
+
+def list_owner_client_pages(session: Session) -> list[ClientPresentationPage]:
+    return list(
+        session.scalars(
+            select(ClientPresentationPage).order_by(
+                ClientPresentationPage.sort_order,
+                ClientPresentationPage.id,
+            )
+        ).all()
+    )
+
+
+def list_owner_client_regions(
+    session: Session,
+) -> list[tuple[ClientPresentationRegion, ClientPresentationPage]]:
+    statement = (
+        select(ClientPresentationRegion, ClientPresentationPage)
+        .join(ClientPresentationPage, ClientPresentationPage.id == ClientPresentationRegion.page_id)
+        .order_by(
+            ClientPresentationPage.sort_order,
+            ClientPresentationRegion.sort_order,
+            ClientPresentationRegion.id,
+        )
+    )
+    return list(session.execute(statement).all())
+
+
+def list_owner_client_block_types(session: Session) -> list[ClientPresentationBlockType]:
+    return list(
+        session.scalars(
+            select(ClientPresentationBlockType).order_by(
+                ClientPresentationBlockType.block_type,
+                ClientPresentationBlockType.id,
+            )
+        ).all()
+    )
 
 
 def list_owner_groups(session: Session) -> list[Group]:
@@ -131,6 +179,42 @@ def latest_publish_version(session: Session, publish_version: str | None) -> Pub
         .limit(1)
     )
     return session.scalar(statement)
+
+
+def list_published_client_pages(
+    session: Session, publish_version: str
+) -> list[PublishedClientPage]:
+    return list(
+        session.scalars(
+            select(PublishedClientPage)
+            .where(PublishedClientPage.publish_version == publish_version)
+            .order_by(PublishedClientPage.sort_order, PublishedClientPage.id)
+        ).all()
+    )
+
+
+def list_published_client_regions(
+    session: Session, publish_version: str
+) -> list[PublishedClientRegion]:
+    return list(
+        session.scalars(
+            select(PublishedClientRegion)
+            .where(PublishedClientRegion.publish_version == publish_version)
+            .order_by(PublishedClientRegion.page_code, PublishedClientRegion.sort_order)
+        ).all()
+    )
+
+
+def list_published_client_block_types(
+    session: Session, publish_version: str
+) -> list[PublishedClientBlockType]:
+    return list(
+        session.scalars(
+            select(PublishedClientBlockType)
+            .where(PublishedClientBlockType.publish_version == publish_version)
+            .order_by(PublishedClientBlockType.block_type, PublishedClientBlockType.id)
+        ).all()
+    )
 
 
 def list_published_groups(session: Session, publish_version: str) -> list[PublishedGroup]:

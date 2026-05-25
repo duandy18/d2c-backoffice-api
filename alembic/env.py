@@ -9,6 +9,11 @@ from alembic import context
 from app.core.config import load_settings
 from app.core.database import Base
 from app.domains.backoffice_pages.models.backoffice_page import BackofficePage  # noqa: F401
+from app.domains.client_presentation.models.client_presentation import (  # noqa: F401
+    ClientPresentationBlockType,
+    ClientPresentationPage,
+    ClientPresentationRegion,
+)
 from app.domains.groups.models.group import Group  # noqa: F401
 from app.domains.listing.models.listing import (  # noqa: F401
     ProductListingConfig,

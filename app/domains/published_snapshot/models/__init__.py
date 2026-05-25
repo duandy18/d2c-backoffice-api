@@ -1,4 +1,7 @@
 from app.domains.published_snapshot.models.published_snapshot import (
+    PublishedClientBlockType,
+    PublishedClientPage,
+    PublishedClientRegion,
     PublishedCoupon,
     PublishedGroup,
     PublishedOffer,
@@ -13,6 +16,9 @@ from app.domains.published_snapshot.models.published_snapshot import (
 )
 
 __all__ = [
+    "PublishedClientBlockType",
+    "PublishedClientPage",
+    "PublishedClientRegion",
     "PublishedCoupon",
     "PublishedGroup",
     "PublishedStorefrontSectionLayout",
