@@ -26,7 +26,6 @@ from app.domains.offers.repos.offer_repo import (
     create_offer_price,
     get_offer_by_code,
     list_offer_components,
-    list_offer_positions,
     list_offer_prices,
     list_offers,
     next_component_no,
@@ -36,6 +35,9 @@ from app.domains.pms_projection.models import (
     PmsProductProjection,
     PmsSkuCodeProjection,
     PmsUnitProjection,
+)
+from app.domains.storefront_sections.repos.storefront_section_repo import (
+    list_section_positions_by_offer_id,
 )
 
 
@@ -370,11 +372,11 @@ def get_backoffice_offer_publish_check(
     offer = _get_offer_or_raise(session, offer_code)
     components = list_offer_components(session, offer.id)
     prices = list_offer_prices(session, offer.id)
-    positions = list_offer_positions(session, offer.id)
+    section_positions = list_section_positions_by_offer_id(session, offer.id)
 
     has_component = len(components) > 0
     has_active_price = any(price.is_active for price in prices)
-    has_group_position = any(position.is_active for position in positions)
+    has_section_position = any(position.is_active for position in section_positions)
     has_title = bool(offer.title.strip())
     has_image = bool((offer.image_url or "").strip())
     is_visible = offer.display_status == "visible"
@@ -385,8 +387,8 @@ def get_backoffice_offer_publish_check(
         reasons.append("offer_component_required")
     if not has_active_price:
         reasons.append("offer_active_price_required")
-    if not has_group_position:
-        reasons.append("offer_group_position_required")
+    if not has_section_position:
+        reasons.append("offer_section_position_required")
     if not has_title:
         reasons.append("offer_title_required")
     if not has_image:
@@ -402,7 +404,7 @@ def get_backoffice_offer_publish_check(
         blocking_reasons=reasons,
         has_component=has_component,
         has_active_price=has_active_price,
-        has_group_position=has_group_position,
+        has_section_position=has_section_position,
         has_title=has_title,
         has_image=has_image,
         is_visible=is_visible,
