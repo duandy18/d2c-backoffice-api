@@ -43,7 +43,7 @@ def test_backoffice_pages_registry_contains_full_blueprint() -> None:
     payload = response.json()
     page_by_code = {page["page_code"]: page for page in payload["pages"]}
 
-    assert payload["count"] >= 78
+    assert payload["count"] >= 98
 
     assert page_by_code["d2c.backoffice.operations"]["title"] == "经营首页"
     assert (
@@ -80,6 +80,37 @@ def test_backoffice_pages_registry_contains_full_blueprint() -> None:
         "system.pages.registry"
     )
 
+    assert page_by_code["d2c.backoffice.client_presentation"]["title"] == (
+        "客户端表现配置"
+    )
+    assert page_by_code["d2c.backoffice.client_presentation"]["component_key"] == (
+        "layout.group"
+    )
+    assert page_by_code["d2c.backoffice.client_presentation"]["implementation_status"] == (
+        "ready"
+    )
+    assert page_by_code["d2c.backoffice.client_presentation.page_architecture"][
+        "title"
+    ] == "页面架构"
+    assert page_by_code["d2c.backoffice.client_presentation.content"]["title"] == (
+        "区块与内容"
+    )
+    assert page_by_code["d2c.backoffice.client_presentation.block_types"][
+        "component_key"
+    ] == "client_presentation.block_types"
+    assert page_by_code["d2c.backoffice.client_presentation.blocks"]["title"] == (
+        "区块实例"
+    )
+    assert page_by_code["d2c.backoffice.client_presentation.positions"]["title"] == (
+        "内容坑位"
+    )
+    assert page_by_code["d2c.backoffice.client_presentation.layouts"][
+        "data_status"
+    ] == "placeholder"
+    assert page_by_code["d2c.backoffice.client_presentation.publish"]["title"] == (
+        "发布运行"
+    )
+
 
 def test_backoffice_pages_navigation_returns_tree() -> None:
     client = TestClient(app)
@@ -97,7 +128,14 @@ def test_backoffice_pages_navigation_returns_tree() -> None:
     assert payload["version"] == 1
 
     root_titles = [page["title"] for page in payload["pages"]]
-    assert root_titles[:5] == ["经营首页", "商品管理", "价格管理", "订单与履约", "营销中心"]
+    assert root_titles[:6] == [
+        "经营首页",
+        "商品管理",
+        "价格管理",
+        "客户端表现配置",
+        "订单与履约",
+        "营销中心",
+    ]
 
     product_root = next(page for page in payload["pages"] if page["title"] == "商品管理")
     product_groups = {page["title"]: page for page in product_root["children"]}
@@ -133,6 +171,57 @@ def test_backoffice_pages_navigation_returns_tree() -> None:
     price_pages = {page["title"]: page for page in price_groups["价格管理"]["children"]}
     assert price_pages["价格表"]["component_key"] == "pricing.price_lists"
     assert price_pages["SKU 价格"]["component_key"] == "pricing.sku_prices"
+
+    presentation_root = next(
+        page for page in payload["pages"] if page["title"] == "客户端表现配置"
+    )
+    presentation_groups = {page["title"]: page for page in presentation_root["children"]}
+    assert {
+        "总览",
+        "页面架构",
+        "区块与内容",
+        "渲染与规则",
+        "预览与发布",
+    }.issubset(presentation_groups)
+
+    architecture_pages = {
+        page["title"]: page for page in presentation_groups["页面架构"]["children"]
+    }
+    assert architecture_pages["客户端渠道"]["component_key"] == (
+        "client_presentation.surfaces"
+    )
+    assert architecture_pages["页面模型"]["implementation_status"] == "planned"
+    assert architecture_pages["页面区域"]["data_status"] == "placeholder"
+
+    content_pages = {
+        page["title"]: page for page in presentation_groups["区块与内容"]["children"]
+    }
+    assert content_pages["区块类型"]["component_key"] == (
+        "client_presentation.block_types"
+    )
+    assert content_pages["区块实例"]["component_key"] == "client_presentation.blocks"
+    assert content_pages["内容坑位"]["component_key"] == "client_presentation.positions"
+    assert content_pages["数据源绑定"]["component_key"] == (
+        "client_presentation.data_bindings"
+    )
+
+    rule_pages = {
+        page["title"]: page for page in presentation_groups["渲染与规则"]["children"]
+    }
+    assert rule_pages["展示规则"]["component_key"] == "client_presentation.layouts"
+    assert rule_pages["可见性规则"]["component_key"] == (
+        "client_presentation.visibility"
+    )
+    assert rule_pages["交互与埋点"]["component_key"] == "client_presentation.actions"
+
+    release_pages = {
+        page["title"]: page for page in presentation_groups["预览与发布"]["children"]
+    }
+    assert release_pages["客户端预览"]["component_key"] == "client_presentation.preview"
+    assert release_pages["契约校验"]["component_key"] == (
+        "client_presentation.validation"
+    )
+    assert release_pages["发布运行"]["component_key"] == "client_presentation.publish"
 
     marketing_root = next(page for page in payload["pages"] if page["title"] == "营销中心")
     marketing_groups = {page["title"]: page for page in marketing_root["children"]}
