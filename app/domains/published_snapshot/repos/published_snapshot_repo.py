@@ -16,6 +16,12 @@ from app.domains.published_snapshot.models.published_snapshot import (
     PublishedOfferPrice,
     PublishedPromotionRule,
     PublishedPromotionTarget,
+    PublishedStorefrontSection,
+    PublishedStorefrontSectionLayout,
+)
+from app.domains.storefront_sections.models.storefront_section import (
+    StorefrontSection,
+    StorefrontSectionLayout,
 )
 
 
@@ -208,3 +214,51 @@ def list_published_coupons(session: Session, publish_version: str) -> list[Publi
             .order_by(PublishedCoupon.id)
         ).all()
     )
+
+
+def list_owner_storefront_section_rows(
+    session: Session,
+) -> list[tuple[StorefrontSection, Group | None]]:
+    statement = (
+        select(StorefrontSection, Group)
+        .outerjoin(Group, Group.id == StorefrontSection.group_id)
+        .order_by(StorefrontSection.sort_order, StorefrontSection.id)
+    )
+    return list(session.execute(statement).all())
+
+
+def list_owner_storefront_section_layout_rows(
+    session: Session,
+) -> list[tuple[StorefrontSectionLayout, StorefrontSection]]:
+    statement = (
+        select(StorefrontSectionLayout, StorefrontSection)
+        .join(StorefrontSection, StorefrontSection.id == StorefrontSectionLayout.section_id)
+        .order_by(StorefrontSection.sort_order, StorefrontSection.id)
+    )
+    return list(session.execute(statement).all())
+
+
+def list_published_storefront_sections(
+    session: Session,
+    publish_version: str,
+) -> list[PublishedStorefrontSection]:
+    statement = (
+        select(PublishedStorefrontSection)
+        .where(PublishedStorefrontSection.publish_version == publish_version)
+        .order_by(PublishedStorefrontSection.sort_order, PublishedStorefrontSection.id)
+    )
+    return list(session.scalars(statement).all())
+
+
+def list_published_storefront_section_layouts(
+    session: Session,
+    publish_version: str,
+) -> list[PublishedStorefrontSectionLayout]:
+    statement = (
+        select(PublishedStorefrontSectionLayout)
+        .where(PublishedStorefrontSectionLayout.publish_version == publish_version)
+        .order_by(
+            PublishedStorefrontSectionLayout.section_code, PublishedStorefrontSectionLayout.id
+        )
+    )
+    return list(session.scalars(statement).all())

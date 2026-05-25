@@ -25,6 +25,10 @@ from app.domains.published_export.contracts.published_export_contract import (
     PublishedPromotionRuleSnapshotExport,
     PublishedPromotionTargetsExportResponse,
     PublishedPromotionTargetSnapshotExport,
+    PublishedStorefrontSectionLayoutsExportResponse,
+    PublishedStorefrontSectionLayoutSnapshotExport,
+    PublishedStorefrontSectionsExportResponse,
+    PublishedStorefrontSectionSnapshotExport,
 )
 from app.domains.published_snapshot.models.published_snapshot import (
     PublishedCoupon,
@@ -35,6 +39,8 @@ from app.domains.published_snapshot.models.published_snapshot import (
     PublishedOfferPrice,
     PublishedPromotionRule,
     PublishedPromotionTarget,
+    PublishedStorefrontSection,
+    PublishedStorefrontSectionLayout,
 )
 from app.domains.published_snapshot.repos.published_snapshot_repo import (
     add_publish_version,
@@ -49,6 +55,8 @@ from app.domains.published_snapshot.repos.published_snapshot_repo import (
     list_owner_prices,
     list_owner_promotion_rules,
     list_owner_promotion_targets,
+    list_owner_storefront_section_layout_rows,
+    list_owner_storefront_section_rows,
     list_published_components,
     list_published_coupons,
     list_published_groups,
@@ -56,6 +64,8 @@ from app.domains.published_snapshot.repos.published_snapshot_repo import (
     list_published_positions,
     list_published_prices,
     list_published_rules,
+    list_published_storefront_section_layouts,
+    list_published_storefront_sections,
     list_published_targets,
 )
 
@@ -104,6 +114,51 @@ def create_storefront_snapshot(
                 is_active=group.is_active,
                 source_group_id=group.id,
                 raw_payload={"source": "d2c_groups", "source_group_id": group.id},
+                published_at=now,
+            )
+        )
+
+    for section, group in list_owner_storefront_section_rows(session):
+        rows.append(
+            PublishedStorefrontSection(
+                publish_version=resolved_version,
+                section_code=section.section_code,
+                section_type=section.section_type,
+                group_code=group.group_code if group is not None else None,
+                title=section.title,
+                subtitle=section.subtitle,
+                description=section.description,
+                sort_order=section.sort_order,
+                display_status=section.display_status,
+                is_active=section.is_active,
+                source_section_id=section.id,
+                raw_payload={"source": "d2c_storefront_sections", "source_section_id": section.id},
+                published_at=now,
+            )
+        )
+
+    for layout, section in list_owner_storefront_section_layout_rows(session):
+        rows.append(
+            PublishedStorefrontSectionLayout(
+                publish_version=resolved_version,
+                section_code=section.section_code,
+                display_type=layout.display_type,
+                columns_desktop=layout.columns_desktop,
+                columns_tablet=layout.columns_tablet,
+                columns_mobile=layout.columns_mobile,
+                card_size=layout.card_size,
+                image_ratio=layout.image_ratio,
+                show_promotion_badge=layout.show_promotion_badge,
+                show_sales_summary=layout.show_sales_summary,
+                show_review_summary=layout.show_review_summary,
+                show_compare_price=layout.show_compare_price,
+                show_quantity_stepper=layout.show_quantity_stepper,
+                max_items=layout.max_items,
+                source_layout_id=layout.id,
+                raw_payload={
+                    "source": "d2c_storefront_section_layouts",
+                    "source_layout_id": layout.id,
+                },
                 published_at=now,
             )
         )
@@ -434,4 +489,76 @@ def get_published_coupons_snapshot(
         publish_version=version.publish_version,
         count=len(coupons),
         coupons=coupons,
+    )
+
+
+def get_published_storefront_sections_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedStorefrontSectionsExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedStorefrontSectionsExportResponse(publish_version=None, count=0, sections=[])
+
+    sections = [
+        PublishedStorefrontSectionSnapshotExport(
+            publish_version=row.publish_version,
+            section_code=row.section_code,
+            section_type=row.section_type,
+            group_code=row.group_code,
+            title=row.title,
+            subtitle=row.subtitle,
+            description=row.description,
+            sort_order=row.sort_order,
+            display_status=row.display_status,
+            is_active=row.is_active,
+            published_at=row.published_at,
+            source_section_id=row.source_section_id,
+            raw_payload=row.raw_payload,
+        )
+        for row in list_published_storefront_sections(session, version.publish_version)
+    ]
+    return PublishedStorefrontSectionsExportResponse(
+        publish_version=version.publish_version,
+        count=len(sections),
+        sections=sections,
+    )
+
+
+def get_published_storefront_section_layouts_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedStorefrontSectionLayoutsExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedStorefrontSectionLayoutsExportResponse(
+            publish_version=None, count=0, layouts=[]
+        )
+
+    layouts = [
+        PublishedStorefrontSectionLayoutSnapshotExport(
+            publish_version=row.publish_version,
+            section_code=row.section_code,
+            display_type=row.display_type,
+            columns_desktop=row.columns_desktop,
+            columns_tablet=row.columns_tablet,
+            columns_mobile=row.columns_mobile,
+            card_size=row.card_size,
+            image_ratio=row.image_ratio,
+            show_promotion_badge=row.show_promotion_badge,
+            show_sales_summary=row.show_sales_summary,
+            show_review_summary=row.show_review_summary,
+            show_compare_price=row.show_compare_price,
+            show_quantity_stepper=row.show_quantity_stepper,
+            max_items=row.max_items,
+            published_at=row.published_at,
+            source_layout_id=row.source_layout_id,
+            raw_payload=row.raw_payload,
+        )
+        for row in list_published_storefront_section_layouts(session, version.publish_version)
+    ]
+    return PublishedStorefrontSectionLayoutsExportResponse(
+        publish_version=version.publish_version,
+        count=len(layouts),
+        layouts=layouts,
     )

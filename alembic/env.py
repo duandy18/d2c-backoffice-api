@@ -4,6 +4,7 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
 
+import app.domains.storefront_sections.models.storefront_section  # noqa: F401
 from alembic import context
 from app.core.config import load_settings
 from app.core.database import Base

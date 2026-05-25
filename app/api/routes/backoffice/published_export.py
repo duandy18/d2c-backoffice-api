@@ -20,6 +20,8 @@ from app.domains.published_export.contracts.published_export_contract import (
     PublishedPromotionRulesExportResponse,
     PublishedPromotionsExportResponse,
     PublishedPromotionTargetsExportResponse,
+    PublishedStorefrontSectionLayoutsExportResponse,
+    PublishedStorefrontSectionsExportResponse,
 )
 from app.domains.published_export.services.published_export_service import (
     get_published_catalog_export,
@@ -37,6 +39,8 @@ from app.domains.published_snapshot.services.published_snapshot_service import (
     get_published_offers_snapshot,
     get_published_promotion_rules_snapshot,
     get_published_promotion_targets_snapshot,
+    get_published_storefront_section_layouts_snapshot,
+    get_published_storefront_sections_snapshot,
 )
 
 router = APIRouter(
@@ -171,3 +175,26 @@ def published_snapshot_coupons_export(
     publish_version: Annotated[str | None, Query()] = None,
 ) -> PublishedCouponsSnapshotExportResponse:
     return get_published_coupons_snapshot(session, publish_version)
+
+
+@router.get(
+    "/snapshot/storefront-sections", response_model=PublishedStorefrontSectionsExportResponse
+)
+def published_snapshot_storefront_sections_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedStorefrontSectionsExportResponse:
+    return get_published_storefront_sections_snapshot(session, publish_version)
+
+
+@router.get(
+    "/snapshot/storefront-section-layouts",
+    response_model=PublishedStorefrontSectionLayoutsExportResponse,
+)
+def published_snapshot_storefront_section_layouts_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedStorefrontSectionLayoutsExportResponse:
+    return get_published_storefront_section_layouts_snapshot(session, publish_version)

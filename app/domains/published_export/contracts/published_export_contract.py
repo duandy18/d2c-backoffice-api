@@ -322,3 +322,51 @@ class PublishedCouponsSnapshotExportResponse(BaseModel):
     publish_version: str | None
     count: int = Field(..., ge=0)
     coupons: list[PublishedCouponSnapshotExport]
+
+
+class PublishedStorefrontSectionSnapshotExport(BaseModel):
+    publish_version: str
+    section_code: str
+    section_type: str
+    group_code: str | None
+    title: str
+    subtitle: str | None
+    description: str | None
+    sort_order: int
+    display_status: str
+    is_active: bool
+    published_at: datetime
+    source_section_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedStorefrontSectionsExportResponse(BaseModel):
+    publish_version: str | None
+    count: int
+    sections: list[PublishedStorefrontSectionSnapshotExport]
+
+
+class PublishedStorefrontSectionLayoutSnapshotExport(BaseModel):
+    publish_version: str
+    section_code: str
+    display_type: str
+    columns_desktop: int
+    columns_tablet: int
+    columns_mobile: int
+    card_size: str
+    image_ratio: str
+    show_promotion_badge: bool
+    show_sales_summary: bool
+    show_review_summary: bool
+    show_compare_price: bool
+    show_quantity_stepper: bool
+    max_items: int | None
+    published_at: datetime
+    source_layout_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedStorefrontSectionLayoutsExportResponse(BaseModel):
+    publish_version: str | None
+    count: int
+    layouts: list[PublishedStorefrontSectionLayoutSnapshotExport]

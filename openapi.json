@@ -1609,6 +1609,229 @@
         }
       }
     },
+    "/backoffice/storefront-sections/health": {
+      "get": {
+        "tags": [
+          "backoffice-storefront-sections"
+        ],
+        "summary": "Backoffice Storefront Sections Health",
+        "operationId": "backoffice_storefront_sections_health_backoffice_storefront_sections_health_get",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackofficeStorefrontSectionsHealthResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/storefront-sections": {
+      "get": {
+        "tags": [
+          "backoffice-storefront-sections"
+        ],
+        "summary": "Backoffice Storefront Sections List",
+        "operationId": "backoffice_storefront_sections_list_backoffice_storefront_sections_get",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackofficeStorefrontSectionsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "backoffice-storefront-sections"
+        ],
+        "summary": "Backoffice Storefront Sections Create",
+        "operationId": "backoffice_storefront_sections_create_backoffice_storefront_sections_post",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BackofficeStorefrontSectionCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackofficeStorefrontSection"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/storefront-sections/{section_code}/layout": {
+      "post": {
+        "tags": [
+          "backoffice-storefront-sections"
+        ],
+        "summary": "Backoffice Storefront Section Layout Upsert",
+        "operationId": "backoffice_storefront_section_layout_upsert_backoffice_storefront_sections__section_code__layout_post",
+        "parameters": [
+          {
+            "name": "section_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Section Code"
+            }
+          },
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BackofficeStorefrontSectionLayoutUpsertRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackofficeStorefrontSectionLayout"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/backoffice/pms-projections/health": {
       "get": {
         "tags": [
@@ -3656,6 +3879,136 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PublishedCouponsSnapshotExportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/read/v1/published/snapshot/storefront-sections": {
+      "get": {
+        "tags": [
+          "backoffice-read-v1-published"
+        ],
+        "summary": "Published Snapshot Storefront Sections Export",
+        "operationId": "published_snapshot_storefront_sections_export_backoffice_read_v1_published_snapshot_storefront_sections_get",
+        "parameters": [
+          {
+            "name": "publish_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Publish Version"
+            }
+          },
+          {
+            "name": "X-Service-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Service-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishedStorefrontSectionsExportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/read/v1/published/snapshot/storefront-section-layouts": {
+      "get": {
+        "tags": [
+          "backoffice-read-v1-published"
+        ],
+        "summary": "Published Snapshot Storefront Section Layouts Export",
+        "operationId": "published_snapshot_storefront_section_layouts_export_backoffice_read_v1_published_snapshot_storefront_section_layouts_get",
+        "parameters": [
+          {
+            "name": "publish_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Publish Version"
+            }
+          },
+          {
+            "name": "X-Service-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Service-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishedStorefrontSectionLayoutsExportResponse"
                 }
               }
             }
@@ -6025,6 +6378,459 @@
           "surface"
         ],
         "title": "BackofficePublishHealthResponse"
+      },
+      "BackofficeStorefrontSection": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "section_code": {
+            "type": "string",
+            "title": "Section Code"
+          },
+          "section_type": {
+            "type": "string",
+            "title": "Section Type"
+          },
+          "group_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group Id"
+          },
+          "group_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group Code"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sort_order": {
+            "type": "integer",
+            "title": "Sort Order"
+          },
+          "display_status": {
+            "type": "string",
+            "title": "Display Status"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "section_code",
+          "section_type",
+          "group_id",
+          "group_code",
+          "title",
+          "subtitle",
+          "description",
+          "sort_order",
+          "display_status",
+          "is_active",
+          "source_type",
+          "source_ref",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "BackofficeStorefrontSection"
+      },
+      "BackofficeStorefrontSectionCreateRequest": {
+        "properties": {
+          "section_code": {
+            "type": "string",
+            "maxLength": 96,
+            "minLength": 1,
+            "title": "Section Code"
+          },
+          "section_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Section Type",
+            "default": "offer_shelf"
+          },
+          "group_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 96
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group Code"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 240
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sort_order": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Sort Order",
+            "default": 100
+          },
+          "display_status": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Display Status",
+            "default": "visible"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "source_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Source Type",
+            "default": "manual"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          }
+        },
+        "type": "object",
+        "required": [
+          "section_code",
+          "title"
+        ],
+        "title": "BackofficeStorefrontSectionCreateRequest"
+      },
+      "BackofficeStorefrontSectionLayout": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "section_id": {
+            "type": "integer",
+            "title": "Section Id"
+          },
+          "section_code": {
+            "type": "string",
+            "title": "Section Code"
+          },
+          "display_type": {
+            "type": "string",
+            "title": "Display Type"
+          },
+          "columns_desktop": {
+            "type": "integer",
+            "title": "Columns Desktop"
+          },
+          "columns_tablet": {
+            "type": "integer",
+            "title": "Columns Tablet"
+          },
+          "columns_mobile": {
+            "type": "integer",
+            "title": "Columns Mobile"
+          },
+          "card_size": {
+            "type": "string",
+            "title": "Card Size"
+          },
+          "image_ratio": {
+            "type": "string",
+            "title": "Image Ratio"
+          },
+          "show_promotion_badge": {
+            "type": "boolean",
+            "title": "Show Promotion Badge"
+          },
+          "show_sales_summary": {
+            "type": "boolean",
+            "title": "Show Sales Summary"
+          },
+          "show_review_summary": {
+            "type": "boolean",
+            "title": "Show Review Summary"
+          },
+          "show_compare_price": {
+            "type": "boolean",
+            "title": "Show Compare Price"
+          },
+          "show_quantity_stepper": {
+            "type": "boolean",
+            "title": "Show Quantity Stepper"
+          },
+          "max_items": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Items"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "section_id",
+          "section_code",
+          "display_type",
+          "columns_desktop",
+          "columns_tablet",
+          "columns_mobile",
+          "card_size",
+          "image_ratio",
+          "show_promotion_badge",
+          "show_sales_summary",
+          "show_review_summary",
+          "show_compare_price",
+          "show_quantity_stepper",
+          "max_items",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "BackofficeStorefrontSectionLayout"
+      },
+      "BackofficeStorefrontSectionLayoutUpsertRequest": {
+        "properties": {
+          "display_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Display Type",
+            "default": "product_grid"
+          },
+          "columns_desktop": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Columns Desktop",
+            "default": 4
+          },
+          "columns_tablet": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Columns Tablet",
+            "default": 2
+          },
+          "columns_mobile": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Columns Mobile",
+            "default": 1
+          },
+          "card_size": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Card Size",
+            "default": "standard"
+          },
+          "image_ratio": {
+            "type": "string",
+            "maxLength": 16,
+            "minLength": 1,
+            "title": "Image Ratio",
+            "default": "1:1"
+          },
+          "show_promotion_badge": {
+            "type": "boolean",
+            "title": "Show Promotion Badge",
+            "default": true
+          },
+          "show_sales_summary": {
+            "type": "boolean",
+            "title": "Show Sales Summary",
+            "default": true
+          },
+          "show_review_summary": {
+            "type": "boolean",
+            "title": "Show Review Summary",
+            "default": true
+          },
+          "show_compare_price": {
+            "type": "boolean",
+            "title": "Show Compare Price",
+            "default": true
+          },
+          "show_quantity_stepper": {
+            "type": "boolean",
+            "title": "Show Quantity Stepper",
+            "default": true
+          },
+          "max_items": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Items"
+          }
+        },
+        "type": "object",
+        "title": "BackofficeStorefrontSectionLayoutUpsertRequest"
+      },
+      "BackofficeStorefrontSectionsHealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "module": {
+            "type": "string",
+            "title": "Module"
+          },
+          "owner_tables": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Owner Tables"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "module",
+          "owner_tables"
+        ],
+        "title": "BackofficeStorefrontSectionsHealthResponse"
+      },
+      "BackofficeStorefrontSectionsResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "sections": {
+            "items": {
+              "$ref": "#/components/schemas/BackofficeStorefrontSection"
+            },
+            "type": "array",
+            "title": "Sections"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "sections"
+        ],
+        "title": "BackofficeStorefrontSectionsResponse"
       },
       "HTTPValidationError": {
         "properties": {
@@ -11200,6 +12006,298 @@
           "raw_payload"
         ],
         "title": "PublishedSkuExport"
+      },
+      "PublishedStorefrontSectionLayoutSnapshotExport": {
+        "properties": {
+          "publish_version": {
+            "type": "string",
+            "title": "Publish Version"
+          },
+          "section_code": {
+            "type": "string",
+            "title": "Section Code"
+          },
+          "display_type": {
+            "type": "string",
+            "title": "Display Type"
+          },
+          "columns_desktop": {
+            "type": "integer",
+            "title": "Columns Desktop"
+          },
+          "columns_tablet": {
+            "type": "integer",
+            "title": "Columns Tablet"
+          },
+          "columns_mobile": {
+            "type": "integer",
+            "title": "Columns Mobile"
+          },
+          "card_size": {
+            "type": "string",
+            "title": "Card Size"
+          },
+          "image_ratio": {
+            "type": "string",
+            "title": "Image Ratio"
+          },
+          "show_promotion_badge": {
+            "type": "boolean",
+            "title": "Show Promotion Badge"
+          },
+          "show_sales_summary": {
+            "type": "boolean",
+            "title": "Show Sales Summary"
+          },
+          "show_review_summary": {
+            "type": "boolean",
+            "title": "Show Review Summary"
+          },
+          "show_compare_price": {
+            "type": "boolean",
+            "title": "Show Compare Price"
+          },
+          "show_quantity_stepper": {
+            "type": "boolean",
+            "title": "Show Quantity Stepper"
+          },
+          "max_items": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Items"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Published At"
+          },
+          "source_layout_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Layout Id"
+          },
+          "raw_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "section_code",
+          "display_type",
+          "columns_desktop",
+          "columns_tablet",
+          "columns_mobile",
+          "card_size",
+          "image_ratio",
+          "show_promotion_badge",
+          "show_sales_summary",
+          "show_review_summary",
+          "show_compare_price",
+          "show_quantity_stepper",
+          "max_items",
+          "published_at",
+          "source_layout_id",
+          "raw_payload"
+        ],
+        "title": "PublishedStorefrontSectionLayoutSnapshotExport"
+      },
+      "PublishedStorefrontSectionLayoutsExportResponse": {
+        "properties": {
+          "publish_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publish Version"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "layouts": {
+            "items": {
+              "$ref": "#/components/schemas/PublishedStorefrontSectionLayoutSnapshotExport"
+            },
+            "type": "array",
+            "title": "Layouts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "count",
+          "layouts"
+        ],
+        "title": "PublishedStorefrontSectionLayoutsExportResponse"
+      },
+      "PublishedStorefrontSectionSnapshotExport": {
+        "properties": {
+          "publish_version": {
+            "type": "string",
+            "title": "Publish Version"
+          },
+          "section_code": {
+            "type": "string",
+            "title": "Section Code"
+          },
+          "section_type": {
+            "type": "string",
+            "title": "Section Type"
+          },
+          "group_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Group Code"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sort_order": {
+            "type": "integer",
+            "title": "Sort Order"
+          },
+          "display_status": {
+            "type": "string",
+            "title": "Display Status"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Published At"
+          },
+          "source_section_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Section Id"
+          },
+          "raw_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "section_code",
+          "section_type",
+          "group_code",
+          "title",
+          "subtitle",
+          "description",
+          "sort_order",
+          "display_status",
+          "is_active",
+          "published_at",
+          "source_section_id",
+          "raw_payload"
+        ],
+        "title": "PublishedStorefrontSectionSnapshotExport"
+      },
+      "PublishedStorefrontSectionsExportResponse": {
+        "properties": {
+          "publish_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publish Version"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          },
+          "sections": {
+            "items": {
+              "$ref": "#/components/schemas/PublishedStorefrontSectionSnapshotExport"
+            },
+            "type": "array",
+            "title": "Sections"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "count",
+          "sections"
+        ],
+        "title": "PublishedStorefrontSectionsExportResponse"
       },
       "SkuListingConfigContract": {
         "properties": {
