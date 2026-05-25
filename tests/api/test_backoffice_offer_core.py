@@ -215,21 +215,37 @@ def test_backoffice_create_offer_component_price_position_and_publish_check(
     assert price_response.status_code == 201
     assert price_response.json()["price_cents"] == 1999
 
-    position_response = client.post(
-        f"/backoffice/offers/{offer_code}/positions",
+    section_code = unique_code("SECTION")
+    section_response = client.post(
+        "/backoffice/storefront-sections",
         json={
+            "section_code": section_code,
+            "section_type": "offer_shelf",
             "group_code": "cat_food",
-            "position_code": unique_code("POS"),
+            "title": "猫粮主推",
             "sort_order": 1,
-            "position_source": "manual",
+        },
+        headers=BACKOFFICE_HEADERS,
+    )
+    assert section_response.status_code == 201
+
+    position_response = client.post(
+        f"/backoffice/storefront-sections/{section_code}/positions",
+        json={
+            "offer_code": offer_code,
+            "position_code": unique_code("SEC-POS"),
+            "sort_order": 1,
+            "position_type": "manual",
             "is_featured": True,
             "is_active": True,
+            "source_type": "manual",
         },
         headers=BACKOFFICE_HEADERS,
     )
 
     assert position_response.status_code == 201
-    assert position_response.json()["group_code"] == "cat_food"
+    assert position_response.json()["section_code"] == section_code
+    assert position_response.json()["offer_code"] == offer_code
 
     check_response = client.get(
         f"/backoffice/offers/{offer_code}/publish-check",
@@ -243,7 +259,7 @@ def test_backoffice_create_offer_component_price_position_and_publish_check(
         "blocking_reasons": [],
         "has_component": True,
         "has_active_price": True,
-        "has_group_position": True,
+        "has_section_position": True,
         "has_title": True,
         "has_image": True,
         "is_visible": True,

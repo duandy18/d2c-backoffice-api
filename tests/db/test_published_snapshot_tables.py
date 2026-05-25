@@ -80,3 +80,33 @@ def test_published_snapshot_terminal_columns_exist() -> None:
         )
     finally:
         engine.dispose()
+
+def test_published_storefront_section_position_snapshot_columns_exist() -> None:
+    engine = create_db_engine(load_settings())
+    try:
+        inspector = inspect(engine)
+        table_names = set(inspector.get_table_names())
+
+        assert "d2c_published_storefront_section_positions" in table_names
+
+        columns = {
+            column["name"]
+            for column in inspector.get_columns("d2c_published_storefront_section_positions")
+        }
+        assert {
+            "publish_version",
+            "section_code",
+            "position_code",
+            "offer_code",
+            "sort_order",
+            "position_type",
+            "is_featured",
+            "visible_from",
+            "visible_until",
+            "is_active",
+            "published_at",
+            "source_position_id",
+            "raw_payload",
+        }.issubset(columns)
+    finally:
+        engine.dispose()

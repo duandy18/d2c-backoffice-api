@@ -18,10 +18,12 @@ from app.domains.published_snapshot.models.published_snapshot import (
     PublishedPromotionTarget,
     PublishedStorefrontSection,
     PublishedStorefrontSectionLayout,
+    PublishedStorefrontSectionPosition,
 )
 from app.domains.storefront_sections.models.storefront_section import (
     StorefrontSection,
     StorefrontSectionLayout,
+    StorefrontSectionPosition,
 )
 
 
@@ -36,6 +38,9 @@ def delete_snapshot_by_version(session: Session, publish_version: str) -> None:
         PublishedCoupon,
         PublishedPromotionTarget,
         PublishedPromotionRule,
+        PublishedStorefrontSectionPosition,
+        PublishedStorefrontSectionLayout,
+        PublishedStorefrontSection,
         PublishedOfferPosition,
         PublishedOfferPrice,
         PublishedOfferComponent,
@@ -237,6 +242,22 @@ def list_owner_storefront_section_layout_rows(
     )
     return list(session.execute(statement).all())
 
+def list_owner_storefront_section_position_rows(
+    session: Session,
+) -> list[tuple[StorefrontSectionPosition, StorefrontSection, Offer]]:
+    statement = (
+        select(StorefrontSectionPosition, StorefrontSection, Offer)
+        .join(StorefrontSection, StorefrontSection.id == StorefrontSectionPosition.section_id)
+        .join(Offer, Offer.id == StorefrontSectionPosition.offer_id)
+        .order_by(
+            StorefrontSection.sort_order,
+            StorefrontSectionPosition.sort_order,
+            StorefrontSectionPosition.id,
+        )
+    )
+    return list(session.execute(statement).all())
+
+
 
 def list_published_storefront_sections(
     session: Session,
@@ -259,6 +280,21 @@ def list_published_storefront_section_layouts(
         .where(PublishedStorefrontSectionLayout.publish_version == publish_version)
         .order_by(
             PublishedStorefrontSectionLayout.section_code, PublishedStorefrontSectionLayout.id
+        )
+    )
+    return list(session.scalars(statement).all())
+
+def list_published_storefront_section_positions(
+    session: Session,
+    publish_version: str,
+) -> list[PublishedStorefrontSectionPosition]:
+    statement = (
+        select(PublishedStorefrontSectionPosition)
+        .where(PublishedStorefrontSectionPosition.publish_version == publish_version)
+        .order_by(
+            PublishedStorefrontSectionPosition.section_code,
+            PublishedStorefrontSectionPosition.sort_order,
+            PublishedStorefrontSectionPosition.id,
         )
     )
     return list(session.scalars(statement).all())

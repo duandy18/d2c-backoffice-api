@@ -9,12 +9,14 @@ from app.domains.published_snapshot.models.published_snapshot import (
     PublishedPromotionTarget,
     PublishedStorefrontSection,
     PublishedStorefrontSectionLayout,
+    PublishedStorefrontSectionPosition,
 )
 
 __all__ = [
     "PublishedCoupon",
     "PublishedGroup",
     "PublishedStorefrontSectionLayout",
+    "PublishedStorefrontSectionPosition",
     "PublishedStorefrontSection",
     "PublishedOffer",
     "PublishedOfferComponent",

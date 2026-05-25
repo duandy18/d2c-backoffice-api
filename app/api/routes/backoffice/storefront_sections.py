@@ -11,14 +11,22 @@ from app.domains.storefront_sections.contracts.storefront_section_contract impor
     BackofficeStorefrontSectionCreateRequest,
     BackofficeStorefrontSectionLayout,
     BackofficeStorefrontSectionLayoutUpsertRequest,
+    BackofficeStorefrontSectionPosition,
+    BackofficeStorefrontSectionPositionCreateRequest,
+    BackofficeStorefrontSectionPositionsResponse,
     BackofficeStorefrontSectionsHealthResponse,
     BackofficeStorefrontSectionsResponse,
 )
 from app.domains.storefront_sections.services.storefront_section_service import (
     BackofficeStorefrontSectionDuplicateCodeError,
     BackofficeStorefrontSectionGroupNotFoundError,
+    BackofficeStorefrontSectionInvalidRangeError,
     BackofficeStorefrontSectionNotFoundError,
+    BackofficeStorefrontSectionOfferNotFoundError,
+    BackofficeStorefrontSectionPositionDuplicateError,
     create_backoffice_storefront_section,
+    create_backoffice_storefront_section_position,
+    get_backoffice_storefront_section_positions,
     get_backoffice_storefront_sections,
     get_storefront_sections_health,
     upsert_backoffice_storefront_section_layout,
@@ -83,3 +91,44 @@ def backoffice_storefront_section_layout_upsert(
         return upsert_backoffice_storefront_section_layout(session, section_code, payload)
     except BackofficeStorefrontSectionNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+@router.get(
+    "/{section_code}/positions",
+    response_model=BackofficeStorefrontSectionPositionsResponse,
+)
+def backoffice_storefront_section_positions_list(
+    section_code: str,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> BackofficeStorefrontSectionPositionsResponse:
+    try:
+        return get_backoffice_storefront_section_positions(session, section_code)
+    except BackofficeStorefrontSectionNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+
+@router.post(
+    "/{section_code}/positions",
+    response_model=BackofficeStorefrontSectionPosition,
+    status_code=status.HTTP_201_CREATED,
+)
+def backoffice_storefront_section_positions_create(
+    section_code: str,
+    payload: BackofficeStorefrontSectionPositionCreateRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> BackofficeStorefrontSectionPosition:
+    try:
+        return create_backoffice_storefront_section_position(session, section_code, payload)
+    except (
+        BackofficeStorefrontSectionNotFoundError,
+        BackofficeStorefrontSectionOfferNotFoundError,
+    ) as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except BackofficeStorefrontSectionPositionDuplicateError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    except BackofficeStorefrontSectionInvalidRangeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        ) from exc

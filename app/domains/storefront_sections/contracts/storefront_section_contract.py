@@ -81,3 +81,39 @@ class BackofficeStorefrontSectionsHealthResponse(BaseModel):
     status: str
     module: str
     owner_tables: list[str]
+
+class BackofficeStorefrontSectionPositionCreateRequest(BaseModel):
+    offer_code: str = Field(..., min_length=1, max_length=96)
+    position_code: str = Field(..., min_length=1, max_length=120)
+    sort_order: int = Field(default=100, ge=0)
+    position_type: str = Field(default="manual", min_length=1, max_length=32)
+    is_featured: bool = False
+    visible_from: datetime | None = None
+    visible_until: datetime | None = None
+    is_active: bool = True
+    source_type: str = Field(default="manual", min_length=1, max_length=32)
+    source_ref: str | None = Field(default=None, max_length=160)
+
+
+class BackofficeStorefrontSectionPosition(BaseModel):
+    id: int
+    section_id: int
+    section_code: str
+    offer_id: int
+    offer_code: str
+    position_code: str
+    sort_order: int
+    position_type: str
+    is_featured: bool
+    visible_from: datetime | None
+    visible_until: datetime | None
+    is_active: bool
+    source_type: str
+    source_ref: str | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class BackofficeStorefrontSectionPositionsResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    positions: list[BackofficeStorefrontSectionPosition]

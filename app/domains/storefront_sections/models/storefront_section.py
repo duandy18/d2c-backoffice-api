@@ -120,3 +120,54 @@ class StorefrontSectionLayout(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+
+class StorefrontSectionPosition(Base):
+    __tablename__ = "d2c_storefront_section_positions"
+    __table_args__ = (
+        UniqueConstraint("position_code", name="uq_d2c_sec_pos_code"),
+        UniqueConstraint("section_id", "offer_id", name="uq_d2c_sec_pos_sec_offer"),
+        CheckConstraint("sort_order >= 0", name="ck_d2c_sec_pos_sort"),
+        CheckConstraint(
+            "visible_until IS NULL OR visible_from IS NULL OR visible_until > visible_from",
+            name="ck_d2c_sec_pos_range",
+        ),
+        Index("ix_d2c_sec_pos_section_sort", "section_id", "sort_order"),
+        Index("ix_d2c_sec_pos_offer", "offer_id"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    section_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("d2c_storefront_sections.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    offer_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("d2c_offers.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    position_code: Mapped[str] = mapped_column(String(120), nullable=False)
+    sort_order: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=100, server_default="100"
+    )
+    position_type: Mapped[str] = mapped_column(
+        String(32), nullable=False, default="manual", server_default="manual"
+    )
+    is_featured: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
+    )
+    visible_from: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    visible_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=True, server_default="true"
+    )
+    source_type: Mapped[str] = mapped_column(
+        String(32), nullable=False, default="manual", server_default="manual"
+    )
+    source_ref: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )

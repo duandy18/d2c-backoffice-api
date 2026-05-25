@@ -362,3 +362,84 @@ def test_published_snapshot_requires_service_client() -> None:
 
     assert response.status_code == 401
     assert response.json() == {"detail": "service_client_required"}
+
+def test_backoffice_publish_exports_storefront_section_positions() -> None:
+    client = TestClient(app)
+    publish_version = unique_code("PUB-SEC-POS")
+    offer_code = unique_code("OFFER-SEC-POS")
+    section_code = unique_code("SECTION-SEC-POS")
+    position_code = unique_code("SEC-POS")
+
+    offer_response = client.post(
+        "/backoffice/offers",
+        json={
+            "offer_code": offer_code,
+            "offer_type": "single",
+            "title": "SectionPosition 发布测试商品",
+            "subtitle": "精准货架坑位",
+            "description": "pytest section position snapshot",
+            "image_url": "https://example.test/section-position-snapshot.png",
+            "display_status": "visible",
+            "sell_status": "sellable",
+            "publish_status": "draft",
+            "source_type": "manual",
+            "sort_order": 10,
+        },
+        headers=BACKOFFICE_HEADERS,
+    )
+    assert offer_response.status_code == 201
+
+    section_response = client.post(
+        "/backoffice/storefront-sections",
+        json={
+            "section_code": section_code,
+            "section_type": "offer_shelf",
+            "group_code": "cat_litter",
+            "title": "SectionPosition 发布测试货架",
+            "sort_order": 10,
+        },
+        headers=BACKOFFICE_HEADERS,
+    )
+    assert section_response.status_code == 201
+
+    position_response = client.post(
+        f"/backoffice/storefront-sections/{section_code}/positions",
+        json={
+            "offer_code": offer_code,
+            "position_code": position_code,
+            "sort_order": 1,
+            "position_type": "manual",
+            "is_featured": True,
+            "is_active": True,
+            "source_type": "manual",
+        },
+        headers=BACKOFFICE_HEADERS,
+    )
+    assert position_response.status_code == 201
+
+    publish_response = client.post(
+        "/backoffice/publish",
+        json={
+            "publish_version": publish_version,
+            "published_by": "pytest",
+            "note": "section position snapshot test",
+        },
+        headers=BACKOFFICE_HEADERS,
+    )
+    assert publish_response.status_code == 201
+
+    export_response = client.get(
+        "/backoffice/read/v1/published/snapshot/storefront-section-positions",
+        params={"publish_version": publish_version},
+        headers=SERVICE_HEADERS,
+    )
+    assert export_response.status_code == 200
+
+    positions = {
+        row["position_code"]: row
+        for row in export_response.json()["positions"]
+    }
+    assert positions[position_code]["section_code"] == section_code
+    assert positions[position_code]["offer_code"] == offer_code
+    assert positions[position_code]["position_type"] == "manual"
+    assert positions[position_code]["is_featured"] is True

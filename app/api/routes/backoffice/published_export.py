@@ -21,6 +21,7 @@ from app.domains.published_export.contracts.published_export_contract import (
     PublishedPromotionsExportResponse,
     PublishedPromotionTargetsExportResponse,
     PublishedStorefrontSectionLayoutsExportResponse,
+    PublishedStorefrontSectionPositionsExportResponse,
     PublishedStorefrontSectionsExportResponse,
 )
 from app.domains.published_export.services.published_export_service import (
@@ -40,6 +41,7 @@ from app.domains.published_snapshot.services.published_snapshot_service import (
     get_published_promotion_rules_snapshot,
     get_published_promotion_targets_snapshot,
     get_published_storefront_section_layouts_snapshot,
+    get_published_storefront_section_positions_snapshot,
     get_published_storefront_sections_snapshot,
 )
 
@@ -187,6 +189,18 @@ def published_snapshot_storefront_sections_export(
 ) -> PublishedStorefrontSectionsExportResponse:
     return get_published_storefront_sections_snapshot(session, publish_version)
 
+
+
+@router.get(
+    "/snapshot/storefront-section-positions",
+    response_model=PublishedStorefrontSectionPositionsExportResponse,
+)
+def published_snapshot_storefront_section_positions_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedStorefrontSectionPositionsExportResponse:
+    return get_published_storefront_section_positions_snapshot(session, publish_version)
 
 @router.get(
     "/snapshot/storefront-section-layouts",

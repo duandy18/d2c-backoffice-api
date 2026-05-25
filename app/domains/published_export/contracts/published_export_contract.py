@@ -366,6 +366,28 @@ class PublishedStorefrontSectionLayoutSnapshotExport(BaseModel):
     raw_payload: dict[str, Any] | None
 
 
+
+class PublishedStorefrontSectionPositionSnapshotExport(BaseModel):
+    publish_version: str
+    section_code: str
+    position_code: str
+    offer_code: str
+    sort_order: int
+    position_type: str
+    is_featured: bool
+    visible_from: datetime | None
+    visible_until: datetime | None
+    is_active: bool
+    published_at: datetime
+    source_position_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedStorefrontSectionPositionsExportResponse(BaseModel):
+    publish_version: str | None
+    count: int
+    positions: list[PublishedStorefrontSectionPositionSnapshotExport]
+
 class PublishedStorefrontSectionLayoutsExportResponse(BaseModel):
     publish_version: str | None
     count: int

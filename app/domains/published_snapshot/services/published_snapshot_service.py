@@ -27,6 +27,8 @@ from app.domains.published_export.contracts.published_export_contract import (
     PublishedPromotionTargetSnapshotExport,
     PublishedStorefrontSectionLayoutsExportResponse,
     PublishedStorefrontSectionLayoutSnapshotExport,
+    PublishedStorefrontSectionPositionsExportResponse,
+    PublishedStorefrontSectionPositionSnapshotExport,
     PublishedStorefrontSectionsExportResponse,
     PublishedStorefrontSectionSnapshotExport,
 )
@@ -41,6 +43,7 @@ from app.domains.published_snapshot.models.published_snapshot import (
     PublishedPromotionTarget,
     PublishedStorefrontSection,
     PublishedStorefrontSectionLayout,
+    PublishedStorefrontSectionPosition,
 )
 from app.domains.published_snapshot.repos.published_snapshot_repo import (
     add_publish_version,
@@ -56,6 +59,7 @@ from app.domains.published_snapshot.repos.published_snapshot_repo import (
     list_owner_promotion_rules,
     list_owner_promotion_targets,
     list_owner_storefront_section_layout_rows,
+    list_owner_storefront_section_position_rows,
     list_owner_storefront_section_rows,
     list_published_components,
     list_published_coupons,
@@ -65,6 +69,7 @@ from app.domains.published_snapshot.repos.published_snapshot_repo import (
     list_published_prices,
     list_published_rules,
     list_published_storefront_section_layouts,
+    list_published_storefront_section_positions,
     list_published_storefront_sections,
     list_published_targets,
 )
@@ -160,6 +165,31 @@ def create_storefront_snapshot(
                     "source_layout_id": layout.id,
                 },
                 published_at=now,
+            )
+        )
+
+
+    for position, section, offer in list_owner_storefront_section_position_rows(session):
+        rows.append(
+            PublishedStorefrontSectionPosition(
+                publish_version=resolved_version,
+                section_code=section.section_code,
+                position_code=position.position_code,
+                offer_code=offer.offer_code,
+                sort_order=position.sort_order,
+                position_type=position.position_type,
+                is_featured=position.is_featured,
+                visible_from=position.visible_from,
+                visible_until=position.visible_until,
+                is_active=position.is_active,
+                published_at=now,
+                source_position_id=position.id,
+                raw_payload={
+                    "source": "d2c_storefront_section_positions",
+                    "source_position_id": position.id,
+                    "source_section_id": section.id,
+                    "source_offer_id": offer.id,
+                },
             )
         )
 
@@ -561,4 +591,40 @@ def get_published_storefront_section_layouts_snapshot(
         publish_version=version.publish_version,
         count=len(layouts),
         layouts=layouts,
+    )
+
+def get_published_storefront_section_positions_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedStorefrontSectionPositionsExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedStorefrontSectionPositionsExportResponse(
+            publish_version=None,
+            count=0,
+            positions=[],
+        )
+
+    positions = [
+        PublishedStorefrontSectionPositionSnapshotExport(
+            publish_version=row.publish_version,
+            section_code=row.section_code,
+            position_code=row.position_code,
+            offer_code=row.offer_code,
+            sort_order=row.sort_order,
+            position_type=row.position_type,
+            is_featured=row.is_featured,
+            visible_from=row.visible_from,
+            visible_until=row.visible_until,
+            is_active=row.is_active,
+            published_at=row.published_at,
+            source_position_id=row.source_position_id,
+            raw_payload=row.raw_payload,
+        )
+        for row in list_published_storefront_section_positions(session, version.publish_version)
+    ]
+    return PublishedStorefrontSectionPositionsExportResponse(
+        publish_version=version.publish_version,
+        count=len(positions),
+        positions=positions,
     )

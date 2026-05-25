@@ -140,7 +140,7 @@ class BackofficeOfferPublishCheckResponse(BaseModel):
     blocking_reasons: list[str]
     has_component: bool
     has_active_price: bool
-    has_group_position: bool
+    has_section_position: bool
     has_title: bool
     has_image: bool
     is_visible: bool

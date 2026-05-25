@@ -4,23 +4,32 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.domains.groups.repos.group_repo import get_group_by_code
+from app.domains.offers.models.offer import Offer
+from app.domains.offers.repos.offer_repo import get_offer_by_code
 from app.domains.storefront_sections.contracts.storefront_section_contract import (
     BackofficeStorefrontSection,
     BackofficeStorefrontSectionCreateRequest,
     BackofficeStorefrontSectionLayout,
     BackofficeStorefrontSectionLayoutUpsertRequest,
+    BackofficeStorefrontSectionPosition,
+    BackofficeStorefrontSectionPositionCreateRequest,
+    BackofficeStorefrontSectionPositionsResponse,
     BackofficeStorefrontSectionsHealthResponse,
     BackofficeStorefrontSectionsResponse,
 )
 from app.domains.storefront_sections.models.storefront_section import (
     StorefrontSection,
     StorefrontSectionLayout,
+    StorefrontSectionPosition,
 )
 from app.domains.storefront_sections.repos.storefront_section_repo import (
     create_layout,
+    create_position,
     create_section,
     get_layout_by_section_id,
+    get_position_by_code,
     get_section_by_code,
+    list_section_position_rows,
     list_section_rows,
 )
 
@@ -36,6 +45,23 @@ class BackofficeStorefrontSectionNotFoundError(Exception):
 class BackofficeStorefrontSectionGroupNotFoundError(Exception):
     pass
 
+class BackofficeStorefrontSectionOfferNotFoundError(Exception):
+    pass
+
+
+class BackofficeStorefrontSectionPositionDuplicateError(Exception):
+    pass
+
+
+class BackofficeStorefrontSectionInvalidRangeError(Exception):
+    pass
+
+
+def _validate_range(start: object, end: object, error_code: str) -> None:
+    if start is not None and end is not None and end <= start:  # type: ignore[operator]
+        raise BackofficeStorefrontSectionInvalidRangeError(error_code)
+
+
 
 def get_storefront_sections_health() -> BackofficeStorefrontSectionsHealthResponse:
     return BackofficeStorefrontSectionsHealthResponse(
@@ -44,6 +70,7 @@ def get_storefront_sections_health() -> BackofficeStorefrontSectionsHealthRespon
         owner_tables=[
             "d2c_storefront_sections",
             "d2c_storefront_section_layouts",
+            "d2c_storefront_section_positions",
         ],
     )
 
@@ -187,3 +214,93 @@ def upsert_backoffice_storefront_section_layout(
 
     session.commit()
     return _build_layout_contract(layout, section.section_code)
+
+def _build_position_contract(
+    position: StorefrontSectionPosition,
+    section: StorefrontSection,
+    offer: Offer,
+) -> BackofficeStorefrontSectionPosition:
+    return BackofficeStorefrontSectionPosition(
+        id=position.id,
+        section_id=position.section_id,
+        section_code=section.section_code,
+        offer_id=position.offer_id,
+        offer_code=offer.offer_code,
+        position_code=position.position_code,
+        sort_order=position.sort_order,
+        position_type=position.position_type,
+        is_featured=position.is_featured,
+        visible_from=position.visible_from,
+        visible_until=position.visible_until,
+        is_active=position.is_active,
+        source_type=position.source_type,
+        source_ref=position.source_ref,
+        created_at=position.created_at,
+        updated_at=position.updated_at,
+    )
+
+
+def get_backoffice_storefront_section_positions(
+    session: Session,
+    section_code: str,
+) -> BackofficeStorefrontSectionPositionsResponse:
+    section = get_section_by_code(session, section_code)
+    if section is None:
+        raise BackofficeStorefrontSectionNotFoundError("section_not_found")
+
+    positions = [
+        _build_position_contract(position, section, offer)
+        for position, offer in list_section_position_rows(session, section.id)
+    ]
+    return BackofficeStorefrontSectionPositionsResponse(
+        count=len(positions),
+        positions=positions,
+    )
+
+
+def create_backoffice_storefront_section_position(
+    session: Session,
+    section_code: str,
+    payload: BackofficeStorefrontSectionPositionCreateRequest,
+) -> BackofficeStorefrontSectionPosition:
+    section = get_section_by_code(session, section_code)
+    if section is None:
+        raise BackofficeStorefrontSectionNotFoundError("section_not_found")
+
+    offer = get_offer_by_code(session, payload.offer_code)
+    if offer is None:
+        raise BackofficeStorefrontSectionOfferNotFoundError("offer_not_found")
+
+    if get_position_by_code(session, payload.position_code) is not None:
+        raise BackofficeStorefrontSectionPositionDuplicateError("section_position_already_exists")
+
+    _validate_range(
+        payload.visible_from,
+        payload.visible_until,
+        "section_position_visible_range_invalid",
+    )
+
+    position = StorefrontSectionPosition(
+        section_id=section.id,
+        offer_id=offer.id,
+        position_code=payload.position_code,
+        sort_order=payload.sort_order,
+        position_type=payload.position_type,
+        is_featured=payload.is_featured,
+        visible_from=payload.visible_from,
+        visible_until=payload.visible_until,
+        is_active=payload.is_active,
+        source_type=payload.source_type,
+        source_ref=payload.source_ref,
+    )
+
+    try:
+        create_position(session, position)
+        session.commit()
+    except IntegrityError as exc:
+        session.rollback()
+        raise BackofficeStorefrontSectionPositionDuplicateError(
+            "section_position_already_exists"
+        ) from exc
+
+    return _build_position_contract(position, section, offer)
