@@ -325,3 +325,79 @@ class ClientPresentationTrackingPolicyContract(BaseModel):
 class ClientPresentationTrackingPoliciesResponse(BaseModel):
     count: int = Field(..., ge=0)
     tracking_policies: list[ClientPresentationTrackingPolicyContract]
+
+
+class ClientPresentationPreviewPosition(BaseModel):
+    position_code: str
+    offer_code: str
+    sort_order: int
+    position_type: str
+    is_featured: bool
+    is_active: bool
+
+
+class ClientPresentationPreviewBlock(BaseModel):
+    block_code: str
+    block_type: str
+    title: str
+    layout: dict[str, Any] | None
+    data_binding_codes: list[str]
+    visibility_rule_codes: list[str]
+    action_policy_codes: list[str]
+    tracking_policy_codes: list[str]
+    positions: list[ClientPresentationPreviewPosition]
+
+
+class ClientPresentationPreviewRegion(BaseModel):
+    region_code: str
+    region_type: str
+    title: str
+    sort_order: int
+    allowed_block_types: list[str]
+    blocks: list[ClientPresentationPreviewBlock]
+
+
+class ClientPresentationPreviewPage(BaseModel):
+    page_code: str
+    page_type: str
+    route_path: str
+    title: str
+    regions: list[ClientPresentationPreviewRegion]
+
+
+class ClientPresentationPreviewResponse(BaseModel):
+    page_code: str
+    surface_code: str | None
+    generated_from: str
+    page: ClientPresentationPreviewPage
+
+
+class ClientPresentationValidationIssue(BaseModel):
+    severity: str
+    code: str
+    message: str
+    target_type: str
+    target_code: str
+
+
+class ClientPresentationValidationReportResponse(BaseModel):
+    can_publish: bool
+    issue_count: int = Field(..., ge=0)
+    blocking_issue_count: int = Field(..., ge=0)
+    warning_issue_count: int = Field(..., ge=0)
+    checked_counts: dict[str, int]
+    issues: list[ClientPresentationValidationIssue]
+
+
+class ClientPresentationRuntimeSnapshotCount(BaseModel):
+    name: str
+    owner_count: int
+    latest_snapshot_count: int
+
+
+class ClientPresentationPublishRuntimeStatusResponse(BaseModel):
+    latest_publish_version: str | None
+    latest_published_at: datetime | None
+    runtime_sync_status: str
+    runtime_sync_note: str
+    snapshot_counts: list[ClientPresentationRuntimeSnapshotCount]

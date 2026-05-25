@@ -2880,6 +2880,179 @@
         }
       }
     },
+    "/backoffice/client-presentation/preview": {
+      "get": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Preview",
+        "operationId": "client_presentation_preview_backoffice_client_presentation_preview_get",
+        "parameters": [
+          {
+            "name": "page_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "home",
+              "title": "Page Code"
+            }
+          },
+          {
+            "name": "surface_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Surface Code"
+            }
+          },
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationPreviewResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/validation-report": {
+      "get": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Validation Report",
+        "operationId": "client_presentation_validation_report_backoffice_client_presentation_validation_report_get",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationValidationReportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/publish-runtime-status": {
+      "get": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Publish Runtime Status",
+        "operationId": "client_presentation_publish_runtime_status_backoffice_client_presentation_publish_runtime_status_get",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationPublishRuntimeStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/backoffice/pms-projections/health": {
       "get": {
         "tags": [
@@ -9843,6 +10016,285 @@
         ],
         "title": "ClientPresentationPagesResponse"
       },
+      "ClientPresentationPreviewBlock": {
+        "properties": {
+          "block_code": {
+            "type": "string",
+            "title": "Block Code"
+          },
+          "block_type": {
+            "type": "string",
+            "title": "Block Type"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "layout": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Layout"
+          },
+          "data_binding_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Data Binding Codes"
+          },
+          "visibility_rule_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Visibility Rule Codes"
+          },
+          "action_policy_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Action Policy Codes"
+          },
+          "tracking_policy_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tracking Policy Codes"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationPreviewPosition"
+            },
+            "type": "array",
+            "title": "Positions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "block_code",
+          "block_type",
+          "title",
+          "layout",
+          "data_binding_codes",
+          "visibility_rule_codes",
+          "action_policy_codes",
+          "tracking_policy_codes",
+          "positions"
+        ],
+        "title": "ClientPresentationPreviewBlock"
+      },
+      "ClientPresentationPreviewPage": {
+        "properties": {
+          "page_code": {
+            "type": "string",
+            "title": "Page Code"
+          },
+          "page_type": {
+            "type": "string",
+            "title": "Page Type"
+          },
+          "route_path": {
+            "type": "string",
+            "title": "Route Path"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "regions": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationPreviewRegion"
+            },
+            "type": "array",
+            "title": "Regions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "page_code",
+          "page_type",
+          "route_path",
+          "title",
+          "regions"
+        ],
+        "title": "ClientPresentationPreviewPage"
+      },
+      "ClientPresentationPreviewPosition": {
+        "properties": {
+          "position_code": {
+            "type": "string",
+            "title": "Position Code"
+          },
+          "offer_code": {
+            "type": "string",
+            "title": "Offer Code"
+          },
+          "sort_order": {
+            "type": "integer",
+            "title": "Sort Order"
+          },
+          "position_type": {
+            "type": "string",
+            "title": "Position Type"
+          },
+          "is_featured": {
+            "type": "boolean",
+            "title": "Is Featured"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "position_code",
+          "offer_code",
+          "sort_order",
+          "position_type",
+          "is_featured",
+          "is_active"
+        ],
+        "title": "ClientPresentationPreviewPosition"
+      },
+      "ClientPresentationPreviewRegion": {
+        "properties": {
+          "region_code": {
+            "type": "string",
+            "title": "Region Code"
+          },
+          "region_type": {
+            "type": "string",
+            "title": "Region Type"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "sort_order": {
+            "type": "integer",
+            "title": "Sort Order"
+          },
+          "allowed_block_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Allowed Block Types"
+          },
+          "blocks": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationPreviewBlock"
+            },
+            "type": "array",
+            "title": "Blocks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "region_code",
+          "region_type",
+          "title",
+          "sort_order",
+          "allowed_block_types",
+          "blocks"
+        ],
+        "title": "ClientPresentationPreviewRegion"
+      },
+      "ClientPresentationPreviewResponse": {
+        "properties": {
+          "page_code": {
+            "type": "string",
+            "title": "Page Code"
+          },
+          "surface_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Surface Code"
+          },
+          "generated_from": {
+            "type": "string",
+            "title": "Generated From"
+          },
+          "page": {
+            "$ref": "#/components/schemas/ClientPresentationPreviewPage"
+          }
+        },
+        "type": "object",
+        "required": [
+          "page_code",
+          "surface_code",
+          "generated_from",
+          "page"
+        ],
+        "title": "ClientPresentationPreviewResponse"
+      },
+      "ClientPresentationPublishRuntimeStatusResponse": {
+        "properties": {
+          "latest_publish_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Publish Version"
+          },
+          "latest_published_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Published At"
+          },
+          "runtime_sync_status": {
+            "type": "string",
+            "title": "Runtime Sync Status"
+          },
+          "runtime_sync_note": {
+            "type": "string",
+            "title": "Runtime Sync Note"
+          },
+          "snapshot_counts": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationRuntimeSnapshotCount"
+            },
+            "type": "array",
+            "title": "Snapshot Counts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "latest_publish_version",
+          "latest_published_at",
+          "runtime_sync_status",
+          "runtime_sync_note",
+          "snapshot_counts"
+        ],
+        "title": "ClientPresentationPublishRuntimeStatusResponse"
+      },
       "ClientPresentationRegionContract": {
         "properties": {
           "id": {
@@ -10084,6 +10536,29 @@
           "regions"
         ],
         "title": "ClientPresentationRegionsResponse"
+      },
+      "ClientPresentationRuntimeSnapshotCount": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "owner_count": {
+            "type": "integer",
+            "title": "Owner Count"
+          },
+          "latest_snapshot_count": {
+            "type": "integer",
+            "title": "Latest Snapshot Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "owner_count",
+          "latest_snapshot_count"
+        ],
+        "title": "ClientPresentationRuntimeSnapshotCount"
       },
       "ClientPresentationSurfaceContract": {
         "properties": {
@@ -10481,6 +10956,86 @@
           "event_trigger"
         ],
         "title": "ClientPresentationTrackingPolicyCreateRequest"
+      },
+      "ClientPresentationValidationIssue": {
+        "properties": {
+          "severity": {
+            "type": "string",
+            "title": "Severity"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "target_type": {
+            "type": "string",
+            "title": "Target Type"
+          },
+          "target_code": {
+            "type": "string",
+            "title": "Target Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "severity",
+          "code",
+          "message",
+          "target_type",
+          "target_code"
+        ],
+        "title": "ClientPresentationValidationIssue"
+      },
+      "ClientPresentationValidationReportResponse": {
+        "properties": {
+          "can_publish": {
+            "type": "boolean",
+            "title": "Can Publish"
+          },
+          "issue_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Issue Count"
+          },
+          "blocking_issue_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Blocking Issue Count"
+          },
+          "warning_issue_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Warning Issue Count"
+          },
+          "checked_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Checked Counts"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationValidationIssue"
+            },
+            "type": "array",
+            "title": "Issues"
+          }
+        },
+        "type": "object",
+        "required": [
+          "can_publish",
+          "issue_count",
+          "blocking_issue_count",
+          "warning_issue_count",
+          "checked_counts",
+          "issues"
+        ],
+        "title": "ClientPresentationValidationReportResponse"
       },
       "ClientPresentationVisibilityRuleContract": {
         "properties": {
