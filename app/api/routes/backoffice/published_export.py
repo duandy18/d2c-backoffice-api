@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_session
 from app.domains.published_export.contracts.published_export_contract import (
-    PublishedCatalogExportResponse,
     PublishedClientActionPoliciesExportResponse,
     PublishedClientBlockTypesExportResponse,
     PublishedClientDataBindingsExportResponse,
@@ -24,7 +23,6 @@ from app.domains.published_export.contracts.published_export_contract import (
     PublishedOfferPositionsExportResponse,
     PublishedOfferPricesExportResponse,
     PublishedOffersExportResponse,
-    PublishedPricesExportResponse,
     PublishedPromotionRulesExportResponse,
     PublishedPromotionsExportResponse,
     PublishedPromotionTargetsExportResponse,
@@ -33,10 +31,8 @@ from app.domains.published_export.contracts.published_export_contract import (
     PublishedStorefrontSectionsExportResponse,
 )
 from app.domains.published_export.services.published_export_service import (
-    get_published_catalog_export,
     get_published_coupons_export,
     get_published_export_health,
-    get_published_prices_export,
     get_published_promotions_export,
 )
 from app.domains.published_snapshot.services.published_snapshot_service import (
@@ -84,25 +80,6 @@ ServiceClientDep = Annotated[None, Depends(require_service_client)]
 @router.get("/health", response_model=PublishedExportHealthResponse)
 def published_export_health(_: ServiceClientDep) -> PublishedExportHealthResponse:
     return get_published_export_health()
-
-
-# Legacy read-v1 exports kept until d2c-api runtime sync is moved to Offer snapshots.
-@router.get("/catalog", response_model=PublishedCatalogExportResponse)
-def published_catalog_export(
-    _: ServiceClientDep,
-    session: SessionDep,
-    publish_version: Annotated[str | None, Query()] = None,
-) -> PublishedCatalogExportResponse:
-    return get_published_catalog_export(session, publish_version)
-
-
-@router.get("/prices", response_model=PublishedPricesExportResponse)
-def published_prices_export(
-    _: ServiceClientDep,
-    session: SessionDep,
-    publish_version: Annotated[str | None, Query()] = None,
-) -> PublishedPricesExportResponse:
-    return get_published_prices_export(session, publish_version)
 
 
 @router.get("/promotions", response_model=PublishedPromotionsExportResponse)
