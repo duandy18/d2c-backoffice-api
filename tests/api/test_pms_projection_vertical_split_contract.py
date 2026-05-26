@@ -24,12 +24,6 @@ def test_pms_projection_vertical_modules_exist() -> None:
         "units.py",
         "sku_codes.py",
         "barcodes.py",
-        "item_contents.py",
-        "item_assets.py",
-        "display_categories.py",
-        "category_bindings.py",
-        "brand_profiles.py",
-        "brand_assets.py",
         "sync_runs.py",
     }
 
@@ -57,11 +51,5 @@ def test_pms_projection_http_paths_remain_stable_after_vertical_split() -> None:
         "/backoffice/pms-projections/units",
         "/backoffice/pms-projections/sku-codes",
         "/backoffice/pms-projections/barcodes",
-        "/backoffice/pms-projections/item-contents",
-        "/backoffice/pms-projections/item-assets",
-        "/backoffice/pms-projections/display-categories",
-        "/backoffice/pms-projections/item-display-category-bindings",
-        "/backoffice/pms-projections/brand-profiles",
-        "/backoffice/pms-projections/brand-assets",
         "/backoffice/pms-projections/sync-runs",
     }.issubset(paths)

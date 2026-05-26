@@ -36,12 +36,6 @@ from app.domains.offers.models.offer import (  # noqa: F401
 )
 from app.domains.pms_projection.models import (  # noqa: F401
     PmsBarcodeProjection,
-    PmsBrandAssetProjection,
-    PmsBrandProfileProjection,
-    PmsDisplayCategoryProjection,
-    PmsItemAssetProjection,
-    PmsItemContentProjection,
-    PmsItemDisplayCategoryBindingProjection,
     PmsProductProjection,
     PmsProjectionSyncRun,
     PmsSkuCodeProjection,

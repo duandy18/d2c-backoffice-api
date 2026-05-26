@@ -37,14 +37,6 @@ def test_pms_projection_empty_lists_are_stable() -> None:
         "/backoffice/pms-projections/units": "units",
         "/backoffice/pms-projections/sku-codes": "sku_codes",
         "/backoffice/pms-projections/barcodes": "barcodes",
-        "/backoffice/pms-projections/item-contents": "item_contents",
-        "/backoffice/pms-projections/item-assets": "item_assets",
-        "/backoffice/pms-projections/display-categories": "display_categories",
-        "/backoffice/pms-projections/item-display-category-bindings": (
-            "item_display_category_bindings"
-        ),
-        "/backoffice/pms-projections/brand-profiles": "brand_profiles",
-        "/backoffice/pms-projections/brand-assets": "brand_assets",
         "/backoffice/pms-projections/sync-runs": "sync_runs",
     }
 
@@ -127,12 +119,6 @@ def test_pms_projection_scope_sync_routes_are_registered() -> None:
         "/backoffice/pms-projections/units/sync",
         "/backoffice/pms-projections/sku-codes/sync",
         "/backoffice/pms-projections/barcodes/sync",
-        "/backoffice/pms-projections/item-contents/sync",
-        "/backoffice/pms-projections/item-assets/sync",
-        "/backoffice/pms-projections/display-categories/sync",
-        "/backoffice/pms-projections/item-display-category-bindings/sync",
-        "/backoffice/pms-projections/brand-profiles/sync",
-        "/backoffice/pms-projections/brand-assets/sync",
     ]
 
     for path in expected_paths:
@@ -156,36 +142,6 @@ def test_pms_projection_read_apis_include_display_table_contract() -> None:
             "barcodes",
             "d2c_pms_barcode_projection",
             "barcode",
-        ),
-        "/backoffice/pms-projections/item-contents": (
-            "item_contents",
-            "d2c_pms_item_content_projection",
-            "base_title",
-        ),
-        "/backoffice/pms-projections/item-assets": (
-            "item_assets",
-            "d2c_pms_item_asset_projection",
-            "url",
-        ),
-        "/backoffice/pms-projections/display-categories": (
-            "display_categories",
-            "d2c_pms_display_category_projection",
-            "path_code",
-        ),
-        "/backoffice/pms-projections/item-display-category-bindings": (
-            "item_display_category_bindings",
-            "d2c_pms_item_display_category_binding_projection",
-            "display_category",
-        ),
-        "/backoffice/pms-projections/brand-profiles": (
-            "brand_profiles",
-            "d2c_pms_brand_profile_projection",
-            "brand",
-        ),
-        "/backoffice/pms-projections/brand-assets": (
-            "brand_assets",
-            "d2c_pms_brand_asset_projection",
-            "url",
         ),
     }
 

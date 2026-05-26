@@ -27,9 +27,6 @@ PYTEST_ARGS ?=
 .PHONY: upgrade-dev alembic-check alembic-current alembic-history revision
 .PHONY: pms-projection-sync pms-projection-sync-products pms-projection-sync-units
 .PHONY: pms-projection-sync-sku-codes pms-projection-sync-barcodes
-.PHONY: pms-projection-sync-item-contents pms-projection-sync-item-assets
-.PHONY: pms-projection-sync-display-categories pms-projection-sync-item-display-category-bindings
-.PHONY: pms-projection-sync-brand-profiles pms-projection-sync-brand-assets
 .PHONY: uvicorn uvicorn-up uvicorn-down uvicorn-restart uvicorn-status uvicorn-logs
 .PHONY: up down restart status logs
 
@@ -87,23 +84,11 @@ pms-projection-sync-barcodes: clean-pyc
 	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope barcodes --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
 
 
-pms-projection-sync-item-contents: clean-pyc
-	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope item_contents --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
 
-pms-projection-sync-item-assets: clean-pyc
-	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope item_assets --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
 
-pms-projection-sync-display-categories: clean-pyc
-	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope display_categories --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
 
-pms-projection-sync-item-display-category-bindings: clean-pyc
-	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope item_display_category_bindings --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
 
-pms-projection-sync-brand-profiles: clean-pyc
-	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope brand_profiles --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
 
-pms-projection-sync-brand-assets: clean-pyc
-	$(PMS_SYNC_ENV) $(VENV_PYTHON) scripts/sync_pms_projection.py --scope brand_assets --requested-by "$(PMS_PROJECTION_SYNC_REQUESTED_BY)"
 
 uvicorn:
 	PYTHONPATH=. $(VENV_PYTHON) -m uvicorn app.main:app --host $(HOST) --port $(PORT)
