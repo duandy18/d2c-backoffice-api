@@ -9,12 +9,15 @@ from app.core.database import get_session
 from app.domains.offers.contracts.offer_contract import (
     BackofficeOfferComponentContract,
     BackofficeOfferComponentCreateRequest,
+    BackofficeOfferComponentsResponse,
     BackofficeOfferContract,
     BackofficeOfferCreateRequest,
     BackofficeOfferPositionContract,
     BackofficeOfferPositionCreateRequest,
+    BackofficeOfferPositionsResponse,
     BackofficeOfferPriceContract,
     BackofficeOfferPriceCreateRequest,
+    BackofficeOfferPricesResponse,
     BackofficeOfferPublishCheckResponse,
     BackofficeOffersResponse,
 )
@@ -31,6 +34,9 @@ from app.domains.offers.services.offer_service import (
     create_backoffice_offer_position,
     create_backoffice_offer_price,
     get_backoffice_offer,
+    get_backoffice_offer_components,
+    get_backoffice_offer_positions,
+    get_backoffice_offer_prices,
     get_backoffice_offer_publish_check,
     get_backoffice_offers,
 )
@@ -89,6 +95,18 @@ def backoffice_offers_get(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
 
+@router.get("/{offer_code}/components", response_model=BackofficeOfferComponentsResponse)
+def backoffice_offer_components_list(
+    offer_code: str,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> BackofficeOfferComponentsResponse:
+    try:
+        return get_backoffice_offer_components(session, offer_code)
+    except BackofficeOfferNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+
 @router.post(
     "/{offer_code}/components",
     response_model=BackofficeOfferComponentContract,
@@ -105,6 +123,18 @@ def backoffice_offer_components_create(
     except BackofficeOfferNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     except BackofficeOfferProjectionNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+
+@router.get("/{offer_code}/prices", response_model=BackofficeOfferPricesResponse)
+def backoffice_offer_prices_list(
+    offer_code: str,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> BackofficeOfferPricesResponse:
+    try:
+        return get_backoffice_offer_prices(session, offer_code)
+    except BackofficeOfferNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
 
@@ -130,6 +160,20 @@ def backoffice_offer_prices_create(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(exc),
         ) from exc
+
+
+@router.get("/{offer_code}/positions", response_model=BackofficeOfferPositionsResponse)
+def backoffice_offer_positions_list(
+    offer_code: str,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> BackofficeOfferPositionsResponse:
+    try:
+        return get_backoffice_offer_positions(session, offer_code)
+    except BackofficeOfferNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except BackofficeOfferGroupNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
 
 @router.post(

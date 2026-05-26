@@ -78,6 +78,11 @@ class BackofficeOfferComponentContract(BaseModel):
     updated_at: datetime
 
 
+class BackofficeOfferComponentsResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    components: list[BackofficeOfferComponentContract]
+
+
 class BackofficeOfferPriceCreateRequest(BaseModel):
     price_code: str = Field(..., min_length=1, max_length=96)
     channel: str = Field(default="storefront", min_length=1, max_length=32)
@@ -106,6 +111,11 @@ class BackofficeOfferPriceContract(BaseModel):
     updated_at: datetime
 
 
+class BackofficeOfferPricesResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    prices: list[BackofficeOfferPriceContract]
+
+
 class BackofficeOfferPositionCreateRequest(BaseModel):
     group_code: str = Field(..., min_length=1, max_length=96)
     position_code: str = Field(..., min_length=1, max_length=120)
@@ -132,6 +142,11 @@ class BackofficeOfferPositionContract(BaseModel):
     is_active: bool
     created_at: datetime
     updated_at: datetime
+
+
+class BackofficeOfferPositionsResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    positions: list[BackofficeOfferPositionContract]
 
 
 class BackofficeOfferPublishCheckResponse(BaseModel):
