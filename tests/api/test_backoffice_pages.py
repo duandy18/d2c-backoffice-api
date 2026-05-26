@@ -47,10 +47,17 @@ def test_backoffice_pages_registry_contains_full_blueprint() -> None:
 
     assert page_by_code["d2c.backoffice.operations"]["title"] == "经营首页"
     assert (
-        page_by_code["d2c.backoffice.product_management.catalog.products"]["implementation_status"]
+        page_by_code["d2c.backoffice.product_management.offers.center"]["implementation_status"]
         == "ready"
     )
     assert page_by_code["d2c.backoffice.product_management"]["title"] == "商品管理"
+    assert page_by_code["d2c.backoffice.product_management.offers.center"]["title"] == (
+        "Offer 商品中心"
+    )
+    assert page_by_code["d2c.backoffice.product_management.offers.center"]["component_key"] == (
+        "offers.center"
+    )
+    assert "d2c.backoffice.product_management.catalog.products" not in page_by_code
     assert page_by_code["d2c.backoffice.price_management"]["title"] == "价格管理"
     assert (
         page_by_code[
@@ -162,7 +169,8 @@ def test_backoffice_pages_navigation_returns_tree() -> None:
 
     product_pages = {page["title"]: page for page in product_groups["D2C 商品配置"]["children"]}
 
-    assert product_pages["商品列表"]["component_key"] == "catalog.products"
+    assert product_pages["Offer 商品中心"]["component_key"] == "offers.center"
+    assert product_pages["Offer 商品中心"]["route_path"] == "/product-management/offers"
     assert product_pages["类目管理"]["implementation_status"] == "planned"
 
     price_root = next(page for page in payload["pages"] if page["title"] == "价格管理")
