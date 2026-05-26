@@ -9,12 +9,15 @@ from app.domains.groups.repos.group_repo import get_group_by_code
 from app.domains.offers.contracts.offer_contract import (
     BackofficeOfferComponentContract,
     BackofficeOfferComponentCreateRequest,
+    BackofficeOfferComponentsResponse,
     BackofficeOfferContract,
     BackofficeOfferCreateRequest,
     BackofficeOfferPositionContract,
     BackofficeOfferPositionCreateRequest,
+    BackofficeOfferPositionsResponse,
     BackofficeOfferPriceContract,
     BackofficeOfferPriceCreateRequest,
+    BackofficeOfferPricesResponse,
     BackofficeOfferPublishCheckResponse,
     BackofficeOffersResponse,
 )
@@ -26,6 +29,7 @@ from app.domains.offers.repos.offer_repo import (
     create_offer_price,
     get_offer_by_code,
     list_offer_components,
+    list_offer_positions,
     list_offer_prices,
     list_offers,
     next_component_no,
@@ -211,6 +215,18 @@ def build_component_contract(component: OfferComponent) -> BackofficeOfferCompon
     )
 
 
+def get_backoffice_offer_components(
+    session: Session,
+    offer_code: str,
+) -> BackofficeOfferComponentsResponse:
+    offer = _get_offer_or_raise(session, offer_code)
+    components = [
+        build_component_contract(component)
+        for component in list_offer_components(session, offer.id)
+    ]
+    return BackofficeOfferComponentsResponse(count=len(components), components=components)
+
+
 def create_backoffice_offer_component(
     session: Session,
     offer_code: str,
@@ -277,6 +293,15 @@ def build_price_contract(price: OfferPrice) -> BackofficeOfferPriceContract:
     )
 
 
+def get_backoffice_offer_prices(
+    session: Session,
+    offer_code: str,
+) -> BackofficeOfferPricesResponse:
+    offer = _get_offer_or_raise(session, offer_code)
+    prices = [build_price_contract(price) for price in list_offer_prices(session, offer.id)]
+    return BackofficeOfferPricesResponse(count=len(prices), prices=prices)
+
+
 def create_backoffice_offer_price(
     session: Session,
     offer_code: str,
@@ -329,6 +354,22 @@ def build_position_contract(
         created_at=position.created_at,
         updated_at=position.updated_at,
     )
+
+
+def get_backoffice_offer_positions(
+    session: Session,
+    offer_code: str,
+) -> BackofficeOfferPositionsResponse:
+    offer = _get_offer_or_raise(session, offer_code)
+    positions: list[BackofficeOfferPositionContract] = []
+
+    for position in list_offer_positions(session, offer.id):
+        group = session.get(Group, position.group_id)
+        if group is None:
+            raise BackofficeOfferGroupNotFoundError("group_not_found")
+        positions.append(build_position_contract(position, group, offer))
+
+    return BackofficeOfferPositionsResponse(count=len(positions), positions=positions)
 
 
 def create_backoffice_offer_position(

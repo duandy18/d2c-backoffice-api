@@ -198,6 +198,16 @@ def test_backoffice_create_offer_component_price_position_and_publish_check(
     assert component_response.status_code == 201
     assert component_response.json()["pms_item_id"] == component_source["pms_item_id"]
 
+    components_list_response = client.get(
+        f"/backoffice/offers/{offer_code}/components",
+        headers=BACKOFFICE_HEADERS,
+    )
+    assert components_list_response.status_code == 200
+    components_payload = components_list_response.json()
+    assert components_payload["count"] == 1
+    assert components_payload["components"][0]["pms_item_id"] == component_source["pms_item_id"]
+    assert components_payload["components"][0]["sku_code"] == component_response.json()["sku_code"]
+
     price_response = client.post(
         f"/backoffice/offers/{offer_code}/prices",
         json={
@@ -214,6 +224,43 @@ def test_backoffice_create_offer_component_price_position_and_publish_check(
 
     assert price_response.status_code == 201
     assert price_response.json()["price_cents"] == 1999
+
+    prices_list_response = client.get(
+        f"/backoffice/offers/{offer_code}/prices",
+        headers=BACKOFFICE_HEADERS,
+    )
+    assert prices_list_response.status_code == 200
+    prices_payload = prices_list_response.json()
+    assert prices_payload["count"] == 1
+    assert prices_payload["prices"][0]["price_cents"] == 1999
+    assert prices_payload["prices"][0]["compare_at_price_cents"] == 2199
+
+    offer_position_code = unique_code("POS")
+    offer_position_response = client.post(
+        f"/backoffice/offers/{offer_code}/positions",
+        json={
+            "group_code": "cat_food",
+            "position_code": offer_position_code,
+            "sort_order": 10,
+            "position_source": "manual",
+            "is_featured": True,
+            "is_active": True,
+        },
+        headers=BACKOFFICE_HEADERS,
+    )
+    assert offer_position_response.status_code == 201
+    assert offer_position_response.json()["offer_code"] == offer_code
+    assert offer_position_response.json()["group_code"] == "cat_food"
+
+    offer_positions_list_response = client.get(
+        f"/backoffice/offers/{offer_code}/positions",
+        headers=BACKOFFICE_HEADERS,
+    )
+    assert offer_positions_list_response.status_code == 200
+    offer_positions_payload = offer_positions_list_response.json()
+    assert offer_positions_payload["count"] == 1
+    assert offer_positions_payload["positions"][0]["position_code"] == offer_position_code
+    assert offer_positions_payload["positions"][0]["offer_code"] == offer_code
 
     section_code = unique_code("SECTION")
     section_response = client.post(
