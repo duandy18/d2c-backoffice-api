@@ -17,7 +17,12 @@ from app.domains.client_presentation.contracts.client_presentation_contract impo
     ClientPresentationDataBindingCreateRequest,
     ClientPresentationDataBindingsResponse,
     ClientPresentationHealthResponse,
+    ClientPresentationHomeBlockCreateRequest,
+    ClientPresentationHomeBlockUpdateRequest,
     ClientPresentationHomeDraftResponse,
+    ClientPresentationHomePlannerOptionsResponse,
+    ClientPresentationHomeRegionCreateRequest,
+    ClientPresentationHomeRegionUpdateRequest,
     ClientPresentationPageContract,
     ClientPresentationPageCreateRequest,
     ClientPresentationPagesResponse,
@@ -43,10 +48,13 @@ from app.domains.client_presentation.contracts.client_presentation_contract impo
 from app.domains.client_presentation.services.client_presentation_service import (
     ClientPresentationDuplicateCodeError,
     ClientPresentationPageNotFoundError,
+    ClientPresentationPlannerValidationError,
     create_client_presentation_action_policy,
     create_client_presentation_block_type,
     create_client_presentation_data_binding,
     create_client_presentation_page,
+    create_client_presentation_pc_web_home_block,
+    create_client_presentation_pc_web_home_region,
     create_client_presentation_region,
     create_client_presentation_region_block,
     create_client_presentation_surface,
@@ -58,6 +66,7 @@ from app.domains.client_presentation.services.client_presentation_service import
     get_client_presentation_health,
     get_client_presentation_pages,
     get_client_presentation_pc_web_home_draft,
+    get_client_presentation_pc_web_home_planner_options,
     get_client_presentation_preview,
     get_client_presentation_publish_runtime_status,
     get_client_presentation_region_blocks,
@@ -66,6 +75,8 @@ from app.domains.client_presentation.services.client_presentation_service import
     get_client_presentation_tracking_policies,
     get_client_presentation_validation_report,
     get_client_presentation_visibility_rules,
+    update_client_presentation_pc_web_home_block,
+    update_client_presentation_pc_web_home_region,
 )
 
 router = APIRouter(
@@ -113,6 +124,97 @@ def client_presentation_pc_web_home_draft(
         return get_client_presentation_pc_web_home_draft(session)
     except ClientPresentationPageNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+
+@router.get(
+    "/pc-web/pages/home/planner-options",
+    response_model=ClientPresentationHomePlannerOptionsResponse,
+)
+def client_presentation_pc_web_home_planner_options(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationHomePlannerOptionsResponse:
+    try:
+        return get_client_presentation_pc_web_home_planner_options(session)
+    except ClientPresentationPageNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+
+@router.post(
+    "/pc-web/pages/home/regions",
+    response_model=ClientPresentationHomeDraftResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def client_presentation_pc_web_home_region_create(
+    payload: ClientPresentationHomeRegionCreateRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationHomeDraftResponse:
+    try:
+        return create_client_presentation_pc_web_home_region(session, payload)
+    except ClientPresentationPageNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ClientPresentationDuplicateCodeError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    except ClientPresentationPlannerValidationError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+
+@router.patch(
+    "/pc-web/pages/home/regions/{region_code}",
+    response_model=ClientPresentationHomeDraftResponse,
+)
+def client_presentation_pc_web_home_region_update(
+    region_code: str,
+    payload: ClientPresentationHomeRegionUpdateRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationHomeDraftResponse:
+    try:
+        return update_client_presentation_pc_web_home_region(session, region_code, payload)
+    except ClientPresentationPageNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ClientPresentationPlannerValidationError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+
+@router.post(
+    "/pc-web/pages/home/regions/{region_code}/blocks",
+    response_model=ClientPresentationHomeDraftResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def client_presentation_pc_web_home_block_create(
+    region_code: str,
+    payload: ClientPresentationHomeBlockCreateRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationHomeDraftResponse:
+    try:
+        return create_client_presentation_pc_web_home_block(session, region_code, payload)
+    except ClientPresentationPageNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ClientPresentationDuplicateCodeError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    except ClientPresentationPlannerValidationError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+
+@router.patch(
+    "/pc-web/pages/home/blocks/{block_code}",
+    response_model=ClientPresentationHomeDraftResponse,
+)
+def client_presentation_pc_web_home_block_update(
+    block_code: str,
+    payload: ClientPresentationHomeBlockUpdateRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationHomeDraftResponse:
+    try:
+        return update_client_presentation_pc_web_home_block(session, block_code, payload)
+    except ClientPresentationPageNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ClientPresentationPlannerValidationError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
 
 @router.post(

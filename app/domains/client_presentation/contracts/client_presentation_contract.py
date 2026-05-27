@@ -475,3 +475,102 @@ class ClientPresentationHomeDraftResponse(BaseModel):
     page: ClientPresentationPreviewPage
     validation: ClientPresentationValidationReportResponse
     runtime_status: ClientPresentationPublishRuntimeStatusResponse
+
+
+class ClientPresentationPlannerOption(BaseModel):
+    value: str
+    label: str
+    description: str | None = None
+
+
+class ClientPresentationPlannerField(BaseModel):
+    name: str
+    label: str
+    control: str
+    input_type: str | None = None
+    required: bool = False
+    system: bool = False
+    options: list[ClientPresentationPlannerOption] = Field(default_factory=list)
+    default_value: Any | None = None
+    min_value: int | None = None
+    max_value: int | None = None
+    max_length: int | None = None
+
+
+class ClientPresentationPlannerRegionTypeOption(BaseModel):
+    region_type: str
+    display_name: str
+    description: str
+    allowed_block_types: list[str]
+    default_max_blocks: int | None
+    default_is_required: bool
+
+
+class ClientPresentationPlannerBlockTypeOption(BaseModel):
+    block_type: str
+    display_name: str
+    description: str | None
+    renderer_key: str
+    allowed_region_types: list[str]
+    allowed_content_types: list[str]
+    content_source_types: list[str]
+    fields: list[ClientPresentationPlannerField]
+
+
+class ClientPresentationHomePlannerOptionsResponse(BaseModel):
+    surface_code: str
+    page_code: str
+    region_types: list[ClientPresentationPlannerRegionTypeOption]
+    block_types: list[ClientPresentationPlannerBlockTypeOption]
+    region_form_fields: list[ClientPresentationPlannerField]
+    system_fields: list[str]
+
+
+class ClientPresentationHomeRegionCreateRequest(BaseModel):
+    region_type: str = Field(..., min_length=1, max_length=32)
+    title: str = Field(..., min_length=1, max_length=160)
+    description: str | None = None
+    sort_order: int = Field(default=100, ge=0)
+    is_required: bool | None = None
+    max_blocks: int | None = Field(default=None, ge=1)
+    display_status: str = Field(default="visible", min_length=1, max_length=32)
+    is_active: bool = True
+
+
+class ClientPresentationHomeRegionUpdateRequest(BaseModel):
+    title: str | None = Field(default=None, min_length=1, max_length=160)
+    description: str | None = None
+    sort_order: int | None = Field(default=None, ge=0)
+    is_required: bool | None = None
+    max_blocks: int | None = Field(default=None, ge=1)
+    display_status: str | None = Field(default=None, min_length=1, max_length=32)
+    is_active: bool | None = None
+
+
+class ClientPresentationHomeBlockCreateRequest(BaseModel):
+    block_type: str = Field(..., min_length=1, max_length=64)
+    title: str = Field(..., min_length=1, max_length=160)
+    subtitle: str | None = Field(default=None, max_length=240)
+    description: str | None = None
+    sort_order: int = Field(default=100, ge=0)
+    display_status: str = Field(default="visible", min_length=1, max_length=32)
+    is_active: bool = True
+    visible_from: datetime | None = None
+    visible_until: datetime | None = None
+    content_source_type: str = Field(default="manual_inline", min_length=1, max_length=32)
+    content_source_ref: str | None = Field(default=None, max_length=160)
+    content_payload: dict[str, Any] | None = None
+
+
+class ClientPresentationHomeBlockUpdateRequest(BaseModel):
+    title: str | None = Field(default=None, min_length=1, max_length=160)
+    subtitle: str | None = Field(default=None, max_length=240)
+    description: str | None = None
+    sort_order: int | None = Field(default=None, ge=0)
+    display_status: str | None = Field(default=None, min_length=1, max_length=32)
+    is_active: bool | None = None
+    visible_from: datetime | None = None
+    visible_until: datetime | None = None
+    content_source_type: str | None = Field(default=None, min_length=1, max_length=32)
+    content_source_ref: str | None = Field(default=None, max_length=160)
+    content_payload: dict[str, Any] | None = None

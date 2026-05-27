@@ -85,6 +85,12 @@ def create_region(
     return region
 
 
+def update_region(session: Session, region: ClientPresentationRegion) -> ClientPresentationRegion:
+    session.add(region)
+    session.flush()
+    return region
+
+
 def get_block_type_by_code(
     session: Session,
     block_type: str,
@@ -151,6 +157,15 @@ def list_region_block_rows(
 
 
 def create_region_block(
+    session: Session,
+    region_block: ClientPresentationRegionBlock,
+) -> ClientPresentationRegionBlock:
+    session.add(region_block)
+    session.flush()
+    return region_block
+
+
+def update_region_block(
     session: Session,
     region_block: ClientPresentationRegionBlock,
 ) -> ClientPresentationRegionBlock:

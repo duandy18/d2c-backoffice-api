@@ -15,11 +15,20 @@ from app.domains.client_presentation.contracts.client_presentation_contract impo
     ClientPresentationDataBindingCreateRequest,
     ClientPresentationDataBindingsResponse,
     ClientPresentationHealthResponse,
+    ClientPresentationHomeBlockCreateRequest,
+    ClientPresentationHomeBlockUpdateRequest,
     ClientPresentationHomeDraftResponse,
     ClientPresentationHomeDraftSummary,
+    ClientPresentationHomePlannerOptionsResponse,
+    ClientPresentationHomeRegionCreateRequest,
+    ClientPresentationHomeRegionUpdateRequest,
     ClientPresentationPageContract,
     ClientPresentationPageCreateRequest,
     ClientPresentationPagesResponse,
+    ClientPresentationPlannerBlockTypeOption,
+    ClientPresentationPlannerField,
+    ClientPresentationPlannerOption,
+    ClientPresentationPlannerRegionTypeOption,
     ClientPresentationPreviewBlock,
     ClientPresentationPreviewPage,
     ClientPresentationPreviewPosition,
@@ -85,6 +94,8 @@ from app.domains.client_presentation.repos.client_presentation_repo import (
     list_surfaces,
     list_tracking_policies,
     list_visibility_rules,
+    update_region,
+    update_region_block,
 )
 from app.domains.publish.models.publish_version import PublishVersion
 from app.domains.published_snapshot.models.published_snapshot import (
@@ -121,6 +132,10 @@ class ClientPresentationPageNotFoundError(Exception):
     pass
 
 
+class ClientPresentationPlannerValidationError(Exception):
+    pass
+
+
 def get_client_presentation_health() -> ClientPresentationHealthResponse:
     return ClientPresentationHealthResponse(
         status="ok",
@@ -152,6 +167,178 @@ def get_client_presentation_health() -> ClientPresentationHealthResponse:
 
 def _as_list(value: list[str] | None) -> list[str]:
     return value or []
+
+
+HOME_PAGE_CODE = "home"
+PC_WEB_SURFACE_CODE = "web_desktop"
+
+HOME_REGION_TYPE_RULES: dict[str, dict[str, object]] = {
+    "hero": {
+        "label": "头图区",
+        "description": "用于主视觉、广告位和促销提醒。",
+        "allowed_block_types": ["title", "ad_banner", "promotion_strip", "promo_strip"],
+        "default_max_blocks": 3,
+        "default_is_required": True,
+    },
+    "navigation": {
+        "label": "快捷导航区",
+        "description": "用于分类入口、图文导航等快速入口。",
+        "allowed_block_types": ["category_nav", "image_grid"],
+        "default_max_blocks": 2,
+        "default_is_required": False,
+    },
+    "main": {
+        "label": "主体区",
+        "description": "用于首页核心内容，包括标题、广告、分类、货架和促销。",
+        "allowed_block_types": [
+            "title",
+            "ad_banner",
+            "category_nav",
+            "offer_shelf",
+            "promotion_strip",
+            "promo_strip",
+            "ranking_list",
+        ],
+        "default_max_blocks": 20,
+        "default_is_required": True,
+    },
+    "recommendation": {
+        "label": "推荐区",
+        "description": "用于推荐商品、猜你喜欢和补充货架。",
+        "allowed_block_types": ["offer_shelf", "product_recommendation"],
+        "default_max_blocks": 8,
+        "default_is_required": False,
+    },
+    "footer": {
+        "label": "页尾区",
+        "description": "用于服务说明、链接组和页尾内容。",
+        "allowed_block_types": ["rich_text", "image_grid"],
+        "default_max_blocks": 4,
+        "default_is_required": False,
+    },
+}
+
+HOME_BLOCK_SOURCE_TYPES: dict[str, list[str]] = {
+    "title": ["manual_inline"],
+    "ad_banner": ["manual_inline"],
+    "category_nav": ["data_binding"],
+    "offer_shelf": ["data_binding", "storefront_section"],
+    "promotion_strip": ["manual_inline", "data_binding"],
+    "promo_strip": ["manual_inline", "data_binding"],
+    "product_recommendation": ["data_binding"],
+    "ranking_list": ["data_binding"],
+    "image_grid": ["manual_inline", "data_binding"],
+    "rich_text": ["manual_inline"],
+}
+
+
+def _field_was_set(payload: object, field_name: str) -> bool:
+    fields_set = getattr(payload, "model_fields_set", set())
+    return field_name in fields_set
+
+
+def _planner_option(
+    value: str, label: str, description: str | None = None
+) -> ClientPresentationPlannerOption:
+    return ClientPresentationPlannerOption(value=value, label=label, description=description)
+
+
+def _home_region_rule(region_type: str) -> dict[str, object]:
+    rule = HOME_REGION_TYPE_RULES.get(region_type)
+    if rule is None:
+        raise ClientPresentationPlannerValidationError("home_region_type_not_allowed")
+    return rule
+
+
+def _home_allowed_block_types(region_type: str) -> list[str]:
+    return list(_home_region_rule(region_type)["allowed_block_types"])
+
+
+def _home_allowed_block_type_set() -> set[str]:
+    return {
+        block_type
+        for rule in HOME_REGION_TYPE_RULES.values()
+        for block_type in list(rule["allowed_block_types"])
+    }
+
+
+def _home_region_code_exists(session: Session, region_code: str) -> bool:
+    return get_region_by_code(session, region_code) is not None
+
+
+def _next_home_region_code(session: Session, region_type: str) -> str:
+    base_code = f"{HOME_PAGE_CODE}.{region_type}"
+    if not _home_region_code_exists(session, base_code):
+        return base_code
+
+    for index in range(1, 1000):
+        candidate = f"{base_code}.{index:03d}"
+        if not _home_region_code_exists(session, candidate):
+            return candidate
+
+    raise ClientPresentationPlannerValidationError("home_region_code_exhausted")
+
+
+def _next_home_block_code(session: Session, region_code: str, block_type: str) -> str:
+    base_code = f"{region_code}.{block_type}"
+    for index in range(1, 1000):
+        candidate = f"{base_code}.{index:03d}"
+        if get_region_block_by_code(session, candidate) is None:
+            return candidate
+
+    raise ClientPresentationPlannerValidationError("home_block_code_exhausted")
+
+
+def _assert_home_region(region: ClientPresentationRegion) -> None:
+    if not region.region_code.startswith(f"{HOME_PAGE_CODE}."):
+        raise ClientPresentationPageNotFoundError("client_region_not_in_home")
+
+
+def _validate_home_visible_range(
+    visible_from: object | None,
+    visible_until: object | None,
+) -> None:
+    if visible_from is not None and visible_until is not None and visible_until <= visible_from:
+        raise ClientPresentationPlannerValidationError("home_block_visible_range_invalid")
+
+
+def _validate_home_block_content(
+    *,
+    block_type: str,
+    content_source_type: str,
+    content_source_ref: str | None,
+    content_payload: dict[str, object] | None,
+) -> None:
+    allowed_sources = HOME_BLOCK_SOURCE_TYPES.get(block_type, ["manual_inline"])
+    if content_source_type not in allowed_sources:
+        raise ClientPresentationPlannerValidationError("home_block_content_source_type_not_allowed")
+
+    if content_source_type in {"data_binding", "storefront_section"} and not content_source_ref:
+        raise ClientPresentationPlannerValidationError("home_block_content_source_ref_required")
+
+    if block_type == "title":
+        if content_source_type != "manual_inline":
+            raise ClientPresentationPlannerValidationError(
+                "home_title_block_must_use_manual_inline"
+            )
+        if not isinstance(content_payload, dict) or not content_payload.get("title"):
+            raise ClientPresentationPlannerValidationError("home_title_block_title_required")
+
+    if block_type == "ad_banner":
+        if content_source_type != "manual_inline":
+            raise ClientPresentationPlannerValidationError("home_ad_banner_must_use_manual_inline")
+        items = content_payload.get("items") if isinstance(content_payload, dict) else None
+        if not isinstance(items, list) or len(items) == 0:
+            raise ClientPresentationPlannerValidationError("home_ad_banner_items_required")
+        first_item = items[0]
+        if not isinstance(first_item, dict) or not first_item.get("image_url"):
+            raise ClientPresentationPlannerValidationError("home_ad_banner_image_url_required")
+
+    if block_type in {"promotion_strip", "promo_strip"} and content_source_type == "manual_inline":
+        if not isinstance(content_payload, dict) or not (
+            content_payload.get("title") or content_payload.get("promotion_code")
+        ):
+            raise ClientPresentationPlannerValidationError("home_promotion_content_required")
 
 
 def _build_page_contract(page: ClientPresentationPage) -> ClientPresentationPageContract:
@@ -1282,6 +1469,436 @@ def get_client_presentation_pc_web_home_draft(
         validation=validation,
         runtime_status=runtime_status,
     )
+
+
+def _home_region_form_fields() -> list[ClientPresentationPlannerField]:
+    return [
+        ClientPresentationPlannerField(
+            name="region_type",
+            label="区域类型",
+            control="select",
+            required=True,
+            options=[
+                _planner_option(
+                    value=key, label=str(value["label"]), description=str(value["description"])
+                )
+                for key, value in HOME_REGION_TYPE_RULES.items()
+            ],
+        ),
+        ClientPresentationPlannerField(
+            name="title",
+            label="区域名称",
+            control="input",
+            input_type="text",
+            required=True,
+            max_length=160,
+        ),
+        ClientPresentationPlannerField(
+            name="description",
+            label="区域说明",
+            control="textarea",
+            input_type="text",
+        ),
+        ClientPresentationPlannerField(
+            name="sort_order",
+            label="排序",
+            control="input",
+            input_type="number",
+            required=True,
+            default_value=100,
+            min_value=0,
+        ),
+        ClientPresentationPlannerField(
+            name="max_blocks",
+            label="最大 Block 数",
+            control="input",
+            input_type="number",
+            min_value=1,
+        ),
+        ClientPresentationPlannerField(
+            name="display_status",
+            label="展示状态",
+            control="select",
+            required=True,
+            default_value="visible",
+            options=[
+                _planner_option("visible", "可见"),
+                _planner_option("hidden", "隐藏"),
+            ],
+        ),
+        ClientPresentationPlannerField(
+            name="is_active",
+            label="启用",
+            control="select",
+            required=True,
+            default_value=True,
+            options=[
+                _planner_option("true", "启用"),
+                _planner_option("false", "停用"),
+            ],
+        ),
+    ]
+
+
+def _home_block_fields(
+    block_type: ClientPresentationBlockType,
+) -> list[ClientPresentationPlannerField]:
+    base_fields = [
+        ClientPresentationPlannerField(
+            name="title",
+            label="Block 名称",
+            control="input",
+            input_type="text",
+            required=True,
+            max_length=160,
+        ),
+        ClientPresentationPlannerField(
+            name="subtitle",
+            label="副标题",
+            control="input",
+            input_type="text",
+            max_length=240,
+        ),
+        ClientPresentationPlannerField(
+            name="description",
+            label="说明",
+            control="textarea",
+            input_type="text",
+        ),
+        ClientPresentationPlannerField(
+            name="sort_order",
+            label="排序",
+            control="input",
+            input_type="number",
+            required=True,
+            default_value=100,
+            min_value=0,
+        ),
+        ClientPresentationPlannerField(
+            name="display_status",
+            label="展示状态",
+            control="select",
+            required=True,
+            default_value="visible",
+            options=[
+                _planner_option("visible", "可见"),
+                _planner_option("hidden", "隐藏"),
+            ],
+        ),
+        ClientPresentationPlannerField(
+            name="is_active",
+            label="启用",
+            control="select",
+            required=True,
+            default_value=True,
+            options=[
+                _planner_option("true", "启用"),
+                _planner_option("false", "停用"),
+            ],
+        ),
+        ClientPresentationPlannerField(
+            name="content_source_type",
+            label="内容来源",
+            control="select",
+            required=True,
+            default_value=HOME_BLOCK_SOURCE_TYPES.get(block_type.block_type, ["manual_inline"])[0],
+            options=[
+                _planner_option(value=source_type, label=source_type)
+                for source_type in HOME_BLOCK_SOURCE_TYPES.get(
+                    block_type.block_type, ["manual_inline"]
+                )
+            ],
+        ),
+        ClientPresentationPlannerField(
+            name="content_source_ref",
+            label="内容来源引用",
+            control="input",
+            input_type="text",
+            max_length=160,
+        ),
+    ]
+
+    if block_type.block_type == "title":
+        base_fields.extend(
+            [
+                ClientPresentationPlannerField(
+                    name="content_payload.title",
+                    label="标题文案",
+                    control="input",
+                    input_type="text",
+                    required=True,
+                    max_length=160,
+                ),
+                ClientPresentationPlannerField(
+                    name="content_payload.subtitle",
+                    label="副标题文案",
+                    control="input",
+                    input_type="text",
+                    max_length=240,
+                ),
+            ]
+        )
+
+    if block_type.block_type == "ad_banner":
+        base_fields.extend(
+            [
+                ClientPresentationPlannerField(
+                    name="content_payload.items[0].image_url",
+                    label="广告图片 URL",
+                    control="input",
+                    input_type="url",
+                    required=True,
+                ),
+                ClientPresentationPlannerField(
+                    name="content_payload.items[0].link_ref",
+                    label="跳转目标",
+                    control="input",
+                    input_type="text",
+                ),
+            ]
+        )
+
+    return base_fields
+
+
+def get_client_presentation_pc_web_home_planner_options(
+    session: Session,
+) -> ClientPresentationHomePlannerOptionsResponse:
+    page = get_page_by_code(session, HOME_PAGE_CODE)
+    if page is None:
+        raise ClientPresentationPageNotFoundError("client_page_not_found")
+
+    surface = get_surface_by_code(session, PC_WEB_SURFACE_CODE)
+    if surface is None:
+        raise ClientPresentationPageNotFoundError("client_surface_not_found")
+
+    region_types = [
+        ClientPresentationPlannerRegionTypeOption(
+            region_type=region_type,
+            display_name=str(rule["label"]),
+            description=str(rule["description"]),
+            allowed_block_types=list(rule["allowed_block_types"]),
+            default_max_blocks=rule["default_max_blocks"],
+            default_is_required=bool(rule["default_is_required"]),
+        )
+        for region_type, rule in HOME_REGION_TYPE_RULES.items()
+    ]
+
+    allowed_home_block_types = _home_allowed_block_type_set()
+    supported_renderer_keys = set(_as_list(surface.supported_renderer_keys))
+    block_types = [
+        ClientPresentationPlannerBlockTypeOption(
+            block_type=block_type.block_type,
+            display_name=block_type.display_name,
+            description=block_type.description,
+            renderer_key=block_type.renderer_key,
+            allowed_region_types=_as_list(block_type.allowed_region_types),
+            allowed_content_types=_as_list(block_type.allowed_content_types),
+            content_source_types=HOME_BLOCK_SOURCE_TYPES.get(
+                block_type.block_type,
+                ["manual_inline"],
+            ),
+            fields=_home_block_fields(block_type),
+        )
+        for block_type in list_block_types(session)
+        if block_type.is_active
+        and block_type.display_status == "visible"
+        and block_type.block_type in allowed_home_block_types
+        and block_type.renderer_key in supported_renderer_keys
+    ]
+
+    return ClientPresentationHomePlannerOptionsResponse(
+        surface_code=surface.surface_code,
+        page_code=page.page_code,
+        region_types=region_types,
+        block_types=block_types,
+        region_form_fields=_home_region_form_fields(),
+        system_fields=[
+            "page_code",
+            "surface_code",
+            "region_code",
+            "allowed_block_types",
+            "block_code",
+            "renderer_key",
+        ],
+    )
+
+
+def create_client_presentation_pc_web_home_region(
+    session: Session,
+    payload: ClientPresentationHomeRegionCreateRequest,
+) -> ClientPresentationHomeDraftResponse:
+    page = get_page_by_code(session, HOME_PAGE_CODE)
+    if page is None:
+        raise ClientPresentationPageNotFoundError("client_page_not_found")
+
+    rule = _home_region_rule(payload.region_type)
+    region = ClientPresentationRegion(
+        page_id=page.id,
+        region_code=_next_home_region_code(session, payload.region_type),
+        region_type=payload.region_type,
+        title=payload.title,
+        description=payload.description,
+        sort_order=payload.sort_order,
+        is_required=(
+            bool(rule["default_is_required"])
+            if payload.is_required is None
+            else payload.is_required
+        ),
+        max_blocks=(
+            rule["default_max_blocks"] if payload.max_blocks is None else payload.max_blocks
+        ),
+        allowed_block_types=list(rule["allowed_block_types"]),
+        display_status=payload.display_status,
+        is_active=payload.is_active,
+        source_type="planner",
+        source_ref="pc_web_home_planner",
+    )
+
+    try:
+        create_region(session, region)
+        session.commit()
+    except IntegrityError as exc:
+        session.rollback()
+        raise ClientPresentationDuplicateCodeError("client_region_already_exists") from exc
+
+    return get_client_presentation_pc_web_home_draft(session)
+
+
+def update_client_presentation_pc_web_home_region(
+    session: Session,
+    region_code: str,
+    payload: ClientPresentationHomeRegionUpdateRequest,
+) -> ClientPresentationHomeDraftResponse:
+    region = get_region_by_code(session, region_code)
+    if region is None:
+        raise ClientPresentationPageNotFoundError("client_region_not_found")
+    _assert_home_region(region)
+
+    if _field_was_set(payload, "title") and payload.title is not None:
+        region.title = payload.title
+    if _field_was_set(payload, "description"):
+        region.description = payload.description
+    if _field_was_set(payload, "sort_order") and payload.sort_order is not None:
+        region.sort_order = payload.sort_order
+    if _field_was_set(payload, "is_required") and payload.is_required is not None:
+        region.is_required = payload.is_required
+    if _field_was_set(payload, "max_blocks"):
+        region.max_blocks = payload.max_blocks
+    if _field_was_set(payload, "display_status") and payload.display_status is not None:
+        region.display_status = payload.display_status
+    if _field_was_set(payload, "is_active") and payload.is_active is not None:
+        region.is_active = payload.is_active
+
+    update_region(session, region)
+    session.commit()
+    return get_client_presentation_pc_web_home_draft(session)
+
+
+def create_client_presentation_pc_web_home_block(
+    session: Session,
+    region_code: str,
+    payload: ClientPresentationHomeBlockCreateRequest,
+) -> ClientPresentationHomeDraftResponse:
+    region = get_region_by_code(session, region_code)
+    if region is None:
+        raise ClientPresentationPageNotFoundError("client_region_not_found")
+    _assert_home_region(region)
+
+    block_type = get_block_type_by_code(session, payload.block_type)
+    if block_type is None:
+        raise ClientPresentationPlannerValidationError("home_block_type_not_registered")
+
+    allowed = _as_list(region.allowed_block_types)
+    if allowed and payload.block_type not in allowed:
+        raise ClientPresentationPlannerValidationError("home_block_type_not_allowed")
+
+    _validate_home_visible_range(payload.visible_from, payload.visible_until)
+    _validate_home_block_content(
+        block_type=payload.block_type,
+        content_source_type=payload.content_source_type,
+        content_source_ref=payload.content_source_ref,
+        content_payload=payload.content_payload,
+    )
+
+    region_block = ClientPresentationRegionBlock(
+        region_id=region.id,
+        block_code=_next_home_block_code(session, region.region_code, payload.block_type),
+        block_type=payload.block_type,
+        renderer_key=block_type.renderer_key,
+        title=payload.title,
+        subtitle=payload.subtitle,
+        description=payload.description,
+        sort_order=payload.sort_order,
+        display_status=payload.display_status,
+        is_active=payload.is_active,
+        visible_from=payload.visible_from,
+        visible_until=payload.visible_until,
+        content_source_type=payload.content_source_type,
+        content_source_ref=payload.content_source_ref,
+        content_payload=payload.content_payload,
+        source_type="planner",
+        source_ref="pc_web_home_planner",
+    )
+
+    try:
+        create_region_block(session, region_block)
+        session.commit()
+    except IntegrityError as exc:
+        session.rollback()
+        raise ClientPresentationDuplicateCodeError("client_region_block_already_exists") from exc
+
+    return get_client_presentation_pc_web_home_draft(session)
+
+
+def update_client_presentation_pc_web_home_block(
+    session: Session,
+    block_code: str,
+    payload: ClientPresentationHomeBlockUpdateRequest,
+) -> ClientPresentationHomeDraftResponse:
+    region_block = get_region_block_by_code(session, block_code)
+    if region_block is None:
+        raise ClientPresentationPageNotFoundError("client_region_block_not_found")
+
+    region = session.get(ClientPresentationRegion, region_block.region_id)
+    if region is None:
+        raise ClientPresentationPageNotFoundError("client_region_not_found")
+    _assert_home_region(region)
+
+    if _field_was_set(payload, "title") and payload.title is not None:
+        region_block.title = payload.title
+    if _field_was_set(payload, "subtitle"):
+        region_block.subtitle = payload.subtitle
+    if _field_was_set(payload, "description"):
+        region_block.description = payload.description
+    if _field_was_set(payload, "sort_order") and payload.sort_order is not None:
+        region_block.sort_order = payload.sort_order
+    if _field_was_set(payload, "display_status") and payload.display_status is not None:
+        region_block.display_status = payload.display_status
+    if _field_was_set(payload, "is_active") and payload.is_active is not None:
+        region_block.is_active = payload.is_active
+    if _field_was_set(payload, "visible_from"):
+        region_block.visible_from = payload.visible_from
+    if _field_was_set(payload, "visible_until"):
+        region_block.visible_until = payload.visible_until
+    if _field_was_set(payload, "content_source_type") and payload.content_source_type is not None:
+        region_block.content_source_type = payload.content_source_type
+    if _field_was_set(payload, "content_source_ref"):
+        region_block.content_source_ref = payload.content_source_ref
+    if _field_was_set(payload, "content_payload"):
+        region_block.content_payload = payload.content_payload
+
+    _validate_home_visible_range(region_block.visible_from, region_block.visible_until)
+    _validate_home_block_content(
+        block_type=region_block.block_type,
+        content_source_type=region_block.content_source_type,
+        content_source_ref=region_block.content_source_ref,
+        content_payload=region_block.content_payload,
+    )
+
+    update_region_block(session, region_block)
+    session.commit()
+    return get_client_presentation_pc_web_home_draft(session)
 
 
 def get_client_presentation_publish_runtime_status(
