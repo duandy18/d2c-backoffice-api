@@ -87,6 +87,173 @@ def test_client_presentation_pc_web_home_draft_returns_aggregated_contract() -> 
     assert block_by_code["home.title.main"]["renderer_key"] == "pc_web.title"
 
 
+def test_pc_web_home_planner_options_separates_inputs_choices_and_system_fields() -> None:
+    client = TestClient(app)
+
+    response = client.get(
+        "/backoffice/client-presentation/pc-web/pages/home/planner-options",
+        headers=BACKOFFICE_HEADERS,
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+
+    assert payload["surface_code"] == "web_desktop"
+    assert payload["page_code"] == "home"
+
+    region_types = {row["region_type"]: row for row in payload["region_types"]}
+    assert "main" in region_types
+    assert "offer_shelf" in region_types["main"]["allowed_block_types"]
+
+    region_fields = {row["name"]: row for row in payload["region_form_fields"]}
+    assert region_fields["region_type"]["control"] == "select"
+    assert region_fields["title"]["control"] == "input"
+    assert "region_code" in payload["system_fields"]
+    assert "block_code" in payload["system_fields"]
+    assert "renderer_key" in payload["system_fields"]
+
+    block_types = {row["block_type"]: row for row in payload["block_types"]}
+    assert set(block_types).issubset(
+        {
+            "title",
+            "ad_banner",
+            "promotion_strip",
+            "promo_strip",
+            "category_nav",
+            "image_grid",
+            "offer_shelf",
+            "ranking_list",
+            "product_recommendation",
+            "rich_text",
+        }
+    )
+    assert not any(block_type.startswith("client-block-") for block_type in block_types)
+    assert block_types["title"]["renderer_key"] == "pc_web.title"
+    assert "manual_inline" in block_types["title"]["content_source_types"]
+    assert block_types["offer_shelf"]["renderer_key"] == "storefront.offer_shelf"
+    assert "data_binding" in block_types["offer_shelf"]["content_source_types"]
+
+
+def test_client_presentation_pc_web_home_authoring_creates_and_updates_region_and_block() -> None:
+    client = TestClient(app)
+    suffix = uuid4().hex[:8]
+
+    region_response = client.post(
+        "/backoffice/client-presentation/pc-web/pages/home/regions",
+        headers=BACKOFFICE_HEADERS,
+        json={
+            "region_type": "footer",
+            "title": f"页尾测试区域 {suffix}",
+            "description": "pytest home planner region",
+            "sort_order": 900,
+            "is_required": False,
+            "max_blocks": 4,
+            "display_status": "visible",
+            "is_active": True,
+        },
+    )
+    assert region_response.status_code == 201
+    region_payload = region_response.json()
+    regions = {
+        region["title"]: region
+        for region in region_payload["page"]["regions"]
+        if region["title"] == f"页尾测试区域 {suffix}"
+    }
+    assert f"页尾测试区域 {suffix}" in regions
+    region_code = regions[f"页尾测试区域 {suffix}"]["region_code"]
+    assert region_code.startswith("home.footer")
+
+    update_region_response = client.patch(
+        f"/backoffice/client-presentation/pc-web/pages/home/regions/{region_code}",
+        headers=BACKOFFICE_HEADERS,
+        json={"title": f"页尾测试区域已更新 {suffix}", "sort_order": 901},
+    )
+    assert update_region_response.status_code == 200
+    updated_regions = {
+        region["region_code"]: region for region in update_region_response.json()["page"]["regions"]
+    }
+    assert updated_regions[region_code]["title"] == f"页尾测试区域已更新 {suffix}"
+    assert updated_regions[region_code]["sort_order"] == 901
+
+    block_response = client.post(
+        "/backoffice/client-presentation/pc-web/pages/home/regions/home.main/blocks",
+        headers=BACKOFFICE_HEADERS,
+        json={
+            "block_type": "title",
+            "title": f"测试标题 Block {suffix}",
+            "subtitle": "pytest subtitle",
+            "description": "pytest home planner block",
+            "sort_order": 910,
+            "display_status": "visible",
+            "is_active": True,
+            "content_source_type": "manual_inline",
+            "content_payload": {
+                "title": f"测试标题 Block {suffix}",
+                "subtitle": "pytest subtitle",
+            },
+        },
+    )
+    assert block_response.status_code == 201
+    block_payload = block_response.json()
+    main_region = {region["region_code"]: region for region in block_payload["page"]["regions"]}[
+        "home.main"
+    ]
+    blocks = {
+        block["title"]: block
+        for block in main_region["blocks"]
+        if block["title"] == f"测试标题 Block {suffix}"
+    }
+    assert f"测试标题 Block {suffix}" in blocks
+    block_code = blocks[f"测试标题 Block {suffix}"]["block_code"]
+    assert block_code.startswith("home.main.title.")
+    assert blocks[f"测试标题 Block {suffix}"]["renderer_key"] == "pc_web.title"
+
+    update_block_response = client.patch(
+        f"/backoffice/client-presentation/pc-web/pages/home/blocks/{block_code}",
+        headers=BACKOFFICE_HEADERS,
+        json={
+            "title": f"测试标题 Block 已更新 {suffix}",
+            "content_payload": {
+                "title": f"测试标题 Block 已更新 {suffix}",
+                "subtitle": "updated subtitle",
+            },
+        },
+    )
+    assert update_block_response.status_code == 200
+    updated_main = {
+        region["region_code"]: region for region in update_block_response.json()["page"]["regions"]
+    }["home.main"]
+    updated_blocks = {block["block_code"]: block for block in updated_main["blocks"]}
+    assert updated_blocks[block_code]["title"] == f"测试标题 Block 已更新 {suffix}"
+    assert updated_blocks[block_code]["renderer_key"] == "pc_web.title"
+
+
+def test_client_presentation_pc_web_home_authoring_rejects_invalid_choice() -> None:
+    client = TestClient(app)
+
+    response = client.post(
+        "/backoffice/client-presentation/pc-web/pages/home/regions/home.quick_nav/blocks",
+        headers=BACKOFFICE_HEADERS,
+        json={
+            "block_type": "ad_banner",
+            "title": "非法广告位",
+            "sort_order": 10,
+            "content_source_type": "manual_inline",
+            "content_payload": {
+                "items": [
+                    {
+                        "title": "非法广告",
+                        "image_url": "https://example.test/banner.png",
+                    }
+                ]
+            },
+        },
+    )
+
+    assert response.status_code == 400
+    assert response.json() == {"detail": "home_block_type_not_allowed"}
+
+
 def test_client_presentation_validation_report_is_publishable_for_seeded_contract() -> None:
     client = TestClient(app)
 
