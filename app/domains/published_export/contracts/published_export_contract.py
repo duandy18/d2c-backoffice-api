@@ -141,6 +141,35 @@ class PublishedClientBlockTypesExportResponse(BaseModel):
     block_types: list[PublishedClientBlockTypeSnapshotExport]
 
 
+class PublishedClientRegionBlockSnapshotExport(BaseModel):
+    publish_version: str
+    page_code: str
+    region_code: str
+    block_code: str
+    block_type: str
+    renderer_key: str
+    title: str
+    subtitle: str | None
+    description: str | None
+    sort_order: int
+    display_status: str
+    is_active: bool
+    visible_from: datetime | None
+    visible_until: datetime | None
+    content_source_type: str
+    content_source_ref: str | None
+    content_payload: dict[str, Any] | None
+    published_at: datetime
+    source_region_block_id: int | None
+    raw_payload: dict[str, Any] | None
+
+
+class PublishedClientRegionBlocksExportResponse(BaseModel):
+    publish_version: str | None
+    count: int = Field(..., ge=0)
+    region_blocks: list[PublishedClientRegionBlockSnapshotExport]
+
+
 class PublishedGroupExport(BaseModel):
     publish_version: str
     group_code: str
@@ -365,7 +394,6 @@ class PublishedStorefrontSectionLayoutSnapshotExport(BaseModel):
     raw_payload: dict[str, Any] | None
 
 
-
 class PublishedStorefrontSectionPositionSnapshotExport(BaseModel):
     publish_version: str
     section_code: str
@@ -386,6 +414,7 @@ class PublishedStorefrontSectionPositionsExportResponse(BaseModel):
     publish_version: str | None
     count: int
     positions: list[PublishedStorefrontSectionPositionSnapshotExport]
+
 
 class PublishedStorefrontSectionLayoutsExportResponse(BaseModel):
     publish_version: str | None

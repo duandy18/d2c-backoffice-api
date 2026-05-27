@@ -158,10 +158,59 @@ def test_client_presentation_publish_exports_foundation_snapshots() -> None:
 
     pages = {row["page_code"]: row for row in pages_response.json()["pages"]}
     regions = {row["region_code"]: row for row in regions_response.json()["regions"]}
-    block_types = {
-        row["block_type"]: row for row in block_types_response.json()["block_types"]
-    }
+    block_types = {row["block_type"]: row for row in block_types_response.json()["block_types"]}
 
     assert pages["home"]["route_path"] == "/"
     assert regions["home.main"]["page_code"] == "home"
     assert block_types["offer_shelf"]["renderer_key"] == "storefront.offer_shelf"
+
+
+def test_client_presentation_lists_seeded_pc_web_region_blocks() -> None:
+    client = TestClient(app)
+
+    response = client.get(
+        "/backoffice/client-presentation/region-blocks",
+        headers=BACKOFFICE_HEADERS,
+        params={"region_code": "home.main"},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    blocks = {row["block_code"]: row for row in payload["region_blocks"]}
+
+    assert "home.title.main" in blocks
+    assert "home.ad.main" in blocks
+    assert "home.category.nav" in blocks
+    assert "home.offer_shelf.cat_litter" in blocks
+    assert "home.promotion.weekend" in blocks
+    assert blocks["home.title.main"]["renderer_key"] == "pc_web.title"
+    assert blocks["home.offer_shelf.cat_litter"]["content_source_type"] == "data_binding"
+
+
+def test_client_presentation_create_region_block() -> None:
+    client = TestClient(app)
+    block_code = unique_code("region-block")
+    response = client.post(
+        "/backoffice/client-presentation/regions/home.main/blocks",
+        headers=BACKOFFICE_HEADERS,
+        json={
+            "block_code": block_code,
+            "block_type": "offer_shelf",
+            "title": "测试区域区块",
+            "subtitle": "pytest",
+            "description": "pytest region block",
+            "sort_order": 999,
+            "display_status": "visible",
+            "is_active": True,
+            "content_source_type": "manual_inline",
+            "content_source_ref": None,
+            "content_payload": {"pytest": True},
+            "source_type": "manual",
+        },
+    )
+
+    assert response.status_code == 201
+    payload = response.json()
+    assert payload["block_code"] == block_code
+    assert payload["region_code"] == "home.main"
+    assert payload["renderer_key"] == "storefront.offer_shelf"

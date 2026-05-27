@@ -153,6 +153,59 @@ class ClientPresentationBlockType(Base):
     )
 
 
+class ClientPresentationRegionBlock(Base):
+    __tablename__ = "d2c_client_region_blocks"
+    __table_args__ = (
+        UniqueConstraint("block_code", name="uq_d2c_cp_region_blocks_code"),
+        CheckConstraint("sort_order >= 0", name="ck_d2c_cp_region_blocks_sort"),
+        CheckConstraint(
+            "visible_until IS NULL OR visible_from IS NULL OR visible_until > visible_from",
+            name="ck_d2c_cp_region_blocks_range",
+        ),
+        Index("ix_d2c_cp_region_blocks_region", "region_id", "sort_order"),
+        Index("ix_d2c_cp_region_blocks_type", "block_type", "display_status", "is_active"),
+        Index("ix_d2c_cp_region_blocks_renderer", "renderer_key"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    region_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("d2c_client_regions.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    block_code: Mapped[str] = mapped_column(String(120), nullable=False)
+    block_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    renderer_key: Mapped[str] = mapped_column(String(160), nullable=False)
+    title: Mapped[str] = mapped_column(String(160), nullable=False)
+    subtitle: Mapped[str | None] = mapped_column(String(240), nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    sort_order: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=100, server_default="100"
+    )
+    display_status: Mapped[str] = mapped_column(
+        String(32), nullable=False, default="visible", server_default="visible"
+    )
+    is_active: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=True, server_default="true"
+    )
+    visible_from: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    visible_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    content_source_type: Mapped[str] = mapped_column(
+        String(32), nullable=False, default="manual_inline", server_default="manual_inline"
+    )
+    content_source_ref: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    content_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    source_type: Mapped[str] = mapped_column(
+        String(32), nullable=False, default="manual", server_default="manual"
+    )
+    source_ref: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
 
 class ClientPresentationSurface(Base):
     __tablename__ = "d2c_client_surfaces"

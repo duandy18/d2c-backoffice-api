@@ -9,6 +9,7 @@ from app.domains.client_presentation.models.client_presentation import (
     ClientPresentationDataBinding,
     ClientPresentationPage,
     ClientPresentationRegion,
+    ClientPresentationRegionBlock,
     ClientPresentationSurface,
     ClientPresentationTrackingPolicy,
     ClientPresentationVisibilityRule,
@@ -23,6 +24,7 @@ from app.domains.published_snapshot.models.published_snapshot import (
     PublishedClientDataBinding,
     PublishedClientPage,
     PublishedClientRegion,
+    PublishedClientRegionBlock,
     PublishedClientSurface,
     PublishedClientTrackingPolicy,
     PublishedClientVisibilityRule,
@@ -54,11 +56,11 @@ def add_publish_version(session: Session, publish_version: PublishVersion) -> Pu
 def delete_snapshot_by_version(session: Session, publish_version: str) -> None:
     for model in (
         PublishedClientActionPolicy,
-    PublishedClientBlockType,
-    PublishedClientDataBinding,
-    PublishedClientSurface,
-    PublishedClientTrackingPolicy,
-    PublishedClientVisibilityRule,
+        PublishedClientBlockType,
+        PublishedClientDataBinding,
+        PublishedClientSurface,
+        PublishedClientTrackingPolicy,
+        PublishedClientVisibilityRule,
         PublishedClientRegion,
         PublishedClientPage,
         PublishedCoupon,
@@ -97,6 +99,26 @@ def list_owner_client_regions(
             ClientPresentationPage.sort_order,
             ClientPresentationRegion.sort_order,
             ClientPresentationRegion.id,
+        )
+    )
+    return list(session.execute(statement).all())
+
+
+def list_owner_client_region_blocks(
+    session: Session,
+) -> list[tuple[ClientPresentationRegionBlock, ClientPresentationRegion, ClientPresentationPage]]:
+    statement = (
+        select(ClientPresentationRegionBlock, ClientPresentationRegion, ClientPresentationPage)
+        .join(
+            ClientPresentationRegion,
+            ClientPresentationRegion.id == ClientPresentationRegionBlock.region_id,
+        )
+        .join(ClientPresentationPage, ClientPresentationPage.id == ClientPresentationRegion.page_id)
+        .order_by(
+            ClientPresentationPage.sort_order,
+            ClientPresentationRegion.sort_order,
+            ClientPresentationRegionBlock.sort_order,
+            ClientPresentationRegionBlock.id,
         )
     )
     return list(session.execute(statement).all())
@@ -284,6 +306,23 @@ def list_published_client_regions(
             select(PublishedClientRegion)
             .where(PublishedClientRegion.publish_version == publish_version)
             .order_by(PublishedClientRegion.page_code, PublishedClientRegion.sort_order)
+        ).all()
+    )
+
+
+def list_published_client_region_blocks(
+    session: Session, publish_version: str
+) -> list[PublishedClientRegionBlock]:
+    return list(
+        session.scalars(
+            select(PublishedClientRegionBlock)
+            .where(PublishedClientRegionBlock.publish_version == publish_version)
+            .order_by(
+                PublishedClientRegionBlock.page_code,
+                PublishedClientRegionBlock.region_code,
+                PublishedClientRegionBlock.sort_order,
+                PublishedClientRegionBlock.id,
+            )
         ).all()
     )
 
@@ -485,6 +524,7 @@ def list_owner_storefront_section_layout_rows(
     )
     return list(session.execute(statement).all())
 
+
 def list_owner_storefront_section_position_rows(
     session: Session,
 ) -> list[tuple[StorefrontSectionPosition, StorefrontSection, Offer]]:
@@ -499,7 +539,6 @@ def list_owner_storefront_section_position_rows(
         )
     )
     return list(session.execute(statement).all())
-
 
 
 def list_published_storefront_sections(
@@ -526,6 +565,7 @@ def list_published_storefront_section_layouts(
         )
     )
     return list(session.scalars(statement).all())
+
 
 def list_published_storefront_section_positions(
     session: Session,

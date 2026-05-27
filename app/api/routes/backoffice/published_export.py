@@ -11,6 +11,7 @@ from app.domains.published_export.contracts.published_export_contract import (
     PublishedClientBlockTypesExportResponse,
     PublishedClientDataBindingsExportResponse,
     PublishedClientPagesExportResponse,
+    PublishedClientRegionBlocksExportResponse,
     PublishedClientRegionsExportResponse,
     PublishedClientSurfacesExportResponse,
     PublishedClientTrackingPoliciesExportResponse,
@@ -40,6 +41,7 @@ from app.domains.published_snapshot.services.published_snapshot_service import (
     get_published_client_block_types_snapshot,
     get_published_client_data_bindings_snapshot,
     get_published_client_pages_snapshot,
+    get_published_client_region_blocks_snapshot,
     get_published_client_regions_snapshot,
     get_published_client_surfaces_snapshot,
     get_published_client_tracking_policies_snapshot,
@@ -98,8 +100,6 @@ def published_coupons_export(
     publish_version: Annotated[str | None, Query()] = None,
 ) -> PublishedCouponsExportResponse:
     return get_published_coupons_export(session, publish_version)
-
-
 
 
 @router.get("/snapshot/client-surfaces", response_model=PublishedClientSurfacesExportResponse)
@@ -175,6 +175,18 @@ def published_snapshot_client_regions_export(
     publish_version: str | None = None,
 ) -> PublishedClientRegionsExportResponse:
     return get_published_client_regions_snapshot(session, publish_version)
+
+
+@router.get(
+    "/snapshot/client-region-blocks",
+    response_model=PublishedClientRegionBlocksExportResponse,
+)
+def published_snapshot_client_region_blocks_export(
+    session: SessionDep,
+    _: ServiceClientDep,
+    publish_version: str | None = None,
+) -> PublishedClientRegionBlocksExportResponse:
+    return get_published_client_region_blocks_snapshot(session, publish_version)
 
 
 @router.get("/snapshot/client-block-types", response_model=PublishedClientBlockTypesExportResponse)
@@ -269,7 +281,6 @@ def published_snapshot_storefront_sections_export(
     return get_published_storefront_sections_snapshot(session, publish_version)
 
 
-
 @router.get(
     "/snapshot/storefront-section-positions",
     response_model=PublishedStorefrontSectionPositionsExportResponse,
@@ -280,6 +291,7 @@ def published_snapshot_storefront_section_positions_export(
     publish_version: str | None = None,
 ) -> PublishedStorefrontSectionPositionsExportResponse:
     return get_published_storefront_section_positions_snapshot(session, publish_version)
+
 
 @router.get(
     "/snapshot/storefront-section-layouts",

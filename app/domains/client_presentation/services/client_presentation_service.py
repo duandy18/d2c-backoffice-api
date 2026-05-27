@@ -24,6 +24,9 @@ from app.domains.client_presentation.contracts.client_presentation_contract impo
     ClientPresentationPreviewRegion,
     ClientPresentationPreviewResponse,
     ClientPresentationPublishRuntimeStatusResponse,
+    ClientPresentationRegionBlockContract,
+    ClientPresentationRegionBlockCreateRequest,
+    ClientPresentationRegionBlocksResponse,
     ClientPresentationRegionContract,
     ClientPresentationRegionCreateRequest,
     ClientPresentationRegionsResponse,
@@ -46,6 +49,7 @@ from app.domains.client_presentation.models.client_presentation import (
     ClientPresentationDataBinding,
     ClientPresentationPage,
     ClientPresentationRegion,
+    ClientPresentationRegionBlock,
     ClientPresentationSurface,
     ClientPresentationTrackingPolicy,
     ClientPresentationVisibilityRule,
@@ -56,6 +60,7 @@ from app.domains.client_presentation.repos.client_presentation_repo import (
     create_data_binding,
     create_page,
     create_region,
+    create_region_block,
     create_surface,
     create_tracking_policy,
     create_visibility_rule,
@@ -63,6 +68,7 @@ from app.domains.client_presentation.repos.client_presentation_repo import (
     get_block_type_by_code,
     get_data_binding_by_code,
     get_page_by_code,
+    get_region_block_by_code,
     get_region_by_code,
     get_surface_by_code,
     get_tracking_policy_by_code,
@@ -72,6 +78,7 @@ from app.domains.client_presentation.repos.client_presentation_repo import (
     list_block_types,
     list_data_bindings,
     list_pages,
+    list_region_block_rows,
     list_region_rows_by_page_id,
     list_surfaces,
     list_tracking_policies,
@@ -84,6 +91,7 @@ from app.domains.published_snapshot.models.published_snapshot import (
     PublishedClientDataBinding,
     PublishedClientPage,
     PublishedClientRegion,
+    PublishedClientRegionBlock,
     PublishedClientSurface,
     PublishedClientTrackingPolicy,
     PublishedClientVisibilityRule,
@@ -119,6 +127,7 @@ def get_client_presentation_health() -> ClientPresentationHealthResponse:
             "d2c_client_pages",
             "d2c_client_regions",
             "d2c_client_block_types",
+            "d2c_client_region_blocks",
             "d2c_client_surfaces",
             "d2c_client_data_bindings",
             "d2c_client_visibility_rules",
@@ -129,6 +138,7 @@ def get_client_presentation_health() -> ClientPresentationHealthResponse:
             "d2c_published_client_pages",
             "d2c_published_client_regions",
             "d2c_published_client_block_types",
+            "d2c_published_client_region_blocks",
             "d2c_published_client_surfaces",
             "d2c_published_client_data_bindings",
             "d2c_published_client_visibility_rules",
@@ -343,6 +353,119 @@ def create_client_presentation_block_type(
     return _build_block_type_contract(block_type)
 
 
+def _build_region_block_contract(
+    region_block: ClientPresentationRegionBlock,
+    region: ClientPresentationRegion,
+    page: ClientPresentationPage,
+) -> ClientPresentationRegionBlockContract:
+    return ClientPresentationRegionBlockContract(
+        id=region_block.id,
+        region_id=region_block.region_id,
+        page_code=page.page_code,
+        region_code=region.region_code,
+        block_code=region_block.block_code,
+        block_type=region_block.block_type,
+        renderer_key=region_block.renderer_key,
+        title=region_block.title,
+        subtitle=region_block.subtitle,
+        description=region_block.description,
+        sort_order=region_block.sort_order,
+        display_status=region_block.display_status,
+        is_active=region_block.is_active,
+        visible_from=region_block.visible_from,
+        visible_until=region_block.visible_until,
+        content_source_type=region_block.content_source_type,
+        content_source_ref=region_block.content_source_ref,
+        content_payload=region_block.content_payload,
+        source_type=region_block.source_type,
+        source_ref=region_block.source_ref,
+        created_at=region_block.created_at,
+        updated_at=region_block.updated_at,
+    )
+
+
+def get_client_presentation_region_blocks(
+    session: Session,
+    region_code: str | None = None,
+) -> ClientPresentationRegionBlocksResponse:
+    if region_code is None:
+        rows = list_region_block_rows(session)
+    else:
+        region = get_region_by_code(session, region_code)
+        if region is None:
+            raise ClientPresentationPageNotFoundError("client_region_not_found")
+        rows = list_region_block_rows(session, region.id)
+
+    region_blocks = [
+        _build_region_block_contract(region_block, region, page)
+        for region_block, region, page in rows
+    ]
+    return ClientPresentationRegionBlocksResponse(
+        count=len(region_blocks),
+        region_blocks=region_blocks,
+    )
+
+
+def create_client_presentation_region_block(
+    session: Session,
+    region_code: str,
+    payload: ClientPresentationRegionBlockCreateRequest,
+) -> ClientPresentationRegionBlockContract:
+    region = get_region_by_code(session, region_code)
+    if region is None:
+        raise ClientPresentationPageNotFoundError("client_region_not_found")
+
+    page = session.get(ClientPresentationPage, region.page_id)
+    if page is None:
+        raise ClientPresentationPageNotFoundError("client_page_not_found")
+
+    if get_region_block_by_code(session, payload.block_code) is not None:
+        raise ClientPresentationDuplicateCodeError("client_region_block_already_exists")
+
+    block_type = get_block_type_by_code(session, payload.block_type)
+    if block_type is None:
+        raise ClientPresentationDuplicateCodeError("client_block_type_not_registered")
+
+    allowed = _as_list(region.allowed_block_types)
+    if allowed and payload.block_type not in allowed:
+        raise ClientPresentationDuplicateCodeError("client_region_block_type_not_allowed")
+
+    if (
+        payload.visible_from is not None
+        and payload.visible_until is not None
+        and payload.visible_until <= payload.visible_from
+    ):
+        raise ClientPresentationDuplicateCodeError("client_region_block_visible_range_invalid")
+
+    region_block = ClientPresentationRegionBlock(
+        region_id=region.id,
+        block_code=payload.block_code,
+        block_type=payload.block_type,
+        renderer_key=block_type.renderer_key,
+        title=payload.title,
+        subtitle=payload.subtitle,
+        description=payload.description,
+        sort_order=payload.sort_order,
+        display_status=payload.display_status,
+        is_active=payload.is_active,
+        visible_from=payload.visible_from,
+        visible_until=payload.visible_until,
+        content_source_type=payload.content_source_type,
+        content_source_ref=payload.content_source_ref,
+        content_payload=payload.content_payload,
+        source_type=payload.source_type,
+        source_ref=payload.source_ref,
+    )
+
+    try:
+        create_region_block(session, region_block)
+        session.commit()
+    except IntegrityError as exc:
+        session.rollback()
+        raise ClientPresentationDuplicateCodeError("client_region_block_already_exists") from exc
+
+    return _build_region_block_contract(region_block, region, page)
+
 
 def _as_dict(value: dict[str, object] | None) -> dict[str, object] | None:
     return value
@@ -459,9 +582,7 @@ def create_client_presentation_data_binding(
         session.commit()
     except IntegrityError as exc:
         session.rollback()
-        raise ClientPresentationDuplicateCodeError(
-            "client_data_binding_already_exists"
-        ) from exc
+        raise ClientPresentationDuplicateCodeError("client_data_binding_already_exists") from exc
 
     return _build_data_binding_contract(binding)
 
@@ -528,9 +649,7 @@ def create_client_presentation_visibility_rule(
         session.commit()
     except IntegrityError as exc:
         session.rollback()
-        raise ClientPresentationDuplicateCodeError(
-            "client_visibility_rule_already_exists"
-        ) from exc
+        raise ClientPresentationDuplicateCodeError("client_visibility_rule_already_exists") from exc
 
     return _build_visibility_rule_contract(rule)
 
@@ -593,9 +712,7 @@ def create_client_presentation_action_policy(
         session.commit()
     except IntegrityError as exc:
         session.rollback()
-        raise ClientPresentationDuplicateCodeError(
-            "client_action_policy_already_exists"
-        ) from exc
+        raise ClientPresentationDuplicateCodeError("client_action_policy_already_exists") from exc
 
     return _build_action_policy_contract(policy)
 
@@ -657,24 +774,23 @@ def create_client_presentation_tracking_policy(
         session.commit()
     except IntegrityError as exc:
         session.rollback()
-        raise ClientPresentationDuplicateCodeError(
-            "client_tracking_policy_already_exists"
-        ) from exc
+        raise ClientPresentationDuplicateCodeError("client_tracking_policy_already_exists") from exc
 
     return _build_tracking_policy_contract(policy)
-
 
 
 def _known_client_targets(session: Session) -> dict[str, set[str]]:
     pages = {row.page_code for row in list_pages(session)}
     regions = {row.region_code for row, _page in list_all_region_rows(session)}
     block_types = {row.block_type for row in list_block_types(session)}
+    region_blocks = {row.block_code for row, _region, _page in list_region_block_rows(session)}
     sections = {section.section_code for section, _group in list_section_rows(session)}
     return {
         "global": {"client_presentation"},
         "page": pages,
         "region": regions,
         "block_type": block_types,
+        "region_block": region_blocks,
         "section": sections,
     }
 
@@ -722,6 +838,9 @@ def get_client_presentation_validation_report(
 
     pages = {row.page_code for row in list_pages(session)}
     regions = {row.region_code: row for row, _page in list_all_region_rows(session)}
+    region_blocks = {
+        row.block_code: (row, region) for row, region, _page in list_region_block_rows(session)
+    }
     block_types = {row.block_type: row for row in list_block_types(session)}
     renderer_keys = {row.renderer_key for row in block_types.values()}
     targets = _known_client_targets(session)
@@ -739,7 +858,8 @@ def get_client_presentation_validation_report(
                     )
                 )
 
-    for surface in list_surfaces(session):
+    surfaces = list_surfaces(session)
+    for surface in surfaces:
         for renderer_key in _as_list(surface.supported_renderer_keys):
             if renderer_key not in renderer_keys:
                 issues.append(
@@ -751,6 +871,91 @@ def get_client_presentation_validation_report(
                         target_code=surface.surface_code,
                     )
                 )
+
+    region_block_counts: dict[str, int] = {}
+    sections = {section.section_code for section, _group in list_section_rows(session)}
+    for region_block, region in region_blocks.values():
+        region_block_counts[region.region_code] = region_block_counts.get(region.region_code, 0) + 1
+
+        block_type = block_types.get(region_block.block_type)
+        if block_type is None:
+            issues.append(
+                ClientPresentationValidationIssue(
+                    severity="blocking",
+                    code="region_block_type_missing",
+                    message="Region block references an unregistered block type.",
+                    target_type="region_block",
+                    target_code=region_block.block_code,
+                )
+            )
+            continue
+
+        if region_block.renderer_key != block_type.renderer_key:
+            issues.append(
+                ClientPresentationValidationIssue(
+                    severity="blocking",
+                    code="region_block_renderer_mismatch",
+                    message="Region block renderer key must match its block type.",
+                    target_type="region_block",
+                    target_code=region_block.block_code,
+                )
+            )
+
+        allowed = _as_list(region.allowed_block_types)
+        if allowed and region_block.block_type not in allowed:
+            issues.append(
+                ClientPresentationValidationIssue(
+                    severity="blocking",
+                    code="region_block_type_not_allowed",
+                    message="Region block type is not allowed by its region.",
+                    target_type="region_block",
+                    target_code=region_block.block_code,
+                )
+            )
+
+        supported_by_any_surface = any(
+            region_block.renderer_key in _as_list(surface.supported_renderer_keys)
+            for surface in surfaces
+        )
+        if not supported_by_any_surface:
+            issues.append(
+                ClientPresentationValidationIssue(
+                    severity="blocking",
+                    code="region_block_renderer_not_supported",
+                    message="Region block renderer is not supported by any registered surface.",
+                    target_type="region_block",
+                    target_code=region_block.block_code,
+                )
+            )
+
+        if (
+            region_block.content_source_type == "storefront_section"
+            and region_block.content_source_ref not in sections
+        ):
+            issues.append(
+                ClientPresentationValidationIssue(
+                    severity="blocking",
+                    code="region_block_section_missing",
+                    message="Region block references a missing storefront section.",
+                    target_type="region_block",
+                    target_code=region_block.block_code,
+                )
+            )
+
+    for region in regions.values():
+        if (
+            region.max_blocks is not None
+            and region_block_counts.get(region.region_code, 0) > region.max_blocks
+        ):
+            issues.append(
+                ClientPresentationValidationIssue(
+                    severity="blocking",
+                    code="region_max_blocks_exceeded",
+                    message="Region contains more blocks than allowed.",
+                    target_type="region",
+                    target_code=region.region_code,
+                )
+            )
 
     for binding in list_data_bindings(session):
         if not _target_exists(targets, binding.target_type, binding.target_code):
@@ -822,7 +1027,8 @@ def get_client_presentation_validation_report(
             "pages": len(pages),
             "regions": len(regions),
             "block_types": len(block_types),
-            "surfaces": len(list_surfaces(session)),
+            "region_blocks": len(region_blocks),
+            "surfaces": len(surfaces),
             "data_bindings": len(list_data_bindings(session)),
             "visibility_rules": len(list_visibility_rules(session)),
             "action_policies": len(list_action_policies(session)),
@@ -880,7 +1086,10 @@ def get_client_presentation_preview(
         raise ClientPresentationPageNotFoundError("client_page_not_found")
 
     region_rows = list_region_rows_by_page_id(session, page.id)
-    sections = [section for section, _group in list_section_rows(session)]
+    sections = {section.section_code: section for section, _group in list_section_rows(session)}
+    region_blocks = [
+        region_block for region_block, _region, _page in list_region_block_rows(session)
+    ]
     bindings = list_data_bindings(session)
     visibility_rules = list_visibility_rules(session)
     action_policies = list_action_policies(session)
@@ -892,21 +1101,34 @@ def get_client_presentation_preview(
         allowed_block_types = _as_list(region.allowed_block_types)
         blocks: list[ClientPresentationPreviewBlock] = []
 
-        for section in sections:
-            if section.section_type not in allowed_block_types:
+        for region_block in region_blocks:
+            if region_block.region_id != region.id:
+                continue
+            if allowed_block_types and region_block.block_type not in allowed_block_types:
                 continue
 
-            layout = get_layout_by_section_id(session, section.id)
+            section = (
+                sections.get(region_block.content_source_ref)
+                if region_block.content_source_type == "storefront_section"
+                and region_block.content_source_ref is not None
+                else None
+            )
+            layout = get_layout_by_section_id(session, section.id) if section is not None else None
             data_binding_codes = [
                 binding.binding_code
                 for binding in bindings
                 if (
                     binding.target_type == "block_type"
-                    and binding.target_code == section.section_type
+                    and binding.target_code == region_block.block_type
                 )
                 or (binding.target_type == "region" and binding.target_code == region.region_code)
                 or (
-                    binding.target_type == "section"
+                    binding.target_type == "region_block"
+                    and binding.target_code == region_block.block_code
+                )
+                or (
+                    section is not None
+                    and binding.target_type == "section"
                     and binding.target_code == section.section_code
                 )
             ]
@@ -915,31 +1137,59 @@ def get_client_presentation_preview(
                 for rule in visibility_rules
                 if rule.target_type == "global"
                 or (rule.target_type == "region" and rule.target_code == region.region_code)
-                or (rule.target_type == "block_type" and rule.target_code == section.section_type)
-                or (rule.target_type == "section" and rule.target_code == section.section_code)
+                or (
+                    rule.target_type == "block_type" and rule.target_code == region_block.block_type
+                )
+                or (
+                    rule.target_type == "region_block"
+                    and rule.target_code == region_block.block_code
+                )
+                or (
+                    section is not None
+                    and rule.target_type == "section"
+                    and rule.target_code == section.section_code
+                )
             ]
             action_policy_codes = [
                 policy.policy_code
                 for policy in action_policies
-                if policy.target_type == "block_type" and policy.target_code == section.section_type
+                if (
+                    policy.target_type == "block_type"
+                    and policy.target_code == region_block.block_type
+                )
+                or (
+                    policy.target_type == "region_block"
+                    and policy.target_code == region_block.block_code
+                )
             ]
             tracking_policy_codes = [
                 policy.policy_code
                 for policy in tracking_policies
-                if policy.target_type == "block_type" and policy.target_code == section.section_type
+                if (
+                    policy.target_type == "block_type"
+                    and policy.target_code == region_block.block_type
+                )
+                or (
+                    policy.target_type == "region_block"
+                    and policy.target_code == region_block.block_code
+                )
             ]
 
             blocks.append(
                 ClientPresentationPreviewBlock(
-                    block_code=section.section_code,
-                    block_type=section.section_type,
-                    title=section.title,
+                    block_code=region_block.block_code,
+                    block_type=region_block.block_type,
+                    renderer_key=region_block.renderer_key,
+                    title=region_block.title,
                     layout=_layout_payload(layout),
+                    content_source_type=region_block.content_source_type,
+                    content_source_ref=region_block.content_source_ref,
+                    content_payload=region_block.content_payload,
                     data_binding_codes=data_binding_codes,
                     visibility_rule_codes=visibility_rule_codes,
                     action_policy_codes=action_policy_codes,
                     tracking_policy_codes=tracking_policy_codes,
-                    positions=_preview_positions(session, section),
+                    positions=_preview_positions(session, section) if section is not None else [],
                 )
             )
 
@@ -990,6 +1240,13 @@ def get_client_presentation_publish_runtime_status(
             owner_count=_count_owner(session, ClientPresentationBlockType),
             latest_snapshot_count=_count_snapshot(
                 session, PublishedClientBlockType, publish_version
+            ),
+        ),
+        ClientPresentationRuntimeSnapshotCount(
+            name="client_region_blocks",
+            owner_count=_count_owner(session, ClientPresentationRegionBlock),
+            latest_snapshot_count=_count_snapshot(
+                session, PublishedClientRegionBlock, publish_version
             ),
         ),
         ClientPresentationRuntimeSnapshotCount(

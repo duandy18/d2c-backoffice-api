@@ -9,6 +9,7 @@ from app.domains.client_presentation.models.client_presentation import (
     ClientPresentationDataBinding,
     ClientPresentationPage,
     ClientPresentationRegion,
+    ClientPresentationRegionBlock,
     ClientPresentationSurface,
     ClientPresentationTrackingPolicy,
     ClientPresentationVisibilityRule,
@@ -43,9 +44,7 @@ def create_page(
 
 def get_region_by_code(session: Session, region_code: str) -> ClientPresentationRegion | None:
     return session.scalar(
-        select(ClientPresentationRegion).where(
-            ClientPresentationRegion.region_code == region_code
-        )
+        select(ClientPresentationRegion).where(ClientPresentationRegion.region_code == region_code)
     )
 
 
@@ -116,6 +115,48 @@ def create_block_type(
     session.flush()
     return block_type
 
+
+def get_region_block_by_code(
+    session: Session,
+    block_code: str,
+) -> ClientPresentationRegionBlock | None:
+    return session.scalar(
+        select(ClientPresentationRegionBlock).where(
+            ClientPresentationRegionBlock.block_code == block_code
+        )
+    )
+
+
+def list_region_block_rows(
+    session: Session,
+    region_id: int | None = None,
+) -> list[tuple[ClientPresentationRegionBlock, ClientPresentationRegion, ClientPresentationPage]]:
+    statement = (
+        select(ClientPresentationRegionBlock, ClientPresentationRegion, ClientPresentationPage)
+        .join(
+            ClientPresentationRegion,
+            ClientPresentationRegion.id == ClientPresentationRegionBlock.region_id,
+        )
+        .join(ClientPresentationPage, ClientPresentationPage.id == ClientPresentationRegion.page_id)
+        .order_by(
+            ClientPresentationPage.sort_order,
+            ClientPresentationRegion.sort_order,
+            ClientPresentationRegionBlock.sort_order,
+            ClientPresentationRegionBlock.id,
+        )
+    )
+    if region_id is not None:
+        statement = statement.where(ClientPresentationRegionBlock.region_id == region_id)
+    return list(session.execute(statement).all())
+
+
+def create_region_block(
+    session: Session,
+    region_block: ClientPresentationRegionBlock,
+) -> ClientPresentationRegionBlock:
+    session.add(region_block)
+    session.flush()
+    return region_block
 
 
 def get_surface_by_code(session: Session, surface_code: str) -> ClientPresentationSurface | None:
