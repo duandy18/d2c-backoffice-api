@@ -43,6 +43,50 @@ def test_client_presentation_preview_rejects_missing_page() -> None:
     assert response.json() == {"detail": "client_page_not_found"}
 
 
+def test_client_presentation_pc_web_home_draft_returns_aggregated_contract() -> None:
+    client = TestClient(app)
+
+    response = client.get(
+        "/backoffice/client-presentation/pc-web/pages/home/draft",
+        headers=BACKOFFICE_HEADERS,
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+
+    assert payload["surface_code"] == "web_desktop"
+    assert payload["page_code"] == "home"
+    assert payload["generated_from"] == "owner"
+
+    summary = payload["summary"]
+    assert summary["surface_code"] == "web_desktop"
+    assert summary["page_code"] == "home"
+    assert summary["region_count"] >= 4
+    assert summary["region_block_count"] >= 5
+    assert summary["active_region_block_count"] >= 5
+    assert summary["visible_region_block_count"] >= 5
+    assert summary["validation_blocking_issue_count"] == 0
+    assert summary["runtime_sync_status"] == "backoffice_snapshot_ready"
+
+    assert payload["validation"]["can_publish"] is True
+    assert payload["runtime_status"]["runtime_sync_status"] == "backoffice_snapshot_ready"
+
+    page = payload["page"]
+    assert page["page_code"] == "home"
+    assert page["route_path"] == "/"
+
+    region_by_code = {region["region_code"]: region for region in page["regions"]}
+    assert "home.main" in region_by_code
+
+    block_by_code = {block["block_code"]: block for block in region_by_code["home.main"]["blocks"]}
+    assert "home.title.main" in block_by_code
+    assert "home.ad.main" in block_by_code
+    assert "home.category.nav" in block_by_code
+    assert "home.offer_shelf.cat_litter" in block_by_code
+    assert "home.promotion.weekend" in block_by_code
+    assert block_by_code["home.title.main"]["renderer_key"] == "pc_web.title"
+
+
 def test_client_presentation_validation_report_is_publishable_for_seeded_contract() -> None:
     client = TestClient(app)
 

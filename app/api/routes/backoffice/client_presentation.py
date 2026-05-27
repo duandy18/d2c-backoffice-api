@@ -17,6 +17,7 @@ from app.domains.client_presentation.contracts.client_presentation_contract impo
     ClientPresentationDataBindingCreateRequest,
     ClientPresentationDataBindingsResponse,
     ClientPresentationHealthResponse,
+    ClientPresentationHomeDraftResponse,
     ClientPresentationPageContract,
     ClientPresentationPageCreateRequest,
     ClientPresentationPagesResponse,
@@ -56,6 +57,7 @@ from app.domains.client_presentation.services.client_presentation_service import
     get_client_presentation_data_bindings,
     get_client_presentation_health,
     get_client_presentation_pages,
+    get_client_presentation_pc_web_home_draft,
     get_client_presentation_preview,
     get_client_presentation_publish_runtime_status,
     get_client_presentation_region_blocks,
@@ -97,6 +99,20 @@ def client_presentation_pages_list(
     session: SessionDep,
 ) -> ClientPresentationPagesResponse:
     return get_client_presentation_pages(session)
+
+
+@router.get(
+    "/pc-web/pages/home/draft",
+    response_model=ClientPresentationHomeDraftResponse,
+)
+def client_presentation_pc_web_home_draft(
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationHomeDraftResponse:
+    try:
+        return get_client_presentation_pc_web_home_draft(session)
+    except ClientPresentationPageNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
 
 @router.post(
