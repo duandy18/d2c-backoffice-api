@@ -135,6 +135,54 @@ class ClientPresentationBlockTypesResponse(BaseModel):
     block_types: list[ClientPresentationBlockTypeContract]
 
 
+class ClientPresentationRegionBlockCreateRequest(BaseModel):
+    block_code: str = Field(..., min_length=1, max_length=120)
+    block_type: str = Field(..., min_length=1, max_length=64)
+    title: str = Field(..., min_length=1, max_length=160)
+    subtitle: str | None = Field(default=None, max_length=240)
+    description: str | None = None
+    sort_order: int = Field(default=100, ge=0)
+    display_status: str = Field(default="visible", min_length=1, max_length=32)
+    is_active: bool = True
+    visible_from: datetime | None = None
+    visible_until: datetime | None = None
+    content_source_type: str = Field(default="manual_inline", min_length=1, max_length=32)
+    content_source_ref: str | None = Field(default=None, max_length=160)
+    content_payload: dict[str, Any] | None = None
+    source_type: str = Field(default="manual", min_length=1, max_length=32)
+    source_ref: str | None = Field(default=None, max_length=160)
+
+
+class ClientPresentationRegionBlockContract(BaseModel):
+    id: int
+    region_id: int
+    page_code: str
+    region_code: str
+    block_code: str
+    block_type: str
+    renderer_key: str
+    title: str
+    subtitle: str | None
+    description: str | None
+    sort_order: int
+    display_status: str
+    is_active: bool
+    visible_from: datetime | None
+    visible_until: datetime | None
+    content_source_type: str
+    content_source_ref: str | None
+    content_payload: dict[str, Any] | None
+    source_type: str
+    source_ref: str | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class ClientPresentationRegionBlocksResponse(BaseModel):
+    count: int = Field(..., ge=0)
+    region_blocks: list[ClientPresentationRegionBlockContract]
+
+
 class ClientPresentationSurfaceCreateRequest(BaseModel):
     surface_code: str = Field(..., min_length=1, max_length=64)
     surface_name: str = Field(..., min_length=1, max_length=160)
@@ -339,8 +387,12 @@ class ClientPresentationPreviewPosition(BaseModel):
 class ClientPresentationPreviewBlock(BaseModel):
     block_code: str
     block_type: str
+    renderer_key: str
     title: str
     layout: dict[str, Any] | None
+    content_source_type: str
+    content_source_ref: str | None
+    content_payload: dict[str, Any] | None
     data_binding_codes: list[str]
     visibility_rule_codes: list[str]
     action_policy_codes: list[str]

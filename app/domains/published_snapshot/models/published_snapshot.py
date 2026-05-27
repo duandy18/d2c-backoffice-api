@@ -126,6 +126,50 @@ class PublishedClientBlockType(Base):
     raw_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
 
 
+class PublishedClientRegionBlock(Base):
+    __tablename__ = "d2c_published_client_region_blocks"
+    __table_args__ = (
+        UniqueConstraint(
+            "publish_version",
+            "block_code",
+            name="uq_d2c_pub_cp_region_blocks_code",
+        ),
+        Index(
+            "ix_d2c_pub_cp_region_blocks_region",
+            "publish_version",
+            "page_code",
+            "region_code",
+            "sort_order",
+        ),
+        Index(
+            "ix_d2c_pub_cp_region_blocks_renderer",
+            "publish_version",
+            "renderer_key",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    publish_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    page_code: Mapped[str] = mapped_column(String(96), nullable=False)
+    region_code: Mapped[str] = mapped_column(String(120), nullable=False)
+    block_code: Mapped[str] = mapped_column(String(120), nullable=False)
+    block_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    renderer_key: Mapped[str] = mapped_column(String(160), nullable=False)
+    title: Mapped[str] = mapped_column(String(160), nullable=False)
+    subtitle: Mapped[str | None] = mapped_column(String(240), nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False)
+    display_status: Mapped[str] = mapped_column(String(32), nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    visible_from: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    visible_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    content_source_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    content_source_ref: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    content_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    source_region_block_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    raw_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+
 
 class PublishedClientSurface(Base):
     __tablename__ = "d2c_published_client_surfaces"
@@ -304,7 +348,6 @@ class PublishedStorefrontSectionLayout(Base):
     published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
-
 class PublishedStorefrontSectionPosition(Base):
     __tablename__ = "d2c_published_storefront_section_positions"
     __table_args__ = (
@@ -327,6 +370,7 @@ class PublishedStorefrontSectionPosition(Base):
     published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     source_position_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     raw_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+
 
 class PublishedOffer(Base):
     __tablename__ = "d2c_published_offers"

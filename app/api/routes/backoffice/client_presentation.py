@@ -22,6 +22,9 @@ from app.domains.client_presentation.contracts.client_presentation_contract impo
     ClientPresentationPagesResponse,
     ClientPresentationPreviewResponse,
     ClientPresentationPublishRuntimeStatusResponse,
+    ClientPresentationRegionBlockContract,
+    ClientPresentationRegionBlockCreateRequest,
+    ClientPresentationRegionBlocksResponse,
     ClientPresentationRegionContract,
     ClientPresentationRegionCreateRequest,
     ClientPresentationRegionsResponse,
@@ -44,6 +47,7 @@ from app.domains.client_presentation.services.client_presentation_service import
     create_client_presentation_data_binding,
     create_client_presentation_page,
     create_client_presentation_region,
+    create_client_presentation_region_block,
     create_client_presentation_surface,
     create_client_presentation_tracking_policy,
     create_client_presentation_visibility_rule,
@@ -54,6 +58,7 @@ from app.domains.client_presentation.services.client_presentation_service import
     get_client_presentation_pages,
     get_client_presentation_preview,
     get_client_presentation_publish_runtime_status,
+    get_client_presentation_region_blocks,
     get_client_presentation_regions,
     get_client_presentation_surfaces,
     get_client_presentation_tracking_policies,
@@ -149,6 +154,37 @@ def client_presentation_block_types_list(
     return get_client_presentation_block_types(session)
 
 
+@router.get("/region-blocks", response_model=ClientPresentationRegionBlocksResponse)
+def client_presentation_region_blocks_list(
+    _: BackofficeClientDep,
+    session: SessionDep,
+    region_code: Annotated[str | None, Query()] = None,
+) -> ClientPresentationRegionBlocksResponse:
+    try:
+        return get_client_presentation_region_blocks(session, region_code)
+    except ClientPresentationPageNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+
+@router.post(
+    "/regions/{region_code}/blocks",
+    response_model=ClientPresentationRegionBlockContract,
+    status_code=status.HTTP_201_CREATED,
+)
+def client_presentation_region_blocks_create(
+    region_code: str,
+    payload: ClientPresentationRegionBlockCreateRequest,
+    _: BackofficeClientDep,
+    session: SessionDep,
+) -> ClientPresentationRegionBlockContract:
+    try:
+        return create_client_presentation_region_block(session, region_code, payload)
+    except ClientPresentationPageNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ClientPresentationDuplicateCodeError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+
+
 @router.post(
     "/block-types",
     response_model=ClientPresentationBlockTypeContract,
@@ -163,7 +199,6 @@ def client_presentation_block_types_create(
         return create_client_presentation_block_type(session, payload)
     except ClientPresentationDuplicateCodeError as exc:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
-
 
 
 @router.get("/surfaces", response_model=ClientPresentationSurfacesResponse)
@@ -284,7 +319,6 @@ def client_presentation_tracking_policies_create(
         return create_client_presentation_tracking_policy(session, payload)
     except ClientPresentationDuplicateCodeError as exc:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
-
 
 
 @router.get("/preview", response_model=ClientPresentationPreviewResponse)

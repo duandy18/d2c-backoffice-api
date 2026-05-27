@@ -17,6 +17,8 @@ from app.domains.published_export.contracts.published_export_contract import (
     PublishedClientDataBindingSnapshotExport,
     PublishedClientPagesExportResponse,
     PublishedClientPageSnapshotExport,
+    PublishedClientRegionBlocksExportResponse,
+    PublishedClientRegionBlockSnapshotExport,
     PublishedClientRegionsExportResponse,
     PublishedClientRegionSnapshotExport,
     PublishedClientSurfacesExportResponse,
@@ -54,6 +56,7 @@ from app.domains.published_snapshot.models.published_snapshot import (
     PublishedClientDataBinding,
     PublishedClientPage,
     PublishedClientRegion,
+    PublishedClientRegionBlock,
     PublishedClientSurface,
     PublishedClientTrackingPolicy,
     PublishedClientVisibilityRule,
@@ -78,6 +81,7 @@ from app.domains.published_snapshot.repos.published_snapshot_repo import (
     list_owner_client_block_types,
     list_owner_client_data_bindings,
     list_owner_client_pages,
+    list_owner_client_region_blocks,
     list_owner_client_regions,
     list_owner_client_surfaces,
     list_owner_client_tracking_policies,
@@ -97,6 +101,7 @@ from app.domains.published_snapshot.repos.published_snapshot_repo import (
     list_published_client_block_types,
     list_published_client_data_bindings,
     list_published_client_pages,
+    list_published_client_region_blocks,
     list_published_client_regions,
     list_published_client_surfaces,
     list_published_client_tracking_policies,
@@ -144,7 +149,6 @@ def create_storefront_snapshot(
     add_publish_version(session, version)
 
     rows: list[object] = []
-
 
     for surface in list_owner_client_surfaces(session):
         rows.append(
@@ -307,6 +311,37 @@ def create_storefront_snapshot(
             )
         )
 
+    for region_block, region, page in list_owner_client_region_blocks(session):
+        rows.append(
+            PublishedClientRegionBlock(
+                publish_version=resolved_version,
+                page_code=page.page_code,
+                region_code=region.region_code,
+                block_code=region_block.block_code,
+                block_type=region_block.block_type,
+                renderer_key=region_block.renderer_key,
+                title=region_block.title,
+                subtitle=region_block.subtitle,
+                description=region_block.description,
+                sort_order=region_block.sort_order,
+                display_status=region_block.display_status,
+                is_active=region_block.is_active,
+                visible_from=region_block.visible_from,
+                visible_until=region_block.visible_until,
+                content_source_type=region_block.content_source_type,
+                content_source_ref=region_block.content_source_ref,
+                content_payload=region_block.content_payload,
+                published_at=now,
+                source_region_block_id=region_block.id,
+                raw_payload={
+                    "source": "d2c_client_region_blocks",
+                    "source_region_block_id": region_block.id,
+                    "source_region_id": region.id,
+                    "source_page_id": page.id,
+                },
+            )
+        )
+
     for block_type in list_owner_client_block_types(session):
         rows.append(
             PublishedClientBlockType(
@@ -395,7 +430,6 @@ def create_storefront_snapshot(
                 published_at=now,
             )
         )
-
 
     for position, section, offer in list_owner_storefront_section_position_rows(session):
         rows.append(
@@ -570,9 +604,6 @@ def _version_or_none(session: Session, publish_version: str | None) -> PublishVe
     return latest_publish_version(session, publish_version)
 
 
-
-
-
 def get_published_client_surfaces_snapshot(
     session: Session,
     publish_version: str | None = None,
@@ -719,6 +750,29 @@ def get_published_client_regions_snapshot(
         publish_version=version.publish_version,
         count=len(regions),
         regions=regions,
+    )
+
+
+def get_published_client_region_blocks_snapshot(
+    session: Session,
+    publish_version: str | None = None,
+) -> PublishedClientRegionBlocksExportResponse:
+    version = latest_publish_version(session, publish_version)
+    if version is None:
+        return PublishedClientRegionBlocksExportResponse(
+            publish_version=None,
+            count=0,
+            region_blocks=[],
+        )
+
+    region_blocks = [
+        PublishedClientRegionBlockSnapshotExport(**row.__dict__)
+        for row in list_published_client_region_blocks(session, version.publish_version)
+    ]
+    return PublishedClientRegionBlocksExportResponse(
+        publish_version=version.publish_version,
+        count=len(region_blocks),
+        region_blocks=region_blocks,
     )
 
 
@@ -995,6 +1049,7 @@ def get_published_storefront_section_layouts_snapshot(
         count=len(layouts),
         layouts=layouts,
     )
+
 
 def get_published_storefront_section_positions_snapshot(
     session: Session,

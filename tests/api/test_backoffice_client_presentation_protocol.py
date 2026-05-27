@@ -195,12 +195,40 @@ def test_client_presentation_protocol_services_publish_exports() -> None:
     assert "web_desktop" in surfaces
     assert "storefront.offer_shelf" in surfaces["web_desktop"]["supported_renderer_keys"]
 
-    bindings = {
-        row["binding_code"]: row for row in payloads["data_bindings"]["data_bindings"]
-    }
+    bindings = {row["binding_code"]: row for row in payloads["data_bindings"]["data_bindings"]}
     assert bindings["binding.home.main.offer_shelf.manual"]["content_type"] == "offer"
 
-    actions = {
-        row["policy_code"]: row for row in payloads["action_policies"]["action_policies"]
-    }
+    actions = {row["policy_code"]: row for row in payloads["action_policies"]["action_policies"]}
     assert actions["action.offer_shelf.open_offer"]["action_type"] == "open_offer"
+
+
+def test_client_presentation_region_blocks_publish_exports() -> None:
+    client = TestClient(app)
+    publish_version = unique_code("pub-region-block")
+
+    publish_response = client.post(
+        "/backoffice/publish",
+        headers=BACKOFFICE_HEADERS,
+        json={
+            "publish_version": publish_version,
+            "published_by": "pytest",
+            "note": "client region blocks snapshot",
+        },
+    )
+    assert publish_response.status_code == 201
+
+    export_response = client.get(
+        "/backoffice/read/v1/published/snapshot/client-region-blocks",
+        headers=SERVICE_HEADERS,
+        params={"publish_version": publish_version},
+    )
+    assert export_response.status_code == 200
+
+    payload = export_response.json()
+    assert payload["publish_version"] == publish_version
+    blocks = {row["block_code"]: row for row in payload["region_blocks"]}
+
+    assert "home.title.main" in blocks
+    assert blocks["home.title.main"]["page_code"] == "home"
+    assert blocks["home.title.main"]["region_code"] == "home.main"
+    assert blocks["home.title.main"]["renderer_key"] == "pc_web.title"

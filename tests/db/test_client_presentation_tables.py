@@ -13,9 +13,11 @@ def test_client_presentation_owner_and_snapshot_tables_exist() -> None:
             "d2c_client_pages",
             "d2c_client_regions",
             "d2c_client_block_types",
+            "d2c_client_region_blocks",
             "d2c_published_client_pages",
             "d2c_published_client_regions",
             "d2c_published_client_block_types",
+            "d2c_published_client_region_blocks",
         }.issubset(table_names)
     finally:
         engine.dispose()
@@ -27,11 +29,12 @@ def test_client_presentation_owner_columns_exist() -> None:
         inspector = inspect(engine)
 
         page_columns = {column["name"] for column in inspector.get_columns("d2c_client_pages")}
-        region_columns = {
-            column["name"] for column in inspector.get_columns("d2c_client_regions")
-        }
+        region_columns = {column["name"] for column in inspector.get_columns("d2c_client_regions")}
         block_columns = {
             column["name"] for column in inspector.get_columns("d2c_client_block_types")
+        }
+        region_block_columns = {
+            column["name"] for column in inspector.get_columns("d2c_client_region_blocks")
         }
 
         assert {
@@ -64,6 +67,17 @@ def test_client_presentation_owner_columns_exist() -> None:
             "action_schema",
             "analytics_schema",
         }.issubset(block_columns)
+        assert {
+            "region_id",
+            "block_code",
+            "block_type",
+            "renderer_key",
+            "title",
+            "sort_order",
+            "content_source_type",
+            "content_source_ref",
+            "content_payload",
+        }.issubset(region_block_columns)
     finally:
         engine.dispose()
 
@@ -80,13 +94,13 @@ def test_client_presentation_snapshot_columns_exist() -> None:
             column["name"] for column in inspector.get_columns("d2c_published_client_regions")
         }
         block_columns = {
-            column["name"]
-            for column in inspector.get_columns("d2c_published_client_block_types")
+            column["name"] for column in inspector.get_columns("d2c_published_client_block_types")
+        }
+        region_block_columns = {
+            column["name"] for column in inspector.get_columns("d2c_published_client_region_blocks")
         }
 
-        assert {"publish_version", "page_code", "page_type", "route_path"}.issubset(
-            page_columns
-        )
+        assert {"publish_version", "page_code", "page_type", "route_path"}.issubset(page_columns)
         assert {
             "publish_version",
             "page_code",
@@ -100,5 +114,15 @@ def test_client_presentation_snapshot_columns_exist() -> None:
             "layout_schema",
             "slot_schema",
         }.issubset(block_columns)
+        assert {
+            "publish_version",
+            "page_code",
+            "region_code",
+            "block_code",
+            "block_type",
+            "renderer_key",
+            "content_source_type",
+            "content_payload",
+        }.issubset(region_block_columns)
     finally:
         engine.dispose()
