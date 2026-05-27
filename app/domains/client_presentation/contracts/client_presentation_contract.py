@@ -453,3 +453,25 @@ class ClientPresentationPublishRuntimeStatusResponse(BaseModel):
     runtime_sync_status: str
     runtime_sync_note: str
     snapshot_counts: list[ClientPresentationRuntimeSnapshotCount]
+
+
+class ClientPresentationHomeDraftSummary(BaseModel):
+    surface_code: str
+    page_code: str
+    region_count: int = Field(..., ge=0)
+    region_block_count: int = Field(..., ge=0)
+    active_region_block_count: int = Field(..., ge=0)
+    visible_region_block_count: int = Field(..., ge=0)
+    validation_blocking_issue_count: int = Field(..., ge=0)
+    runtime_sync_status: str
+    latest_publish_version: str | None
+
+
+class ClientPresentationHomeDraftResponse(BaseModel):
+    surface_code: str
+    page_code: str
+    generated_from: str
+    summary: ClientPresentationHomeDraftSummary
+    page: ClientPresentationPreviewPage
+    validation: ClientPresentationValidationReportResponse
+    runtime_status: ClientPresentationPublishRuntimeStatusResponse

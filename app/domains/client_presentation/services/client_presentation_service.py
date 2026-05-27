@@ -15,6 +15,8 @@ from app.domains.client_presentation.contracts.client_presentation_contract impo
     ClientPresentationDataBindingCreateRequest,
     ClientPresentationDataBindingsResponse,
     ClientPresentationHealthResponse,
+    ClientPresentationHomeDraftResponse,
+    ClientPresentationHomeDraftSummary,
     ClientPresentationPageContract,
     ClientPresentationPageCreateRequest,
     ClientPresentationPagesResponse,
@@ -1215,6 +1217,70 @@ def get_client_presentation_preview(
             title=page.title,
             regions=preview_regions,
         ),
+    )
+
+
+def _page_region_blocks(
+    session: Session,
+    page: ClientPresentationPage,
+) -> list[ClientPresentationRegionBlock]:
+    region_ids = {region.id for region, _page in list_region_rows_by_page_id(session, page.id)}
+    return [
+        region_block
+        for region_block, _region, _page in list_region_block_rows(session)
+        if region_block.region_id in region_ids
+    ]
+
+
+def get_client_presentation_pc_web_home_draft(
+    session: Session,
+) -> ClientPresentationHomeDraftResponse:
+    page_code = "home"
+    surface_code = "web_desktop"
+
+    page = get_page_by_code(session, page_code)
+    if page is None:
+        raise ClientPresentationPageNotFoundError("client_page_not_found")
+
+    surface = get_surface_by_code(session, surface_code)
+    if surface is None:
+        raise ClientPresentationPageNotFoundError("client_surface_not_found")
+
+    preview = get_client_presentation_preview(
+        session,
+        page_code=page_code,
+        surface_code=surface_code,
+    )
+    validation = get_client_presentation_validation_report(session)
+    runtime_status = get_client_presentation_publish_runtime_status(session)
+
+    page_region_blocks = _page_region_blocks(session, page)
+    region_block_count = len(page_region_blocks)
+    active_region_block_count = sum(1 for row in page_region_blocks if row.is_active)
+    visible_region_block_count = sum(
+        1 for row in page_region_blocks if row.is_active and row.display_status == "visible"
+    )
+
+    summary = ClientPresentationHomeDraftSummary(
+        surface_code=surface.surface_code,
+        page_code=page.page_code,
+        region_count=len(preview.page.regions),
+        region_block_count=region_block_count,
+        active_region_block_count=active_region_block_count,
+        visible_region_block_count=visible_region_block_count,
+        validation_blocking_issue_count=validation.blocking_issue_count,
+        runtime_sync_status=runtime_status.runtime_sync_status,
+        latest_publish_version=runtime_status.latest_publish_version,
+    )
+
+    return ClientPresentationHomeDraftResponse(
+        surface_code=surface.surface_code,
+        page_code=page.page_code,
+        generated_from="owner",
+        summary=summary,
+        page=preview.page,
+        validation=validation,
+        runtime_status=runtime_status,
     )
 
 
