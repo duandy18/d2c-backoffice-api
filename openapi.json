@@ -277,6 +277,62 @@
       }
     },
     "/backoffice/offers/{offer_code}/components": {
+      "get": {
+        "tags": [
+          "backoffice-offers"
+        ],
+        "summary": "Backoffice Offer Components List",
+        "operationId": "backoffice_offer_components_list_backoffice_offers__offer_code__components_get",
+        "parameters": [
+          {
+            "name": "offer_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Offer Code"
+            }
+          },
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackofficeOfferComponentsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "backoffice-offers"
@@ -345,6 +401,62 @@
       }
     },
     "/backoffice/offers/{offer_code}/prices": {
+      "get": {
+        "tags": [
+          "backoffice-offers"
+        ],
+        "summary": "Backoffice Offer Prices List",
+        "operationId": "backoffice_offer_prices_list_backoffice_offers__offer_code__prices_get",
+        "parameters": [
+          {
+            "name": "offer_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Offer Code"
+            }
+          },
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackofficeOfferPricesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "backoffice-offers"
@@ -413,6 +525,62 @@
       }
     },
     "/backoffice/offers/{offer_code}/positions": {
+      "get": {
+        "tags": [
+          "backoffice-offers"
+        ],
+        "summary": "Backoffice Offer Positions List",
+        "operationId": "backoffice_offer_positions_list_backoffice_offers__offer_code__positions_get",
+        "parameters": [
+          {
+            "name": "offer_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Offer Code"
+            }
+          },
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackofficeOfferPositionsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "backoffice-offers"
@@ -2111,6 +2279,367 @@
         }
       }
     },
+    "/backoffice/client-presentation/pc-web/pages/home/draft": {
+      "get": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Pc Web Home Draft",
+        "operationId": "client_presentation_pc_web_home_draft_backoffice_client_presentation_pc_web_pages_home_draft_get",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationHomeDraftResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/pc-web/pages/home/planner-options": {
+      "get": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Pc Web Home Planner Options",
+        "operationId": "client_presentation_pc_web_home_planner_options_backoffice_client_presentation_pc_web_pages_home_planner_options_get",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationHomePlannerOptionsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/pc-web/pages/home/regions": {
+      "post": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Pc Web Home Region Create",
+        "operationId": "client_presentation_pc_web_home_region_create_backoffice_client_presentation_pc_web_pages_home_regions_post",
+        "parameters": [
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPresentationHomeRegionCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationHomeDraftResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/pc-web/pages/home/regions/{region_code}": {
+      "patch": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Pc Web Home Region Update",
+        "operationId": "client_presentation_pc_web_home_region_update_backoffice_client_presentation_pc_web_pages_home_regions__region_code__patch",
+        "parameters": [
+          {
+            "name": "region_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Region Code"
+            }
+          },
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPresentationHomeRegionUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationHomeDraftResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/pc-web/pages/home/regions/{region_code}/blocks": {
+      "post": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Pc Web Home Block Create",
+        "operationId": "client_presentation_pc_web_home_block_create_backoffice_client_presentation_pc_web_pages_home_regions__region_code__blocks_post",
+        "parameters": [
+          {
+            "name": "region_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Region Code"
+            }
+          },
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPresentationHomeBlockCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationHomeDraftResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/pc-web/pages/home/blocks/{block_code}": {
+      "patch": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Pc Web Home Block Update",
+        "operationId": "client_presentation_pc_web_home_block_update_backoffice_client_presentation_pc_web_pages_home_blocks__block_code__patch",
+        "parameters": [
+          {
+            "name": "block_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Block Code"
+            }
+          },
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPresentationHomeBlockUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationHomeDraftResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/backoffice/client-presentation/regions": {
       "get": {
         "tags": [
@@ -2333,6 +2862,139 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ClientPresentationBlockTypeContract"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/region-blocks": {
+      "get": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Region Blocks List",
+        "operationId": "client_presentation_region_blocks_list_backoffice_client_presentation_region_blocks_get",
+        "parameters": [
+          {
+            "name": "region_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Region Code"
+            }
+          },
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationRegionBlocksResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/client-presentation/regions/{region_code}/blocks": {
+      "post": {
+        "tags": [
+          "backoffice-client-presentation"
+        ],
+        "summary": "Client Presentation Region Blocks Create",
+        "operationId": "client_presentation_region_blocks_create_backoffice_client_presentation_regions__region_code__blocks_post",
+        "parameters": [
+          {
+            "name": "region_code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Region Code"
+            }
+          },
+          {
+            "name": "X-Backoffice-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Backoffice-Client"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPresentationRegionBlockCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPresentationRegionBlockContract"
                 }
               }
             }
@@ -3494,594 +4156,6 @@
         }
       }
     },
-    "/backoffice/pms-projections/item-contents": {
-      "get": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Item Contents",
-        "operationId": "pms_projection_item_contents_backoffice_pms_projections_item_contents_get",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsItemContentsProjectionResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/pms-projections/item-contents/sync": {
-      "post": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Item Contents Sync",
-        "operationId": "pms_projection_item_contents_sync_backoffice_pms_projections_item_contents_sync_post",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsProjectionSyncScopeResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/pms-projections/item-assets": {
-      "get": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Item Assets",
-        "operationId": "pms_projection_item_assets_backoffice_pms_projections_item_assets_get",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsItemAssetsProjectionResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/pms-projections/item-assets/sync": {
-      "post": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Item Assets Sync",
-        "operationId": "pms_projection_item_assets_sync_backoffice_pms_projections_item_assets_sync_post",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsProjectionSyncScopeResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/pms-projections/display-categories": {
-      "get": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Display Categories",
-        "operationId": "pms_projection_display_categories_backoffice_pms_projections_display_categories_get",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsDisplayCategoriesProjectionResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/pms-projections/display-categories/sync": {
-      "post": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Display Categories Sync",
-        "operationId": "pms_projection_display_categories_sync_backoffice_pms_projections_display_categories_sync_post",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsProjectionSyncScopeResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/pms-projections/item-display-category-bindings": {
-      "get": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Item Display Category Bindings",
-        "operationId": "pms_projection_item_display_category_bindings_backoffice_pms_projections_item_display_category_bindings_get",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsItemDisplayCategoryBindingsProjectionResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/pms-projections/item-display-category-bindings/sync": {
-      "post": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Item Display Category Bindings Sync",
-        "operationId": "pms_projection_item_display_category_bindings_sync_backoffice_pms_projections_item_display_category_bindings_sync_post",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsProjectionSyncScopeResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/pms-projections/brand-profiles": {
-      "get": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Brand Profiles",
-        "operationId": "pms_projection_brand_profiles_backoffice_pms_projections_brand_profiles_get",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsBrandProfilesProjectionResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/pms-projections/brand-profiles/sync": {
-      "post": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Brand Profiles Sync",
-        "operationId": "pms_projection_brand_profiles_sync_backoffice_pms_projections_brand_profiles_sync_post",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsProjectionSyncScopeResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/pms-projections/brand-assets": {
-      "get": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Brand Assets",
-        "operationId": "pms_projection_brand_assets_backoffice_pms_projections_brand_assets_get",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsBrandAssetsProjectionResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/pms-projections/brand-assets/sync": {
-      "post": {
-        "tags": [
-          "backoffice-pms-projections"
-        ],
-        "summary": "Pms Projection Brand Assets Sync",
-        "operationId": "pms_projection_brand_assets_sync_backoffice_pms_projections_brand_assets_sync_post",
-        "parameters": [
-          {
-            "name": "X-Backoffice-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Backoffice-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PmsProjectionSyncScopeResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/backoffice/pms-projections/sync-runs": {
       "get": {
         "tags": [
@@ -4320,136 +4394,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PublishedExportHealthResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/read/v1/published/catalog": {
-      "get": {
-        "tags": [
-          "backoffice-read-v1-published"
-        ],
-        "summary": "Published Catalog Export",
-        "operationId": "published_catalog_export_backoffice_read_v1_published_catalog_get",
-        "parameters": [
-          {
-            "name": "publish_version",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Publish Version"
-            }
-          },
-          {
-            "name": "X-Service-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Service-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PublishedCatalogExportResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/backoffice/read/v1/published/prices": {
-      "get": {
-        "tags": [
-          "backoffice-read-v1-published"
-        ],
-        "summary": "Published Prices Export",
-        "operationId": "published_prices_export_backoffice_read_v1_published_prices_get",
-        "parameters": [
-          {
-            "name": "publish_version",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Publish Version"
-            }
-          },
-          {
-            "name": "X-Service-Client",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Service-Client"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PublishedPricesExportResponse"
                 }
               }
             }
@@ -5035,6 +4979,71 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PublishedClientRegionsExportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backoffice/read/v1/published/snapshot/client-region-blocks": {
+      "get": {
+        "tags": [
+          "backoffice-read-v1-published"
+        ],
+        "summary": "Published Snapshot Client Region Blocks Export",
+        "operationId": "published_snapshot_client_region_blocks_export_backoffice_read_v1_published_snapshot_client_region_blocks_get",
+        "parameters": [
+          {
+            "name": "publish_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Publish Version"
+            }
+          },
+          {
+            "name": "X-Service-Client",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Service-Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishedClientRegionBlocksExportResponse"
                 }
               }
             }
@@ -6621,6 +6630,28 @@
         ],
         "title": "BackofficeOfferComponentCreateRequest"
       },
+      "BackofficeOfferComponentsResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "components": {
+            "items": {
+              "$ref": "#/components/schemas/BackofficeOfferComponentContract"
+            },
+            "type": "array",
+            "title": "Components"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "components"
+        ],
+        "title": "BackofficeOfferComponentsResponse"
+      },
       "BackofficeOfferContract": {
         "properties": {
           "id": {
@@ -7034,6 +7065,28 @@
         ],
         "title": "BackofficeOfferPositionCreateRequest"
       },
+      "BackofficeOfferPositionsResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/BackofficeOfferPositionContract"
+            },
+            "type": "array",
+            "title": "Positions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "positions"
+        ],
+        "title": "BackofficeOfferPositionsResponse"
+      },
       "BackofficeOfferPriceContract": {
         "properties": {
           "id": {
@@ -7213,6 +7266,28 @@
           "price_cents"
         ],
         "title": "BackofficeOfferPriceCreateRequest"
+      },
+      "BackofficeOfferPricesResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "prices": {
+            "items": {
+              "$ref": "#/components/schemas/BackofficeOfferPriceContract"
+            },
+            "type": "array",
+            "title": "Prices"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "prices"
+        ],
+        "title": "BackofficeOfferPricesResponse"
       },
       "BackofficeOfferPublishCheckResponse": {
         "properties": {
@@ -9774,6 +9849,580 @@
         ],
         "title": "ClientPresentationHealthResponse"
       },
+      "ClientPresentationHomeBlockCreateRequest": {
+        "properties": {
+          "block_type": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Block Type"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 240
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sort_order": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Sort Order",
+            "default": 100
+          },
+          "display_status": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Display Status",
+            "default": "visible"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "visible_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible From"
+          },
+          "visible_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible Until"
+          },
+          "content_source_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Content Source Type",
+            "default": "manual_inline"
+          },
+          "content_source_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Source Ref"
+          },
+          "content_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "block_type",
+          "title"
+        ],
+        "title": "ClientPresentationHomeBlockCreateRequest"
+      },
+      "ClientPresentationHomeBlockUpdateRequest": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 240
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort Order"
+          },
+          "display_status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Status"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "visible_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible From"
+          },
+          "visible_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible Until"
+          },
+          "content_source_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Source Type"
+          },
+          "content_source_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Source Ref"
+          },
+          "content_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Payload"
+          }
+        },
+        "type": "object",
+        "title": "ClientPresentationHomeBlockUpdateRequest"
+      },
+      "ClientPresentationHomeDraftResponse": {
+        "properties": {
+          "surface_code": {
+            "type": "string",
+            "title": "Surface Code"
+          },
+          "page_code": {
+            "type": "string",
+            "title": "Page Code"
+          },
+          "generated_from": {
+            "type": "string",
+            "title": "Generated From"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/ClientPresentationHomeDraftSummary"
+          },
+          "page": {
+            "$ref": "#/components/schemas/ClientPresentationPreviewPage"
+          },
+          "validation": {
+            "$ref": "#/components/schemas/ClientPresentationValidationReportResponse"
+          },
+          "runtime_status": {
+            "$ref": "#/components/schemas/ClientPresentationPublishRuntimeStatusResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "surface_code",
+          "page_code",
+          "generated_from",
+          "summary",
+          "page",
+          "validation",
+          "runtime_status"
+        ],
+        "title": "ClientPresentationHomeDraftResponse"
+      },
+      "ClientPresentationHomeDraftSummary": {
+        "properties": {
+          "surface_code": {
+            "type": "string",
+            "title": "Surface Code"
+          },
+          "page_code": {
+            "type": "string",
+            "title": "Page Code"
+          },
+          "region_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Region Count"
+          },
+          "region_block_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Region Block Count"
+          },
+          "active_region_block_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Active Region Block Count"
+          },
+          "visible_region_block_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Visible Region Block Count"
+          },
+          "validation_blocking_issue_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Validation Blocking Issue Count"
+          },
+          "runtime_sync_status": {
+            "type": "string",
+            "title": "Runtime Sync Status"
+          },
+          "latest_publish_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Publish Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "surface_code",
+          "page_code",
+          "region_count",
+          "region_block_count",
+          "active_region_block_count",
+          "visible_region_block_count",
+          "validation_blocking_issue_count",
+          "runtime_sync_status",
+          "latest_publish_version"
+        ],
+        "title": "ClientPresentationHomeDraftSummary"
+      },
+      "ClientPresentationHomePlannerOptionsResponse": {
+        "properties": {
+          "surface_code": {
+            "type": "string",
+            "title": "Surface Code"
+          },
+          "page_code": {
+            "type": "string",
+            "title": "Page Code"
+          },
+          "region_types": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationPlannerRegionTypeOption"
+            },
+            "type": "array",
+            "title": "Region Types"
+          },
+          "block_types": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationPlannerBlockTypeOption"
+            },
+            "type": "array",
+            "title": "Block Types"
+          },
+          "region_form_fields": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationPlannerField"
+            },
+            "type": "array",
+            "title": "Region Form Fields"
+          },
+          "system_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "System Fields"
+          }
+        },
+        "type": "object",
+        "required": [
+          "surface_code",
+          "page_code",
+          "region_types",
+          "block_types",
+          "region_form_fields",
+          "system_fields"
+        ],
+        "title": "ClientPresentationHomePlannerOptionsResponse"
+      },
+      "ClientPresentationHomeRegionCreateRequest": {
+        "properties": {
+          "region_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Region Type"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sort_order": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Sort Order",
+            "default": 100
+          },
+          "is_required": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Required"
+          },
+          "max_blocks": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Blocks"
+          },
+          "display_status": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Display Status",
+            "default": "visible"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "region_type",
+          "title"
+        ],
+        "title": "ClientPresentationHomeRegionCreateRequest"
+      },
+      "ClientPresentationHomeRegionUpdateRequest": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort Order"
+          },
+          "is_required": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Required"
+          },
+          "max_blocks": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Blocks"
+          },
+          "display_status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Status"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          }
+        },
+        "type": "object",
+        "title": "ClientPresentationHomeRegionUpdateRequest"
+      },
       "ClientPresentationPageContract": {
         "properties": {
           "id": {
@@ -10016,6 +10665,243 @@
         ],
         "title": "ClientPresentationPagesResponse"
       },
+      "ClientPresentationPlannerBlockTypeOption": {
+        "properties": {
+          "block_type": {
+            "type": "string",
+            "title": "Block Type"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "renderer_key": {
+            "type": "string",
+            "title": "Renderer Key"
+          },
+          "allowed_region_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Allowed Region Types"
+          },
+          "allowed_content_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Allowed Content Types"
+          },
+          "content_source_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Content Source Types"
+          },
+          "fields": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationPlannerField"
+            },
+            "type": "array",
+            "title": "Fields"
+          }
+        },
+        "type": "object",
+        "required": [
+          "block_type",
+          "display_name",
+          "description",
+          "renderer_key",
+          "allowed_region_types",
+          "allowed_content_types",
+          "content_source_types",
+          "fields"
+        ],
+        "title": "ClientPresentationPlannerBlockTypeOption"
+      },
+      "ClientPresentationPlannerField": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "control": {
+            "type": "string",
+            "title": "Control"
+          },
+          "input_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Type"
+          },
+          "required": {
+            "type": "boolean",
+            "title": "Required",
+            "default": false
+          },
+          "system": {
+            "type": "boolean",
+            "title": "System",
+            "default": false
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationPlannerOption"
+            },
+            "type": "array",
+            "title": "Options"
+          },
+          "default_value": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Value"
+          },
+          "min_value": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Value"
+          },
+          "max_value": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Value"
+          },
+          "max_length": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Length"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "label",
+          "control"
+        ],
+        "title": "ClientPresentationPlannerField"
+      },
+      "ClientPresentationPlannerOption": {
+        "properties": {
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value",
+          "label"
+        ],
+        "title": "ClientPresentationPlannerOption"
+      },
+      "ClientPresentationPlannerRegionTypeOption": {
+        "properties": {
+          "region_type": {
+            "type": "string",
+            "title": "Region Type"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "allowed_block_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Allowed Block Types"
+          },
+          "default_max_blocks": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Max Blocks"
+          },
+          "default_is_required": {
+            "type": "boolean",
+            "title": "Default Is Required"
+          }
+        },
+        "type": "object",
+        "required": [
+          "region_type",
+          "display_name",
+          "description",
+          "allowed_block_types",
+          "default_max_blocks",
+          "default_is_required"
+        ],
+        "title": "ClientPresentationPlannerRegionTypeOption"
+      },
       "ClientPresentationPreviewBlock": {
         "properties": {
           "block_code": {
@@ -10025,6 +10911,10 @@
           "block_type": {
             "type": "string",
             "title": "Block Type"
+          },
+          "renderer_key": {
+            "type": "string",
+            "title": "Renderer Key"
           },
           "title": {
             "type": "string",
@@ -10041,6 +10931,33 @@
               }
             ],
             "title": "Layout"
+          },
+          "content_source_type": {
+            "type": "string",
+            "title": "Content Source Type"
+          },
+          "content_source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Source Ref"
+          },
+          "content_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Payload"
           },
           "data_binding_codes": {
             "items": {
@@ -10082,8 +10999,12 @@
         "required": [
           "block_code",
           "block_type",
+          "renderer_key",
           "title",
           "layout",
+          "content_source_type",
+          "content_source_ref",
+          "content_payload",
           "data_binding_codes",
           "visibility_rule_codes",
           "action_policy_codes",
@@ -10294,6 +11215,344 @@
           "snapshot_counts"
         ],
         "title": "ClientPresentationPublishRuntimeStatusResponse"
+      },
+      "ClientPresentationRegionBlockContract": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "region_id": {
+            "type": "integer",
+            "title": "Region Id"
+          },
+          "page_code": {
+            "type": "string",
+            "title": "Page Code"
+          },
+          "region_code": {
+            "type": "string",
+            "title": "Region Code"
+          },
+          "block_code": {
+            "type": "string",
+            "title": "Block Code"
+          },
+          "block_type": {
+            "type": "string",
+            "title": "Block Type"
+          },
+          "renderer_key": {
+            "type": "string",
+            "title": "Renderer Key"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sort_order": {
+            "type": "integer",
+            "title": "Sort Order"
+          },
+          "display_status": {
+            "type": "string",
+            "title": "Display Status"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "visible_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible From"
+          },
+          "visible_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible Until"
+          },
+          "content_source_type": {
+            "type": "string",
+            "title": "Content Source Type"
+          },
+          "content_source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Source Ref"
+          },
+          "content_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Payload"
+          },
+          "source_type": {
+            "type": "string",
+            "title": "Source Type"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "region_id",
+          "page_code",
+          "region_code",
+          "block_code",
+          "block_type",
+          "renderer_key",
+          "title",
+          "subtitle",
+          "description",
+          "sort_order",
+          "display_status",
+          "is_active",
+          "visible_from",
+          "visible_until",
+          "content_source_type",
+          "content_source_ref",
+          "content_payload",
+          "source_type",
+          "source_ref",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ClientPresentationRegionBlockContract"
+      },
+      "ClientPresentationRegionBlockCreateRequest": {
+        "properties": {
+          "block_code": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Block Code"
+          },
+          "block_type": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Block Type"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 240
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sort_order": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Sort Order",
+            "default": 100
+          },
+          "display_status": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Display Status",
+            "default": "visible"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "visible_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible From"
+          },
+          "visible_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible Until"
+          },
+          "content_source_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Content Source Type",
+            "default": "manual_inline"
+          },
+          "content_source_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Source Ref"
+          },
+          "content_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Payload"
+          },
+          "source_type": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Source Type",
+            "default": "manual"
+          },
+          "source_ref": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Ref"
+          }
+        },
+        "type": "object",
+        "required": [
+          "block_code",
+          "block_type",
+          "title"
+        ],
+        "title": "ClientPresentationRegionBlockCreateRequest"
+      },
+      "ClientPresentationRegionBlocksResponse": {
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "region_blocks": {
+            "items": {
+              "$ref": "#/components/schemas/ClientPresentationRegionBlockContract"
+            },
+            "type": "array",
+            "title": "Region Blocks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "count",
+          "region_blocks"
+        ],
+        "title": "ClientPresentationRegionBlocksResponse"
       },
       "ClientPresentationRegionContract": {
         "properties": {
@@ -11562,1251 +12821,6 @@
           "barcodes"
         ],
         "title": "PmsBarcodeProjectionsResponse"
-      },
-      "PmsBrandAssetProjectionContract": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "pms_asset_id": {
-            "type": "integer",
-            "title": "Pms Asset Id"
-          },
-          "brand_id": {
-            "type": "integer",
-            "title": "Brand Id"
-          },
-          "brand_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Brand Code"
-          },
-          "brand_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Brand Name"
-          },
-          "asset_type": {
-            "type": "string",
-            "title": "Asset Type"
-          },
-          "usage_type": {
-            "type": "string",
-            "title": "Usage Type"
-          },
-          "object_key": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Object Key"
-          },
-          "url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Url"
-          },
-          "alt_text": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Alt Text"
-          },
-          "sort_order": {
-            "type": "integer",
-            "title": "Sort Order"
-          },
-          "is_primary": {
-            "type": "boolean",
-            "title": "Is Primary"
-          },
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "raw_meta": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Meta"
-          },
-          "pms_updated_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Pms Updated At"
-          },
-          "synced_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Synced At"
-          },
-          "raw_payload": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Payload"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "pms_asset_id",
-          "brand_id",
-          "brand_code",
-          "brand_name",
-          "asset_type",
-          "usage_type",
-          "object_key",
-          "url",
-          "alt_text",
-          "sort_order",
-          "is_primary",
-          "status",
-          "raw_meta",
-          "pms_updated_at",
-          "synced_at",
-          "raw_payload"
-        ],
-        "title": "PmsBrandAssetProjectionContract"
-      },
-      "PmsBrandAssetsProjectionResponse": {
-        "properties": {
-          "resource": {
-            "type": "string",
-            "title": "Resource"
-          },
-          "projection_table": {
-            "type": "string",
-            "title": "Projection Table"
-          },
-          "columns": {
-            "items": {
-              "$ref": "#/components/schemas/PmsProjectionTableColumn"
-            },
-            "type": "array",
-            "title": "Columns"
-          },
-          "rows": {
-            "items": {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            "type": "array",
-            "title": "Rows"
-          },
-          "count": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Count"
-          },
-          "brand_assets": {
-            "items": {
-              "$ref": "#/components/schemas/PmsBrandAssetProjectionContract"
-            },
-            "type": "array",
-            "title": "Brand Assets"
-          }
-        },
-        "type": "object",
-        "required": [
-          "resource",
-          "projection_table",
-          "count",
-          "brand_assets"
-        ],
-        "title": "PmsBrandAssetsProjectionResponse"
-      },
-      "PmsBrandProfileProjectionContract": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "pms_profile_id": {
-            "type": "integer",
-            "title": "Pms Profile Id"
-          },
-          "brand_id": {
-            "type": "integer",
-            "title": "Brand Id"
-          },
-          "brand_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Brand Code"
-          },
-          "brand_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Brand Name"
-          },
-          "display_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Name"
-          },
-          "official_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Official Name"
-          },
-          "brand_story": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Brand Story"
-          },
-          "country_or_region": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Country Or Region"
-          },
-          "website_url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Website Url"
-          },
-          "seo_title": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Seo Title"
-          },
-          "seo_description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Seo Description"
-          },
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "pms_updated_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Pms Updated At"
-          },
-          "synced_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Synced At"
-          },
-          "raw_payload": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Payload"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "pms_profile_id",
-          "brand_id",
-          "brand_code",
-          "brand_name",
-          "display_name",
-          "official_name",
-          "brand_story",
-          "country_or_region",
-          "website_url",
-          "seo_title",
-          "seo_description",
-          "status",
-          "pms_updated_at",
-          "synced_at",
-          "raw_payload"
-        ],
-        "title": "PmsBrandProfileProjectionContract"
-      },
-      "PmsBrandProfilesProjectionResponse": {
-        "properties": {
-          "resource": {
-            "type": "string",
-            "title": "Resource"
-          },
-          "projection_table": {
-            "type": "string",
-            "title": "Projection Table"
-          },
-          "columns": {
-            "items": {
-              "$ref": "#/components/schemas/PmsProjectionTableColumn"
-            },
-            "type": "array",
-            "title": "Columns"
-          },
-          "rows": {
-            "items": {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            "type": "array",
-            "title": "Rows"
-          },
-          "count": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Count"
-          },
-          "brand_profiles": {
-            "items": {
-              "$ref": "#/components/schemas/PmsBrandProfileProjectionContract"
-            },
-            "type": "array",
-            "title": "Brand Profiles"
-          }
-        },
-        "type": "object",
-        "required": [
-          "resource",
-          "projection_table",
-          "count",
-          "brand_profiles"
-        ],
-        "title": "PmsBrandProfilesProjectionResponse"
-      },
-      "PmsDisplayCategoriesProjectionResponse": {
-        "properties": {
-          "resource": {
-            "type": "string",
-            "title": "Resource"
-          },
-          "projection_table": {
-            "type": "string",
-            "title": "Projection Table"
-          },
-          "columns": {
-            "items": {
-              "$ref": "#/components/schemas/PmsProjectionTableColumn"
-            },
-            "type": "array",
-            "title": "Columns"
-          },
-          "rows": {
-            "items": {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            "type": "array",
-            "title": "Rows"
-          },
-          "count": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Count"
-          },
-          "display_categories": {
-            "items": {
-              "$ref": "#/components/schemas/PmsDisplayCategoryProjectionContract"
-            },
-            "type": "array",
-            "title": "Display Categories"
-          }
-        },
-        "type": "object",
-        "required": [
-          "resource",
-          "projection_table",
-          "count",
-          "display_categories"
-        ],
-        "title": "PmsDisplayCategoriesProjectionResponse"
-      },
-      "PmsDisplayCategoryProjectionContract": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "pms_display_category_id": {
-            "type": "integer",
-            "title": "Pms Display Category Id"
-          },
-          "parent_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Parent Id"
-          },
-          "level": {
-            "type": "integer",
-            "title": "Level"
-          },
-          "category_code": {
-            "type": "string",
-            "title": "Category Code"
-          },
-          "category_name": {
-            "type": "string",
-            "title": "Category Name"
-          },
-          "display_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Name"
-          },
-          "path_code": {
-            "type": "string",
-            "title": "Path Code"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "image_url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Image Url"
-          },
-          "sort_order": {
-            "type": "integer",
-            "title": "Sort Order"
-          },
-          "is_active": {
-            "type": "boolean",
-            "title": "Is Active"
-          },
-          "is_leaf": {
-            "type": "boolean",
-            "title": "Is Leaf"
-          },
-          "pms_updated_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Pms Updated At"
-          },
-          "synced_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Synced At"
-          },
-          "raw_payload": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Payload"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "pms_display_category_id",
-          "parent_id",
-          "level",
-          "category_code",
-          "category_name",
-          "display_name",
-          "path_code",
-          "description",
-          "image_url",
-          "sort_order",
-          "is_active",
-          "is_leaf",
-          "pms_updated_at",
-          "synced_at",
-          "raw_payload"
-        ],
-        "title": "PmsDisplayCategoryProjectionContract"
-      },
-      "PmsItemAssetProjectionContract": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "pms_asset_id": {
-            "type": "integer",
-            "title": "Pms Asset Id"
-          },
-          "pms_item_id": {
-            "type": "integer",
-            "title": "Pms Item Id"
-          },
-          "item_sku": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Item Sku"
-          },
-          "item_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Item Name"
-          },
-          "asset_type": {
-            "type": "string",
-            "title": "Asset Type"
-          },
-          "usage_type": {
-            "type": "string",
-            "title": "Usage Type"
-          },
-          "source_type": {
-            "type": "string",
-            "title": "Source Type"
-          },
-          "object_key": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Object Key"
-          },
-          "url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Url"
-          },
-          "alt_text": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Alt Text"
-          },
-          "sort_order": {
-            "type": "integer",
-            "title": "Sort Order"
-          },
-          "is_primary": {
-            "type": "boolean",
-            "title": "Is Primary"
-          },
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "raw_meta": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Meta"
-          },
-          "pms_updated_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Pms Updated At"
-          },
-          "synced_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Synced At"
-          },
-          "raw_payload": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Payload"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "pms_asset_id",
-          "pms_item_id",
-          "item_sku",
-          "item_name",
-          "asset_type",
-          "usage_type",
-          "source_type",
-          "object_key",
-          "url",
-          "alt_text",
-          "sort_order",
-          "is_primary",
-          "status",
-          "raw_meta",
-          "pms_updated_at",
-          "synced_at",
-          "raw_payload"
-        ],
-        "title": "PmsItemAssetProjectionContract"
-      },
-      "PmsItemAssetsProjectionResponse": {
-        "properties": {
-          "resource": {
-            "type": "string",
-            "title": "Resource"
-          },
-          "projection_table": {
-            "type": "string",
-            "title": "Projection Table"
-          },
-          "columns": {
-            "items": {
-              "$ref": "#/components/schemas/PmsProjectionTableColumn"
-            },
-            "type": "array",
-            "title": "Columns"
-          },
-          "rows": {
-            "items": {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            "type": "array",
-            "title": "Rows"
-          },
-          "count": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Count"
-          },
-          "item_assets": {
-            "items": {
-              "$ref": "#/components/schemas/PmsItemAssetProjectionContract"
-            },
-            "type": "array",
-            "title": "Item Assets"
-          }
-        },
-        "type": "object",
-        "required": [
-          "resource",
-          "projection_table",
-          "count",
-          "item_assets"
-        ],
-        "title": "PmsItemAssetsProjectionResponse"
-      },
-      "PmsItemContentProjectionContract": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "pms_content_id": {
-            "type": "integer",
-            "title": "Pms Content Id"
-          },
-          "pms_item_id": {
-            "type": "integer",
-            "title": "Pms Item Id"
-          },
-          "item_sku": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Item Sku"
-          },
-          "item_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Item Name"
-          },
-          "base_title": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Base Title"
-          },
-          "base_description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Base Description"
-          },
-          "short_description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Short Description"
-          },
-          "spec_params": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "items": {},
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Spec Params"
-          },
-          "material_text": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Material Text"
-          },
-          "ingredients_text": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Ingredients Text"
-          },
-          "dimensions_text": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Dimensions Text"
-          },
-          "weight_text": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Weight Text"
-          },
-          "safety_instructions": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Safety Instructions"
-          },
-          "usage_instructions": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Usage Instructions"
-          },
-          "storage_instructions": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Storage Instructions"
-          },
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "pms_updated_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Pms Updated At"
-          },
-          "synced_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Synced At"
-          },
-          "raw_payload": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Payload"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "pms_content_id",
-          "pms_item_id",
-          "item_sku",
-          "item_name",
-          "base_title",
-          "base_description",
-          "short_description",
-          "spec_params",
-          "material_text",
-          "ingredients_text",
-          "dimensions_text",
-          "weight_text",
-          "safety_instructions",
-          "usage_instructions",
-          "storage_instructions",
-          "status",
-          "pms_updated_at",
-          "synced_at",
-          "raw_payload"
-        ],
-        "title": "PmsItemContentProjectionContract"
-      },
-      "PmsItemContentsProjectionResponse": {
-        "properties": {
-          "resource": {
-            "type": "string",
-            "title": "Resource"
-          },
-          "projection_table": {
-            "type": "string",
-            "title": "Projection Table"
-          },
-          "columns": {
-            "items": {
-              "$ref": "#/components/schemas/PmsProjectionTableColumn"
-            },
-            "type": "array",
-            "title": "Columns"
-          },
-          "rows": {
-            "items": {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            "type": "array",
-            "title": "Rows"
-          },
-          "count": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Count"
-          },
-          "item_contents": {
-            "items": {
-              "$ref": "#/components/schemas/PmsItemContentProjectionContract"
-            },
-            "type": "array",
-            "title": "Item Contents"
-          }
-        },
-        "type": "object",
-        "required": [
-          "resource",
-          "projection_table",
-          "count",
-          "item_contents"
-        ],
-        "title": "PmsItemContentsProjectionResponse"
-      },
-      "PmsItemDisplayCategoryBindingProjectionContract": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "pms_binding_id": {
-            "type": "integer",
-            "title": "Pms Binding Id"
-          },
-          "pms_item_id": {
-            "type": "integer",
-            "title": "Pms Item Id"
-          },
-          "pms_display_category_id": {
-            "type": "integer",
-            "title": "Pms Display Category Id"
-          },
-          "item_sku": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Item Sku"
-          },
-          "item_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Item Name"
-          },
-          "display_category_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Category Code"
-          },
-          "display_category_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Category Name"
-          },
-          "display_category_path_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Display Category Path Code"
-          },
-          "is_primary": {
-            "type": "boolean",
-            "title": "Is Primary"
-          },
-          "sort_order": {
-            "type": "integer",
-            "title": "Sort Order"
-          },
-          "pms_updated_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Pms Updated At"
-          },
-          "synced_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Synced At"
-          },
-          "raw_payload": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Payload"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "pms_binding_id",
-          "pms_item_id",
-          "pms_display_category_id",
-          "item_sku",
-          "item_name",
-          "display_category_code",
-          "display_category_name",
-          "display_category_path_code",
-          "is_primary",
-          "sort_order",
-          "pms_updated_at",
-          "synced_at",
-          "raw_payload"
-        ],
-        "title": "PmsItemDisplayCategoryBindingProjectionContract"
-      },
-      "PmsItemDisplayCategoryBindingsProjectionResponse": {
-        "properties": {
-          "resource": {
-            "type": "string",
-            "title": "Resource"
-          },
-          "projection_table": {
-            "type": "string",
-            "title": "Projection Table"
-          },
-          "columns": {
-            "items": {
-              "$ref": "#/components/schemas/PmsProjectionTableColumn"
-            },
-            "type": "array",
-            "title": "Columns"
-          },
-          "rows": {
-            "items": {
-              "additionalProperties": true,
-              "type": "object"
-            },
-            "type": "array",
-            "title": "Rows"
-          },
-          "count": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Count"
-          },
-          "item_display_category_bindings": {
-            "items": {
-              "$ref": "#/components/schemas/PmsItemDisplayCategoryBindingProjectionContract"
-            },
-            "type": "array",
-            "title": "Item Display Category Bindings"
-          }
-        },
-        "type": "object",
-        "required": [
-          "resource",
-          "projection_table",
-          "count",
-          "item_display_category_bindings"
-        ],
-        "title": "PmsItemDisplayCategoryBindingsProjectionResponse"
       },
       "PmsProductProjectionContract": {
         "properties": {
@@ -14411,54 +14425,6 @@
         ],
         "title": "PublishVersionsResponse"
       },
-      "PublishedCatalogExportResponse": {
-        "properties": {
-          "publish_version": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Publish Version"
-          },
-          "product_count": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Product Count"
-          },
-          "sku_count": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Sku Count"
-          },
-          "products": {
-            "items": {
-              "$ref": "#/components/schemas/PublishedProductExport"
-            },
-            "type": "array",
-            "title": "Products"
-          },
-          "skus": {
-            "items": {
-              "$ref": "#/components/schemas/PublishedSkuExport"
-            },
-            "type": "array",
-            "title": "Skus"
-          }
-        },
-        "type": "object",
-        "required": [
-          "publish_version",
-          "product_count",
-          "sku_count",
-          "products",
-          "skus"
-        ],
-        "title": "PublishedCatalogExportResponse"
-      },
       "PublishedClientActionPoliciesExportResponse": {
         "properties": {
           "publish_version": {
@@ -15149,6 +15115,209 @@
           "pages"
         ],
         "title": "PublishedClientPagesExportResponse"
+      },
+      "PublishedClientRegionBlockSnapshotExport": {
+        "properties": {
+          "publish_version": {
+            "type": "string",
+            "title": "Publish Version"
+          },
+          "page_code": {
+            "type": "string",
+            "title": "Page Code"
+          },
+          "region_code": {
+            "type": "string",
+            "title": "Region Code"
+          },
+          "block_code": {
+            "type": "string",
+            "title": "Block Code"
+          },
+          "block_type": {
+            "type": "string",
+            "title": "Block Type"
+          },
+          "renderer_key": {
+            "type": "string",
+            "title": "Renderer Key"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sort_order": {
+            "type": "integer",
+            "title": "Sort Order"
+          },
+          "display_status": {
+            "type": "string",
+            "title": "Display Status"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "visible_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible From"
+          },
+          "visible_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible Until"
+          },
+          "content_source_type": {
+            "type": "string",
+            "title": "Content Source Type"
+          },
+          "content_source_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Source Ref"
+          },
+          "content_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Payload"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Published At"
+          },
+          "source_region_block_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Region Block Id"
+          },
+          "raw_payload": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "page_code",
+          "region_code",
+          "block_code",
+          "block_type",
+          "renderer_key",
+          "title",
+          "subtitle",
+          "description",
+          "sort_order",
+          "display_status",
+          "is_active",
+          "visible_from",
+          "visible_until",
+          "content_source_type",
+          "content_source_ref",
+          "content_payload",
+          "published_at",
+          "source_region_block_id",
+          "raw_payload"
+        ],
+        "title": "PublishedClientRegionBlockSnapshotExport"
+      },
+      "PublishedClientRegionBlocksExportResponse": {
+        "properties": {
+          "publish_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publish Version"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Count"
+          },
+          "region_blocks": {
+            "items": {
+              "$ref": "#/components/schemas/PublishedClientRegionBlockSnapshotExport"
+            },
+            "type": "array",
+            "title": "Region Blocks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "publish_version",
+          "count",
+          "region_blocks"
+        ],
+        "title": "PublishedClientRegionBlocksExportResponse"
       },
       "PublishedClientRegionSnapshotExport": {
         "properties": {
@@ -16847,379 +17016,6 @@
         ],
         "title": "PublishedOffersExportResponse"
       },
-      "PublishedPriceExport": {
-        "properties": {
-          "publish_version": {
-            "type": "string",
-            "title": "Publish Version"
-          },
-          "price_list_code": {
-            "type": "string",
-            "title": "Price List Code"
-          },
-          "channel": {
-            "type": "string",
-            "title": "Channel"
-          },
-          "sku_code": {
-            "type": "string",
-            "title": "Sku Code"
-          },
-          "currency": {
-            "type": "string",
-            "title": "Currency"
-          },
-          "price_cents": {
-            "type": "integer",
-            "title": "Price Cents"
-          },
-          "compare_at_price_cents": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Compare At Price Cents"
-          },
-          "effective_from": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Effective From"
-          },
-          "effective_until": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Effective Until"
-          },
-          "is_active": {
-            "type": "boolean",
-            "title": "Is Active"
-          },
-          "priority": {
-            "type": "integer",
-            "title": "Priority"
-          },
-          "published_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Published At"
-          },
-          "source_price_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Source Price Id"
-          },
-          "source_updated_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Source Updated At"
-          },
-          "raw_payload": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Payload"
-          }
-        },
-        "type": "object",
-        "required": [
-          "publish_version",
-          "price_list_code",
-          "channel",
-          "sku_code",
-          "currency",
-          "price_cents",
-          "compare_at_price_cents",
-          "effective_from",
-          "effective_until",
-          "is_active",
-          "priority",
-          "published_at",
-          "source_price_id",
-          "source_updated_at",
-          "raw_payload"
-        ],
-        "title": "PublishedPriceExport"
-      },
-      "PublishedPricesExportResponse": {
-        "properties": {
-          "publish_version": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Publish Version"
-          },
-          "count": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Count"
-          },
-          "prices": {
-            "items": {
-              "$ref": "#/components/schemas/PublishedPriceExport"
-            },
-            "type": "array",
-            "title": "Prices"
-          }
-        },
-        "type": "object",
-        "required": [
-          "publish_version",
-          "count",
-          "prices"
-        ],
-        "title": "PublishedPricesExportResponse"
-      },
-      "PublishedProductExport": {
-        "properties": {
-          "publish_version": {
-            "type": "string",
-            "title": "Publish Version"
-          },
-          "pms_item_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Pms Item Id"
-          },
-          "pms_sku": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Pms Sku"
-          },
-          "product_code": {
-            "type": "string",
-            "title": "Product Code"
-          },
-          "product_name": {
-            "type": "string",
-            "title": "Product Name"
-          },
-          "display_name": {
-            "type": "string",
-            "title": "Display Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "image_url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Image Url"
-          },
-          "category_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Category Code"
-          },
-          "category_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Category Name"
-          },
-          "brand_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Brand Code"
-          },
-          "brand_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Brand Name"
-          },
-          "display_status": {
-            "type": "string",
-            "title": "Display Status"
-          },
-          "sell_status": {
-            "type": "string",
-            "title": "Sell Status"
-          },
-          "sort_order": {
-            "type": "integer",
-            "title": "Sort Order"
-          },
-          "visible_from": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Visible From"
-          },
-          "visible_until": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Visible Until"
-          },
-          "published_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Published At"
-          },
-          "source_product_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Source Product Id"
-          },
-          "source_updated_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Source Updated At"
-          },
-          "raw_payload": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Payload"
-          }
-        },
-        "type": "object",
-        "required": [
-          "publish_version",
-          "pms_item_id",
-          "pms_sku",
-          "product_code",
-          "product_name",
-          "display_name",
-          "description",
-          "image_url",
-          "category_code",
-          "category_name",
-          "brand_code",
-          "brand_name",
-          "display_status",
-          "sell_status",
-          "sort_order",
-          "visible_from",
-          "visible_until",
-          "published_at",
-          "source_product_id",
-          "source_updated_at",
-          "raw_payload"
-        ],
-        "title": "PublishedProductExport"
-      },
       "PublishedPromotionExport": {
         "properties": {
           "publish_version": {
@@ -17719,141 +17515,6 @@
           "promotions"
         ],
         "title": "PublishedPromotionsExportResponse"
-      },
-      "PublishedSkuExport": {
-        "properties": {
-          "publish_version": {
-            "type": "string",
-            "title": "Publish Version"
-          },
-          "product_code": {
-            "type": "string",
-            "title": "Product Code"
-          },
-          "sku_code": {
-            "type": "string",
-            "title": "Sku Code"
-          },
-          "sku_name": {
-            "type": "string",
-            "title": "Sku Name"
-          },
-          "display_sku_name": {
-            "type": "string",
-            "title": "Display Sku Name"
-          },
-          "sales_unit_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sales Unit Code"
-          },
-          "sales_unit_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sales Unit Name"
-          },
-          "barcode": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Barcode"
-          },
-          "spec_text": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Spec Text"
-          },
-          "is_sellable": {
-            "type": "boolean",
-            "title": "Is Sellable"
-          },
-          "sort_order": {
-            "type": "integer",
-            "title": "Sort Order"
-          },
-          "published_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Published At"
-          },
-          "source_sku_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Source Sku Id"
-          },
-          "source_updated_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Source Updated At"
-          },
-          "raw_payload": {
-            "anyOf": [
-              {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Raw Payload"
-          }
-        },
-        "type": "object",
-        "required": [
-          "publish_version",
-          "product_code",
-          "sku_code",
-          "sku_name",
-          "display_sku_name",
-          "sales_unit_code",
-          "sales_unit_name",
-          "barcode",
-          "spec_text",
-          "is_sellable",
-          "sort_order",
-          "published_at",
-          "source_sku_id",
-          "source_updated_at",
-          "raw_payload"
-        ],
-        "title": "PublishedSkuExport"
       },
       "PublishedStorefrontSectionLayoutSnapshotExport": {
         "properties": {

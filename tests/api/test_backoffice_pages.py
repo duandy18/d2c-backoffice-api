@@ -76,26 +76,16 @@ def test_backoffice_pages_registry_contains_full_blueprint() -> None:
         page_by_code["d2c.backoffice.supply_sources.products"]["component_key"]
         == "pms_projection.products"
     )
-    assert (
-        page_by_code["d2c.backoffice.supply_sources.sku_codes"]["title"]
-        == "SKU 编码来源"
-    )
-    assert (
-        page_by_code["d2c.backoffice.supply_sources.units"]["title"]
-        == "包装单位来源"
-    )
+    assert page_by_code["d2c.backoffice.supply_sources.sku_codes"]["title"] == "SKU 编码来源"
+    assert page_by_code["d2c.backoffice.supply_sources.units"]["title"] == "包装单位来源"
     assert (
         page_by_code["d2c.backoffice.supply_sources.barcodes"]["component_key"]
         == "pms_projection.barcodes"
     )
 
     assert page_by_code["d2c.backoffice.page_decoration"]["title"] == "页面装修"
-    assert page_by_code["d2c.backoffice.page_decoration"]["component_key"] == (
-        "layout.group"
-    )
-    assert page_by_code["d2c.backoffice.page_decoration"]["implementation_status"] == (
-        "ready"
-    )
+    assert page_by_code["d2c.backoffice.page_decoration"]["component_key"] == ("layout.group")
+    assert page_by_code["d2c.backoffice.page_decoration"]["implementation_status"] == ("ready")
     assert "d2c.backoffice.page_decoration.overview_group" not in page_by_code
     assert "d2c.backoffice.page_decoration.page_architecture" not in page_by_code
     assert "d2c.backoffice.page_decoration.rules" not in page_by_code
@@ -106,26 +96,26 @@ def test_backoffice_pages_registry_contains_full_blueprint() -> None:
     assert page_by_code["d2c.backoffice.page_decoration.home"]["component_key"] == (
         "client_presentation.overview"
     )
-    assert page_by_code["d2c.backoffice.page_decoration.content"]["title"] == (
-        "区块与货架"
-    )
+    assert page_by_code["d2c.backoffice.page_decoration.content"]["title"] == ("区块与货架")
     assert page_by_code["d2c.backoffice.page_decoration.data_bindings"]["level"] == 2
-    assert page_by_code["d2c.backoffice.page_decoration.data_bindings"][
-        "parent_code"
-    ] == "d2c.backoffice.page_decoration"
-    assert page_by_code["d2c.backoffice.page_decoration.advanced"]["title"] == (
-        "高级配置"
+    assert (
+        page_by_code["d2c.backoffice.page_decoration.data_bindings"]["parent_code"]
+        == "d2c.backoffice.page_decoration"
     )
+    assert page_by_code["d2c.backoffice.page_decoration.advanced"]["title"] == ("高级配置")
     assert page_by_code["d2c.backoffice.page_decoration.advanced"]["level"] == 2
-    assert page_by_code["d2c.backoffice.page_decoration.block_types"][
-        "parent_code"
-    ] == "d2c.backoffice.page_decoration.advanced"
-    assert page_by_code["d2c.backoffice.page_decoration.layouts"][
-        "parent_code"
-    ] == "d2c.backoffice.page_decoration.advanced"
-    assert page_by_code["d2c.backoffice.page_decoration.actions"][
-        "parent_code"
-    ] == "d2c.backoffice.page_decoration.advanced"
+    assert (
+        page_by_code["d2c.backoffice.page_decoration.block_types"]["parent_code"]
+        == "d2c.backoffice.page_decoration.advanced"
+    )
+    assert (
+        page_by_code["d2c.backoffice.page_decoration.layouts"]["parent_code"]
+        == "d2c.backoffice.page_decoration.advanced"
+    )
+    assert (
+        page_by_code["d2c.backoffice.page_decoration.actions"]["parent_code"]
+        == "d2c.backoffice.page_decoration.advanced"
+    )
 
     assert "d2c.backoffice.page_decoration.preview" not in page_by_code
     assert "d2c.backoffice.page_decoration.validation" not in page_by_code
@@ -140,9 +130,7 @@ def test_backoffice_pages_registry_contains_full_blueprint() -> None:
         page_by_code["d2c.backoffice.publish_center.preview"]["component_key"]
         == "client_presentation.preview"
     )
-    assert page_by_code["d2c.backoffice.publish_center.runtime"]["title"] == (
-        "Runtime 同步状态"
-    )
+    assert page_by_code["d2c.backoffice.publish_center.runtime"]["title"] == ("Runtime 同步状态")
     assert (
         page_by_code["d2c.backoffice.publish_center.runtime"]["component_key"]
         == "client_presentation.publish"
@@ -153,9 +141,7 @@ def test_backoffice_pages_registry_contains_full_blueprint() -> None:
         == "connected"
     )
     assert (
-        page_by_code["d2c.backoffice.orders_fulfillment.orders.list"][
-            "implementation_status"
-        ]
+        page_by_code["d2c.backoffice.orders_fulfillment.orders.list"]["implementation_status"]
         == "planned"
     )
     assert (
@@ -189,6 +175,7 @@ def test_backoffice_pages_navigation_returns_tree() -> None:
         "商家商品中心",
         "页面装修",
         "营销中心",
+        "顾客服务",
         "发布中心",
         "供应链来源",
         "订单与履约",
@@ -222,34 +209,22 @@ def test_backoffice_pages_navigation_returns_tree() -> None:
     assert "页面结构" not in decoration_groups
     assert "展示规则" not in decoration_groups
 
-    assert decoration_groups["首页装修"]["component_key"] == (
-        "client_presentation.overview"
-    )
-    assert decoration_groups["数据绑定"]["component_key"] == (
-        "client_presentation.data_bindings"
-    )
+    assert decoration_groups["首页装修"]["component_key"] == ("client_presentation.overview")
+    assert decoration_groups["数据绑定"]["component_key"] == ("client_presentation.data_bindings")
 
-    content_pages = {
-        page["title"]: page for page in decoration_groups["区块与货架"]["children"]
-    }
+    content_pages = {page["title"]: page for page in decoration_groups["区块与货架"]["children"]}
     assert content_pages["区块实例"]["component_key"] == "client_presentation.blocks"
     assert content_pages["货架坑位"]["component_key"] == "client_presentation.positions"
     assert "数据源绑定" not in content_pages
     assert "区块类型" not in content_pages
 
-    advanced_pages = {
-        page["title"]: page for page in decoration_groups["高级配置"]["children"]
-    }
+    advanced_pages = {page["title"]: page for page in decoration_groups["高级配置"]["children"]}
     assert advanced_pages["展示渠道"]["component_key"] == "client_presentation.surfaces"
     assert advanced_pages["顾客端页面"]["component_key"] == "client_presentation.pages"
     assert advanced_pages["页面区域"]["component_key"] == "client_presentation.regions"
-    assert advanced_pages["区块类型"]["component_key"] == (
-        "client_presentation.block_types"
-    )
+    assert advanced_pages["区块类型"]["component_key"] == ("client_presentation.block_types")
     assert advanced_pages["展示规则"]["component_key"] == "client_presentation.layouts"
-    assert advanced_pages["可见性规则"]["component_key"] == (
-        "client_presentation.visibility"
-    )
+    assert advanced_pages["可见性规则"]["component_key"] == ("client_presentation.visibility")
     assert advanced_pages["交互与埋点"]["component_key"] == "client_presentation.actions"
 
     marketing_root = next(page for page in payload["pages"] if page["title"] == "营销中心")
@@ -259,15 +234,9 @@ def test_backoffice_pages_navigation_returns_tree() -> None:
 
     publish_root = next(page for page in payload["pages"] if page["title"] == "发布中心")
     publish_pages = {page["title"]: page for page in publish_root["children"]}
-    assert publish_pages["发布检查"]["component_key"] == (
-        "client_presentation.validation"
-    )
-    assert publish_pages["顾客端预览"]["component_key"] == (
-        "client_presentation.preview"
-    )
-    assert publish_pages["Runtime 同步状态"]["component_key"] == (
-        "client_presentation.publish"
-    )
+    assert publish_pages["发布检查"]["component_key"] == ("client_presentation.validation")
+    assert publish_pages["顾客端预览"]["component_key"] == ("client_presentation.preview")
+    assert publish_pages["Runtime 同步状态"]["component_key"] == ("client_presentation.publish")
 
     supply_root = next(page for page in payload["pages"] if page["title"] == "供应链来源")
     supply_pages = {page["title"]: page for page in supply_root["children"]}
@@ -277,3 +246,29 @@ def test_backoffice_pages_navigation_returns_tree() -> None:
     assert supply_pages["SKU 编码来源"]["component_key"] == "pms_projection.sku_codes"
     assert supply_pages["包装单位来源"]["component_key"] == "pms_projection.units"
     assert supply_pages["条码来源"]["component_key"] == "pms_projection.barcodes"
+
+    customer_service_root = next(page for page in payload["pages"] if page["title"] == "顾客服务")
+    customer_service_groups = {page["title"]: page for page in customer_service_root["children"]}
+
+    assert {"客服中心", "评价管理", "售后服务"}.issubset(customer_service_groups)
+
+    support_pages = {
+        page["title"]: page for page in customer_service_groups["客服中心"]["children"]
+    }
+    assert support_pages["服务总览"]["component_key"] == "support.overview"
+    assert support_pages["在线会话"]["component_key"] == "support.live_sessions"
+    assert support_pages["留言咨询"]["component_key"] == "support.conversations"
+    assert support_pages["客服设置"]["component_key"] == "support.settings"
+    assert "/customer-service/support-workbench" not in [
+        page["route_path"]
+        for group in customer_service_groups.values()
+        for page in group["children"]
+    ]
+
+    review_pages = {page["title"]: page for page in customer_service_groups["评价管理"]["children"]}
+    assert {"评价审核", "评价列表", "商家回复", "评价规则"}.issubset(review_pages)
+
+    after_sales_pages = {
+        page["title"]: page for page in customer_service_groups["售后服务"]["children"]
+    }
+    assert {"售后工单", "退换货申请", "退款处理", "售后原因配置"}.issubset(after_sales_pages)
